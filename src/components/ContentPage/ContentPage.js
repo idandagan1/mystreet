@@ -1,35 +1,34 @@
-/**
- * React Starter Kit (https://www.reactstarterkit.com/)
- *
- * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.txt file in the root directory of this source tree.
- */
-
 import React, { Component, PropTypes } from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './ContentPage.scss';
 
-class ContentPage extends Component {
+const title = 'About Us';
 
-  static propTypes = {
-    path: PropTypes.string.isRequired,
-    content: PropTypes.string.isRequired,
-    title: PropTypes.string,
-  };
+class ContentPage extends Component {
 
   static contextTypes = {
     onSetTitle: PropTypes.func.isRequired,
   };
 
+  componentWillMount() {
+    this.context.onSetTitle(title);
+  }
+
   render() {
-    this.context.onSetTitle(this.props.title);
     return (
       <div className={s.root}>
         <div className={s.container}>
-          {this.props.path === '/' ? null : <h1>{this.props.title}</h1>}
-          <div dangerouslySetInnerHTML={{ __html: this.props.content || '' }} />
+          <h1>{title}</h1>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean consequat
+            tortor fermentum mi fermentum dignissim. Nullam vel ipsum ut ligula elementum
+            lobortis. Maecenas aliquam, massa laoreet lacinia pretium, nisi urna venenatis
+            tortor, nec imperdiet tellus libero efficitur metus. Fusce semper posuere
+            ligula, et facilisis metus bibendum interdum. Mauris at mauris sit amet sem
+            pharetra commodo a eu leo. Nam at est non risus cursus maximus. Nam feugiat
+            augue libero, id consectetur tortor bibendum non. Quisque nec fringilla lorem.
+            Nullam efficitur vulputate mauris, nec maximus leo dignissim id.
+          </p>
         </div>
       </div>
     );
