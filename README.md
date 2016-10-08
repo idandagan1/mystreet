@@ -1,7 +1,7 @@
 # MyStreet
 
 ### Development
-* Run `npm run start`
+* Run `npm start`
     + Starts Webpack Dev Server on port 8000 (run individually with `npm run start-client`)
     + Starts API Server on Port 8001 (run individually with `npm run start-server`)
 
