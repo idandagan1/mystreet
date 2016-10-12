@@ -28,7 +28,7 @@ var userSchema = new Schema({
             type: String},
         streets: [{
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Street'}]
+            ref: 'street'}]
     },
     facebook: {
         id: String,
@@ -37,7 +37,7 @@ var userSchema = new Schema({
         name: String
     }
 
-}, {collection: 'Users'});
+}, {collection: 'user'});
 
 
 userSchema.methods.generateHash = function(password){
@@ -48,4 +48,4 @@ userSchema.methods.validPassword = function(password){
     return bcrypt.compareSync(password, this.local.password);
 };
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model('user', userSchema);

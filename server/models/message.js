@@ -1,17 +1,23 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var Message = new Schema({
+var messageSchema = new Schema({
 
-    _id: { type:Schema.Types.ObjectId },
+    _id: {
+        type:Schema.Types.ObjectId
+    },
     posted: {
         type: Date,
-        default: Date.now },
+        default: Date.now
+    },
     postedBy: {
         type:Schema.Types.ObjectId,
-        ref:'Users'},
-    text: {type: String}
+        ref:'user'
+    },
+    text: {
+        type: String
+    }
 
-}, {collection: 'Message'});
+}, {collection: 'message'});
 
-module.exports = mongoose.model('Message', Message);
+module.exports = mongoose.model('message', messageSchema);

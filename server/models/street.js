@@ -1,20 +1,23 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var Street = new Schema({
+var streetSchema = new Schema({
 
     name: {
         type: String,
         index:true,
         unique:true,
-        required: true },
+        required: true
+    },
     createDate: {
         type: Date,
-        default: Date.now },
+        default: Date.now
+    },
     members: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Users' }]
+        ref: 'user'
+    }]
 
-},{collection: 'Streets'});
+},{collection: 'street'});
 
-module.exports = mongoose.model('Streets', Street);
+module.exports = mongoose.model('street', streetSchema);
