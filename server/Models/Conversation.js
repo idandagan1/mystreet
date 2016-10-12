@@ -1,6 +1,4 @@
 var mongoose = require('mongoose');
-mongoose.Promise = global.Promise;
-mongoose.createConnection('localhost:27017/local');
 var Schema = mongoose.Schema;
 
 var Conversation = new Schema({
