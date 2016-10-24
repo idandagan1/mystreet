@@ -1,8 +1,8 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var Conversation = new Schema({
-
+var postListSchema = new Schema({
+    /*
     admin:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'user'
@@ -10,12 +10,12 @@ var Conversation = new Schema({
     members: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'user'
-    }],
-    messages:[{
+    }],*/
+    posts:[{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'message'
     }]
 
-}, {collection: 'Conversation'});
+}, {collection: 'postList'});
 
-module.exports = mongoose.model('Conversation', Conversation);
+module.exports = mongoose.model('postList', postListSchema);
