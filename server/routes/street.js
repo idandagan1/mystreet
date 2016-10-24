@@ -3,6 +3,38 @@ var router = express.Router();
 var Street = require('../models/street');
 var User = require('../models/user');
 
+router.get('/getStreets', function(req,res) {
+//This method returns a list of streets from the user's street list.
+
+    var userID = currentUser;// TO CHANGE
+
+    User.findById(userID, function (err, me) {
+
+        if (err) {// handle error
+
+        } else if (me) {
+            var listOfIds = me.local.streets;
+            var listOfStreets = [];
+
+            for (var i = 0; i < listOfIds.length; i++) {
+
+                Street.findById(listOfIds[i], function (err, street) {
+                    if (err) {
+
+                    } else {
+                        listOfStreets.push(street);
+                    }
+
+                    if (listOfStreets.length === listOfIds.length) {
+                        res.send(listOfStreets);
+                    }
+                });
+            }
+        }
+    })
+
+});
+
 router.post('/addStreet', function(req,res,next){
 //This method is execute when the user choose a street the already exist
 // and click on the "Add Street" button.
@@ -10,7 +42,7 @@ router.post('/addStreet', function(req,res,next){
     //TO DO: Change parameters.
     var streetName = req.body.Address,
         streetID = null,
-        me = 1234;
+        me = currentUser;
 
     //Adding a street
     Street.findOne({name: streetName}).then(function(street, err){
@@ -39,7 +71,7 @@ router.post('/addStreet', function(req,res,next){
 
 function addMemberToStreet(street){
 
-    var memberID = 1234, //TO DO
+    var memberID = currentUser,
         isMemberExist = false;
 
     if(street == null || memberID == null){
@@ -64,7 +96,7 @@ function addMemberToStreet(street){
 
 function addStreetToMembersList(newStreet){
 
-    var userID = 1234;//TO DO
+    var userID = currentUser;
 
     if(newStreet == null || userID == null){
         return;
