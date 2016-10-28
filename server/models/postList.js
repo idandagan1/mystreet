@@ -2,18 +2,16 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var postListSchema = new Schema({
-    /*
-    admin:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'user'
+
+    bucket:{
+        type: Number
     },
-    members: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'user'
-    }],*/
+    count: {
+        type: Number
+    },
     posts:[{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'message'
+        type: Schema.Types.ObjectId,
+        ref: 'post'
     }]
 
 }, {collection: 'postList'});

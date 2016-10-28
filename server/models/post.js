@@ -3,32 +3,47 @@ var Schema = mongoose.Schema;
 
 var postSchema = new Schema({
 
-    _id: {
-        type:Schema.Types.ObjectId
+    postList:{
+        type: Schema.Types.ObjectId,
+        ref: 'postList'
     },
-    postDate: {
+    tags:[{
+        type: Schema.Types.ObjectId,
+        ref: 'user'
+    }],
+    slug: {
+        type: String, trim: true
+    },
+    when: {
         type: Date,
         default: Date.now
     },
     author: {
-        type:Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref:'user'
     },
-    text: {
+    body: {
         type: String
     },
+    likes: {
+        type: Number
+    },
     comments:[{
-        commentDate: {
+
+        when: {
             type: Date,
             default: Date.now
         },
         author: {
-            type:Schema.Types.ObjectId,
+            type: Schema.Types.ObjectId,
             ref:'user'
         },
-        comment: {
+        body: {
             type: String
-        }
+        },
+        likes:{
+            type:Number
+        },
     }]
 
 }, {collection: 'post'});

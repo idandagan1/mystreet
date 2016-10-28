@@ -3,6 +3,25 @@ var router = express.Router();
 var Street = require('../models/street');
 var User = require('../models/user');
 
+router.get('/getStreet', function(req,res){
+
+    //TODO: Change parameters
+    var streetID = '580e06a7093a4e6f63f712b8';
+
+    if(streetID == null){
+        return;
+    }
+
+    Street.findById(streetID, function(err,street){
+        if(err){
+
+        }else if(street){
+            res.send({street:street});
+        }
+    })
+
+});
+
 router.get('/getStreets', function(req,res) {
 //This method returns a list of streets from the user's street list.
 
@@ -35,7 +54,7 @@ router.get('/getStreets', function(req,res) {
 
 });
 
-router.post('/addStreet', function(req,res,next){
+router.post('/addStreet', function(req,res){
 //This method is execute when the user choose a street the already exist
 // and click on the "Add Street" button.
 

@@ -14,8 +14,12 @@ var streetSchema = new Schema({
         default: Date.now
     },
     members: [{
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'user'
+    }],
+    postList: [{
+        type: Schema.Types.ObjectId,
+        ref: 'post'
     }]
 
 },{collection: 'street'});
