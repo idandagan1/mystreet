@@ -3,11 +3,11 @@ var Schema = mongoose.Schema;
 
 var postSchema = new Schema({
 
-    postList:{
+    postList: {
         type: Schema.Types.ObjectId,
         ref: 'postList'
     },
-    tags:[{
+    tags: [{
         type: Schema.Types.ObjectId,
         ref: 'user'
     }],
@@ -25,10 +25,11 @@ var postSchema = new Schema({
     body: {
         type: String
     },
-    likes: {
-        type: Number
-    },
-    comments:[{
+    likes: [{
+        type: Schema.Types.ObjectId,
+        ref:'user'
+    }],
+    comments: [{
 
         when: {
             type: Date,
@@ -40,10 +41,7 @@ var postSchema = new Schema({
         },
         body: {
             type: String
-        },
-        likes:{
-            type:Number
-        },
+        }
     }]
 
 }, {collection: 'post'});

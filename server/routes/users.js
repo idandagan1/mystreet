@@ -1,20 +1,34 @@
 var express = require('express');
 var router = express.Router();
+var passport = require('passport');
 
-//var User = require('../models/user');
 
+router.get('/login',
 
-router.post('/register', function(req, res, next) {
+    passport.authenticate('facebook', {
+        scope: ['email,user_friends,public_profile']
+    })
+);
 
-    console.log("In register");
-    res.send("Hello");
+//router.get('/auth/facebook/callback',
+router.get('/login/callback',
+    passport.authenticate('facebook', {
+        failureRedirect: '/' }),
+    function(req, res) {
+        req.user.local.lastLogged = Date.now();
+        req.session.user = req.user;
+        req.session.streetID = null;
+        req.session.postID = null;
+        res.redirect('/street.html');
+    });
 
-})
+function isLoggedIn(req, res, next) {
+    if(req.isAuthenticated()){
+        return next();
+    }
 
-router.get('/', function(req, res, next) {
+    res.redirect('/');//TODO: change url
+}
 
-    console.log("In get");
-
-})
 
 module.exports = router;

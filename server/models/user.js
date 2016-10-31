@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
-var bcrypt = require('bcrypt');
 var Schema = mongoose.Schema;
+var bcrypt = require('bcryptjs');
 
 var userSchema = new Schema({
 
@@ -8,27 +8,33 @@ var userSchema = new Schema({
         username: {
             type: String,
             index: true,
-            unique: true,
-            required: true},
+        },
         name: {
-            type: String},
+            type: String
+        },
         password: {
-            type: String,
-            required: true},
+            type: String
+        },
         isPremium: {
-            type: Boolean},
+            type: Boolean
+        },
         isActive: {
-            type: Boolean},
+            type: Boolean
+        },
         email: {
-            type: String},
+            type: String
+        },
         lastLogged: {
             type: Date,
-            default: Date.now},
+            default: Date.now
+        },
         primaryStreet: {
-            type: String},
+            type: String
+        },
         streets: [{
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'street'}]
+            type: Schema.Types.ObjectId,
+            ref: 'street'
+        }]
     },
     facebook: {
         id: String,
@@ -39,13 +45,15 @@ var userSchema = new Schema({
 
 }, {collection: 'user'});
 
+var User = module.exports = mongoose.model('user', userSchema);
 
-userSchema.methods.generateHash = function(password){
-    return bcrypt.hashSync(password, bcrypt.genSaltSync(9));
-};
+module.exports.createUser = function(newUser, callback){
+    bcrypt.genSalt(10, function(err, salt) {
+        bcrypt.hash(newUser.local.password, salt, function(err, hash) {
+            newUser.local.password = hash;
+            newUser.save(callback);
+        });
+    });
+}
 
-userSchema.methods.validPassword = function(password){
-    return bcrypt.compareSync(password, this.local.password);
-};
 
-module.exports = mongoose.model('user', userSchema);

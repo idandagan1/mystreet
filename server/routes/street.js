@@ -6,18 +6,17 @@ var User = require('../models/user');
 router.get('/getStreet', function(req,res){
 
     //TODO: Change parameters
-    var streetID = '580e06a7093a4e6f63f712b8';
+    var streetID = req.session.streetID;
 
     if(streetID == null){
         return;
     }
 
     Street.findById(streetID, function(err,street){
-        if(err){
-
-        }else if(street){
+        if(err)
+            throw err;
+        if(street)
             res.send({street:street});
-        }
     })
 
 });
@@ -25,24 +24,27 @@ router.get('/getStreet', function(req,res){
 router.get('/getStreets', function(req,res) {
 //This method returns a list of streets from the user's street list.
 
-    var userID = currentUser;// TO CHANGE
+    var userID = req.session.user._id;// TO CHANGE
+
+    if(userID == null){
+        return;
+    }
 
     User.findById(userID, function (err, me) {
 
-        if (err) {// handle error
-
-        } else if (me) {
+        if (err)
+            throw err;
+        if (me) {
             var listOfIds = me.local.streets;
             var listOfStreets = [];
 
             for (var i = 0; i < listOfIds.length; i++) {
 
                 Street.findById(listOfIds[i], function (err, street) {
-                    if (err) {
-
-                    } else {
+                    if (err)
+                        throw err;
+                    else
                         listOfStreets.push(street);
-                    }
 
                     if (listOfStreets.length === listOfIds.length) {
                         res.send(listOfStreets);
@@ -51,97 +53,50 @@ router.get('/getStreets', function(req,res) {
             }
         }
     })
-
 });
 
-router.post('/addStreet', function(req,res){
+router.post('/addStreet', function(req,res,next){
 //This method is execute when the user choose a street the already exist
 // and click on the "Add Street" button.
 
     //TO DO: Change parameters.
-    var streetName = req.body.Address,
-        streetID = null,
-        me = currentUser;
+    var streetName = req.body.address,
+        userID = req.session.user._id;
+
+    req.check('address', 'Street address is empty').notEmpty();
+
+    var errors = req.validationErrors();
+
+    if (errors || userID == null) {
+        res.send('There have been validation errors: ' + errors, 400);
+    };
 
     //Adding a street
     Street.findOne({name: streetName}).then(function(street, err){
-        if(err){ //handle exception
-
-        }else if(street){ //The street already exist.
-            streetID = street._id;
-            addMemberToStreet(street);
-
+        if(err)
+            throw err;
+        if(street){ //The street already exist.
+            req.session.streetID = street._id;
+            Street.addMemberToStreet(userID, street);
+            console.log('Street already exist');
         }else{ //Creating a new street.
-            var newStreet = new Street({
-                name: streetName
-            });
-            var data = new Street(newStreet);
-            data.save();
-            addMemberToStreet(newStreet);
-            streetID = newStreet._id;
 
+            var newStreet = new Street({name: streetName});
+            newStreet.save(function(err) {
+                if (err)
+                    throw err;
+                req.session.streetID = newStreet._id;
+            });
+            Street.addMemberToStreet(userID, newStreet);
+            req.session.streetID = newStreet._id;
+            console.log('New street added');
         }
 
-        addStreetToMembersList(streetID);
-        res.end('{"success" : "AddStreet execute successfully", "status" : 200}');
+        req.session.save();
+        Street.addStreetToMembersList(userID, req.session.streetID);
+        res.status(200).send({msg:'AddStreet execute successfully'});
     })
 
 });
-
-function addMemberToStreet(street){
-
-    var memberID = currentUser,
-        isMemberExist = false;
-
-    if(street == null || memberID == null){
-        return;
-    }
-    else{
-        street.members.every(function(member){
-            if(member.equals(memberID)){
-                isMemberExist = true;
-                return false;
-            }else return true;
-        })
-        if(isMemberExist){
-            console.log("Member already exist in "+street.name);
-        }else{
-            street.members.push(memberID);
-            street.save();
-            console.log("Member has been added successfully to "+street.name);
-        }
-    }
-}
-
-function addStreetToMembersList(newStreet){
-
-    var userID = currentUser;
-
-    if(newStreet == null || userID == null){
-        return;
-    }
-
-    User.findById(userID, function(err, me){
-        if(err){ //handle error
-
-        }else if(me){
-            var isStreetExist = false;
-            me.local.streets.every(function(streetFromList){
-                if(streetFromList.equals(newStreet)){
-                    isStreetExist = true;
-                    return false;
-                }else return true;
-
-            })
-            if(isStreetExist){
-                console.log("Street already exist on the members list");
-            }else {
-                me.local.streets.push(newStreet);
-                me.save();
-                console.log("Street has been added to list");
-            }
-        }
-    })
-}
 
 module.exports = router;

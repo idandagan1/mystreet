@@ -17,7 +17,10 @@
   "dependencies": {
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
+    "express-session": "^1.14.2",
+    "express-validator": "^2.21.0",
     "mongodb": "^2.2.10",
+    "passport": "^0.3.2",
     "webpack": "^1.13.1",
     "webpack-dev-server": "^1.14.1"
   },
