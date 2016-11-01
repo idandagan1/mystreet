@@ -9,7 +9,7 @@ router.post('/addLikeToPost', function(req,res){
         userID = req.session.user._id;
 
     if(postID == null || userID == null){
-        res.send('There have been validation errors', 400);
+        return res.send('There have been validation errors', 400);
     }
 
     Post.findByIdAndUpdate(
@@ -25,48 +25,13 @@ router.post('/addLikeToPost', function(req,res){
 
 });
 
-router.get('/getLikesFromPost', function(req,res){
-
-    var postID = '58176a3ed8927328050f6d8f';//req.session.postID,
-
-    if(postID == null){
-        res.send('Post ID is missing', 400);
-    }
-
-    Post.findById(postID, function (err, post) {
-
-        if (err)
-            throw err;
-
-        if (post) {
-            var usersIDs = post.likes;
-            var users = [];
-
-            for (var i = 0; i < usersIDs.length; i++) {
-
-                User.findById(usersIDs[i], function (err, user) {
-                    if (err) {
-
-                    } else {
-                        users.push(user);
-                    }
-
-                    if (users.length === usersIDs.length) {
-                        res.send(users);
-                    }
-                });
-            }
-        }
-    })
-})
-
 router.delete('/unlikePost', function(req,res){
 
     var postID = req.session.postID,
         userID = req.session.user._id;
 
     if(postID == null || userID == null){
-        res.send('post or user is missing', 400);
+        return res.send('post or user is missing', 400);
     }
 
     Post.update(
@@ -94,11 +59,11 @@ router.post('/addPost', function(req,res) {
     var errors = req.validationErrors();
 
     if (errors || userID == null || streetID == null) {
-        res.send('There have been validation errors: ' + errors, 400);
+        return res.send('There have been validation errors: ' + errors, 400);
     };
 
     var newPost = new Post({
-        when: Date.now(),
+        createDate: Date.now(),
         author: userID,
         body: post
     });
@@ -139,7 +104,7 @@ router.post('/addComment', function(req,res){
 
     Post.findByIdAndUpdate(postID, {
         $push: { comments: {
-            when: Date.now(),
+            createDate: Date.now(),
             author: userID,
             body: comment
         }}
@@ -157,38 +122,33 @@ router.post('/addComment', function(req,res){
 router.get('/getPosts', function(req,res){
 
     //TODO: Change Parameters.
-    var userID = currentUser,
-        streetID = '580e06a7093a4e6f63f712b8';
+    var streetID = req.session.streetID;
 
-    if(userID == null || streetID == null){
-        return;
+    if(streetID == null){
+        return res.send('StreetID', 400);
     }
 
-    Street.findById(streetID, function (err, street) {
-
-        if (err)
-            throw err;
-
-        if (street) {
-            var postListIDs = street.postList;
-            var postList = [];
-
-            for (var i = 0; i < postListIDs.length; i++) {
-
-                Post.findById(postListIDs[i], function (err, post) {
-                    if (err) {
-
-                    } else {
-                        postList.push(post);
-                    }
-
-                    if (postList.length === postListIDs.length) {
-                        res.send(postList);
-                    }
-                });
+    Street.findOne({'_id': streetID})
+        .populate({
+            path: 'postList',
+            model: 'post',
+            populate: [{
+                path: 'author',
+                model: 'user',
+                select: { 'name': 1 }
+            },{
+                path: 'likes',
+                model: 'user',
+                select: { 'name': 1 }
+            }]
+        })
+        .exec(function(err,street){
+            if(err)
+                throw err;
+            if(street){
+                return res.send(street.postList);
             }
-        }
-    })
+        })
 
 });
 

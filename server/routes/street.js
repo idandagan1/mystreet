@@ -3,20 +3,22 @@ var router = express.Router();
 var Street = require('../models/street');
 var User = require('../models/user');
 
+//GET
+
 router.get('/getStreet', function(req,res){
 
     //TODO: Change parameters
     var streetID = req.session.streetID;
 
     if(streetID == null){
-        return;
+        return res.send('StreetID', 400);
     }
 
     Street.findById(streetID, function(err,street){
         if(err)
             throw err;
         if(street)
-            res.send({street:street});
+            res.send(street);
     })
 
 });
@@ -30,30 +32,38 @@ router.get('/getStreets', function(req,res) {
         return;
     }
 
-    User.findById(userID, function (err, me) {
-
-        if (err)
+    User.findOne({'_id': userID}).populate('local.streets').exec(function(err,user){
+        if(err)
             throw err;
-        if (me) {
-            var listOfIds = me.local.streets;
-            var listOfStreets = [];
-
-            for (var i = 0; i < listOfIds.length; i++) {
-
-                Street.findById(listOfIds[i], function (err, street) {
-                    if (err)
-                        throw err;
-                    else
-                        listOfStreets.push(street);
-
-                    if (listOfStreets.length === listOfIds.length) {
-                        res.send(listOfStreets);
-                    }
-                });
-            }
+        if(user){
+            return res.send(user.local.streets);
         }
     })
+
 });
+
+router.get('/getMembers', function(req,res){
+
+    //TODO: Change Parameters.
+    var streetID = req.session.streetID;
+
+    if(streetID == null){
+        return res.send('StreetID', 400);
+    }
+
+    Street.findOne({'_id': streetID})
+        .populate('members')
+        .exec(function(err,street){
+            if(err)
+                throw err;
+            if(street){
+                return res.send(street.members);
+            }
+        })
+
+});
+
+//POST
 
 router.post('/addStreet', function(req,res,next){
 //This method is execute when the user choose a street the already exist
@@ -93,10 +103,60 @@ router.post('/addStreet', function(req,res,next){
         }
 
         req.session.save();
-        Street.addStreetToMembersList(userID, req.session.streetID);
+        User.addStreetToMembersList(userID, req.session.streetID);
         res.status(200).send({msg:'AddStreet execute successfully'});
     })
 
 });
+
+//DELETE
+
+router.delete('/removeStreet', function(req,res){
+
+    //TO DO: Change parameters.
+    var streetID = req.session.streetID,
+        userID = req.session.user._id;
+
+    if(userID == null || streetID == null){
+        res.send('userID',400);
+    }
+
+    try {
+        Street.removeMemberFromStreet(userID, streetID);
+        User.removeStreetFromMembersList(userID, streetID);
+        console.log('Removed street');
+    }catch (e){
+        res.send({title:'Error while removing', msg: e},400);
+    }
+
+});
+
+//PUT
+
+router.put('/changePrimaryStreet', function(req,res){
+
+    var newPrimaryStreet = req.body.streetID,
+        userID = req.session.user._id;
+
+    req.check('streetID','streetID is empty').notEmpty();
+
+    var errors = req.validationErrors();
+
+    if (errors || userID == null) {
+        res.send('There have been validation errors: ' + errors, 400);
+    };
+
+    User.findOneAndUpdate({'_id': userID},
+        {'local.primaryStreet': newPrimaryStreet },
+        { upsert : true },
+        function(err) {
+            if(err)
+                throw err;
+            else {
+                console.log('Primary street has been changed');
+                res.status(200).send({msg: 'Primary street has been changed'});
+            }
+        })
+})
 
 module.exports = router;

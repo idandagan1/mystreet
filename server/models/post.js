@@ -1,22 +1,29 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var postSchema = new Schema({
+var commentSchema = new Schema({
 
-    postList: {
-        type: Schema.Types.ObjectId,
-        ref: 'postList'
-    },
-    tags: [{
-        type: Schema.Types.ObjectId,
-        ref: 'user'
-    }],
-    slug: {
-        type: String, trim: true
-    },
-    when: {
+    createDate: {
         type: Date,
         default: Date.now
+    },
+    author: {
+        type: Schema.Types.ObjectId,
+        ref:'user'
+    },
+    body: {
+        type: String
+    }
+});
+
+var postSchema = new Schema({
+
+    createDate: {
+        type: Date,
+        default: Date.now
+    },
+    slug: {
+        type: String, trim: true
     },
     author: {
         type: Schema.Types.ObjectId,
@@ -29,20 +36,11 @@ var postSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref:'user'
     }],
-    comments: [{
-
-        when: {
-            type: Date,
-            default: Date.now
-        },
-        author: {
-            type: Schema.Types.ObjectId,
-            ref:'user'
-        },
-        body: {
-            type: String
-        }
-    }]
+    tags: [{
+        type: Schema.Types.ObjectId,
+        ref: 'user'
+    }],
+    comments: [commentSchema]
 
 }, {collection: 'post'});
 

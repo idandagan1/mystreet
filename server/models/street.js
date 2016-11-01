@@ -1,6 +1,5 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var User = require('./user');
 
 var streetSchema = new Schema({
 
@@ -49,19 +48,21 @@ module.exports.addMemberToStreet =  function(newMemberID, street){
 
 }
 
-module.exports.addStreetToMembersList = function(memberID, newStreetID){
+module.exports.removeMemberFromStreet =  function(memberID, streetID){
 
-    if(newStreetID == null || memberID == null){
+    if(streetID == null || memberID == null){
         return;
     }
 
-    User.findByIdAndUpdate(
-        memberID,
-        {$addToSet: { 'local.streets': newStreetID }},
-        function(err) {
+    Street.update(
+        {_id:streetID},
+        {$pull: {members: memberID}
+        },function(err){
             if(err)
                 throw err;
         }
     )
 
 }
+
+

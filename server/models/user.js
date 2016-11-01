@@ -1,22 +1,17 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var bcrypt = require('bcryptjs');
 
 var userSchema = new Schema({
 
+    name:{
+        type:String,
+        required: true
+    },
     local: {
-        username: {
-            type: String,
-            index: true,
-        },
-        name: {
-            type: String
-        },
-        password: {
-            type: String
-        },
+
         isPremium: {
-            type: Boolean
+            type: Boolean,
+            default: false
         },
         isActive: {
             type: Boolean
@@ -29,7 +24,8 @@ var userSchema = new Schema({
             default: Date.now
         },
         primaryStreet: {
-            type: String
+            type: Schema.Types.ObjectId,
+            ref: 'street'
         },
         streets: [{
             type: Schema.Types.ObjectId,
@@ -47,13 +43,53 @@ var userSchema = new Schema({
 
 var User = module.exports = mongoose.model('user', userSchema);
 
-module.exports.createUser = function(newUser, callback){
-    bcrypt.genSalt(10, function(err, salt) {
-        bcrypt.hash(newUser.local.password, salt, function(err, hash) {
-            newUser.local.password = hash;
-            newUser.save(callback);
-        });
-    });
+module.exports.addStreetToMembersList = function(memberID, newStreetID){
+
+    if(newStreetID == null || memberID == null){
+        return;
+    }
+
+    User.findByIdAndUpdate(
+        memberID,
+        {$addToSet: { 'local.streets': newStreetID }},{new:true},
+        function(err,user) {
+            if(err)
+                throw err;
+            if(user){
+                if(user.local.streets.length === 1){
+                    user.local.primaryStreet = newStreetID;
+                    user.save();
+                }
+            }
+        }
+    )
+}
+
+module.exports.removeStreetFromMembersList = function(memberID, streetID){
+
+    if(streetID == null || memberID == null){
+        return;
+    }
+
+    User.findByIdAndUpdate(
+        {_id : memberID },
+        {$pull : {'local.streets' : streetID}},
+        { new : true},function(err,user){
+            if(err)
+                throw err;
+            if(user){
+
+                if(user.local.streets.length === 0){
+                    user.local.primaryStreet = null;
+                    user.save();
+                }else if(user.local.primaryStreet.equals(streetID)){
+                    user.local.primaryStreet = user.local.streets[0];
+                    user.save();
+                }
+            }
+        }
+    )
+
 }
 
 
