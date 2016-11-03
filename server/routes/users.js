@@ -3,18 +3,15 @@ var router = express.Router();
 var passport = require('passport');
 
 
-router.get('/login',
-
-    passport.authenticate('facebook', {
-        scope: ['email,user_friends,public_profile']
-    })
-);
+router.get('/login/facebook', passport.authenticate('facebook', { scope: ['email,user_friends,public_profile'] }));
 
 //router.get('/auth/facebook/callback',
-router.get('/login/callback',
+router.get('/login/facebook/callback',
     passport.authenticate('facebook', {
-        failureRedirect: '/' }),
+        failureRedirect: '/',
+    }),
     function(req, res) {
+        console.log(req);
         req.user.local.lastLogged = Date.now();
         req.session.user = req.user;
         req.session.streetID = null;

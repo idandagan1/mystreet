@@ -20,7 +20,9 @@
     "express-session": "^1.14.2",
     "express-validator": "^2.21.0",
     "mongodb": "^2.2.10",
+    "mongoose": "^4.6.5",
     "passport": "^0.3.2",
+    "passport-facebook": "^2.1.1",
     "webpack": "^1.13.1",
     "webpack-dev-server": "^1.14.1"
   },

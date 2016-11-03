@@ -33,13 +33,12 @@ module.exports = function(passport) {
 
                     // if there is an error, stop everything and return that
                     // ie an error connecting to the database
-                    if (err)
-                        return done(err);
+                    if (err) done(err);
                     // if the user is found, then log them in
                     if (user) {
                         user.local.lastLogged = Date.now();
                         user.save();
-                        return done(null, user); // user found, return that user
+                        done(null, user); // user found, return that user
                     } else {
                         var newUser = new User();
                         newUser.facebook.id = profile.id;
@@ -47,10 +46,8 @@ module.exports = function(passport) {
                         newUser.facebook.name = profile.displayName;
                         newUser.name = profile.displayName;
                         newUser.save(function(err){
-                            if(err)
-                                throw err;
-
-                            return done(null, newUser);
+                            if(err) throw err;
+                            done(null, newUser);
                         });
                     }
 
