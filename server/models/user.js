@@ -3,7 +3,7 @@ var Schema = mongoose.Schema;
 
 var userSchema = new Schema({
 
-    name:{
+    name: {
         type:String,
         required: true
     },
@@ -15,9 +15,6 @@ var userSchema = new Schema({
         },
         isActive: {
             type: Boolean
-        },
-        email: {
-            type: String
         },
         lastLogged: {
             type: Date,
@@ -43,28 +40,6 @@ var userSchema = new Schema({
 
 var User = module.exports = mongoose.model('user', userSchema);
 
-module.exports.addStreetToMembersList = function(memberID, newStreetID){
-
-    if(newStreetID == null || memberID == null){
-        return;
-    }
-
-    User.findByIdAndUpdate(
-        memberID,
-        {$addToSet: { 'local.streets': newStreetID }},{new:true},
-        function(err,user) {
-            if(err)
-                throw err;
-            if(user){
-                if(user.local.streets.length === 1){
-                    user.local.primaryStreet = newStreetID;
-                    user.save();
-                }
-            }
-        }
-    )
-}
-
 module.exports.removeStreetFromMembersList = function(memberID, streetID){
 
     if(streetID == null || memberID == null){
@@ -81,15 +56,10 @@ module.exports.removeStreetFromMembersList = function(memberID, streetID){
 
                 if(user.local.streets.length === 0){
                     user.local.primaryStreet = null;
-                    user.save();
-                }else if(user.local.primaryStreet.equals(streetID)){
+                }else if(user.local.primaryStreet === streetID){
                     user.local.primaryStreet = user.local.streets[0];
-                    user.save();
                 }
             }
         }
     )
-
 }
-
-

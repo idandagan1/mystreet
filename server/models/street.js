@@ -3,11 +3,11 @@ var Schema = mongoose.Schema;
 
 var streetSchema = new Schema({
 
+    place_id: {
+        type:String
+    },
     name: {
-        type: String,
-        index:true,
-        unique:true,
-        required: true
+        type: String
     },
     address:{
         type: String
@@ -62,7 +62,4 @@ module.exports.removeMemberFromStreet =  function(memberID, streetID){
                 throw err;
         }
     )
-
 }
-
-

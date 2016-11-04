@@ -70,10 +70,14 @@ router.post('/addStreet', function(req,res,next){
 // and click on the "Add Street" button.
 
     //TO DO: Change parameters.
-    var streetName = req.body.address,
+    var address = req.body.address,
+        streetName = req.body.name,
+        placeID = req.body.place_id,
         userID = req.session.user._id;
 
-    req.check('address', 'Street address is empty').notEmpty();
+    req.check('address', 'Address is empty').notEmpty();
+    req.check('name', 'Name is empty').notEmpty();
+    req.check('place_id', 'place_id is empty').notEmpty();
 
     var errors = req.validationErrors();
 
@@ -81,31 +85,50 @@ router.post('/addStreet', function(req,res,next){
         res.send('There have been validation errors: ' + errors, 400);
     };
 
-    //Adding a street
-    Street.findOne({name: streetName}).then(function(street, err){
-        if(err)
-            throw err;
-        if(street){ //The street already exist.
-            req.session.streetID = street._id;
-            Street.addMemberToStreet(userID, street);
-            console.log('Street already exist');
-        }else{ //Creating a new street.
+    Street.findOne(
+        { 'place_id' : placeID }
+        ,function(err, street) {
 
-            var newStreet = new Street({name: streetName});
-            newStreet.save(function(err) {
-                if (err)
-                    throw err;
+            if (err) throw err;
+
+            if (street) {
+                req.session.streetID = street._id;
+                Street.addMemberToStreet(userID, street);
+                console.log('Street already exist');
+
+            } else {
+                var newStreet = new Street({
+                    name: streetName,
+                    place_id: placeID,
+                    address: address,
+                    members: userID
+                });
+                newStreet.save(function (err) {
+                    if(err) throw err;
+                });
                 req.session.streetID = newStreet._id;
-            });
-            Street.addMemberToStreet(userID, newStreet);
-            req.session.streetID = newStreet._id;
-            console.log('New street added');
-        }
+                console.log('New street added');
 
-        req.session.save();
-        User.addStreetToMembersList(userID, req.session.streetID);
-        res.status(200).send({msg:'AddStreet execute successfully'});
-    })
+            }
+
+            User.findByIdAndUpdate( userID,
+                {$addToSet: { 'local.streets': req.session.streetID }},{new:true},
+                function(err,user) {
+
+                    if (err) throw err;
+
+                    if (user) {
+                        if(user.local.streets.length === 1){
+                            user.local.primaryStreet = req.session.streetID;
+                            user.save();
+                        }
+                    };
+                }
+            )
+            req.session.save();
+            res.status(200).send({msg:'AddStreet execute successfully'});
+        }
+    );
 
 });
 
