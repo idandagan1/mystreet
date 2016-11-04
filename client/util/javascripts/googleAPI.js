@@ -67,3 +67,93 @@ function centerMapBasedOnCurrentUser(user) {
         })
     }
 }
+
+function initialize() {
+
+    var browserSupportFlag =  new Boolean(),
+        autocomplete = new google.maps.places.Autocomplete(input),
+        newyork = new google.maps.LatLng(40.69847032728747, -73.9514422416687);
+
+    var autocomplete_options = {
+        types: ['geocode']
+    };
+
+    // Try W3C Geolocation (Preferred)
+    if(navigator.geolocation) {
+        browserSupportFlag = true;
+        navigator.geolocation.getCurrentPosition(function(position) {
+            initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+            map.setCenter(initialLocation);
+            map.setZoom(17);
+        }, function() {
+            handleNoGeolocation(browserSupportFlag);
+        });
+    }
+
+    // Browser doesn't support Geolocation
+    else {
+        browserSupportFlag = false;
+        handleNoGeolocation(browserSupportFlag);
+    }
+    function handleNoGeolocation(errorFlag) {
+        if (errorFlag == true) {
+            initialLocation = newyork;
+        } else {
+            initialLocation = newyork;
+        }
+        map.setCenter(initialLocation);
+    }
+
+    var autocomplete = new google.maps.places.Autocomplete(input, autocomplete_options);
+
+    autocomplete.bindTo('lblresult', map);
+    var marker = new google.maps.Marker({
+        map: map
+    });
+
+    google.maps.event.addListener(marker, 'click', function() {
+        infowindow.open(map, marker);
+
+    });
+
+    // Get the full place details when the user selects a place from the
+    // list of suggestions.
+    google.maps.event.addListener(autocomplete, 'place_changed', function() {
+        infowindow.close();
+        place = autocomplete.getPlace();
+        placeID = place.place_id;
+        short_name = place.address_components[0].short_name;
+        markers.push(place);
+        if (!place.geometry) {
+            return;
+        }
+
+        if (place.geometry.viewport)
+        {
+            map.fitBounds(place.geometry.viewport);
+        }
+        else
+        {
+            map.setCenter(place.geometry.location);
+            map.setZoom(17);
+        }
+
+        // Set the position of the marker using the place ID and location.
+        marker.setPlace(({
+            placeId: place.place_id,
+            location: place.geometry.location
+        }));
+
+        marker.setVisible(true);
+        //markers.push(marker);
+        infowindow.setContent('<div><strong>' + place.name + '</strong><br>' +
+            place.formatted_address + '</div>');
+        infowindow.open(map, marker);
+    });
+}
+
+// Run the initialize function when the window has finished loading.
+google.maps.event.addDomListener(window, 'load', initialize);
+window.onload = function() {
+    initialize();
+}

@@ -81,7 +81,6 @@ router.get('/login/facebook/callback',
         req.session.user = req.user;
         req.session.streetID = null;
         req.session.postID = null;
-        res.redirect('/street.html');
     });
 
 function isLoggedIn(req, res, next) {
