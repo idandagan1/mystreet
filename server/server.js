@@ -1,30 +1,32 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import http from 'http';
-import { MongoClient } from 'mongodb';
-import passport from 'passport';
+import log from 'morgan';
+import mongoose from 'mongoose';
 import session from 'express-session';
 import routes from './routes/';
+import passportConfig from './config/passport';
 
 const SERVER_DEV_PORT = 8001;
 const port = process.env.PORT || SERVER_DEV_PORT;
 
-require('./config/passport')(passport);
-
 const app = express();
-app.use(routes);
-app.use(bodyParser.json());
+
+mongoose.connect('mongodb://localhost/mystreet');
+
 app.use(session({
     secret: 'keyboard cat',
     resave: true,
-    saveUninitialized: false,
+    saveUninitialized: true,
 }));
-app.use(passport.initialize());
-app.use(passport.session());
+app.use(bodyParser.urlencoded({
+    extended: true,
+}));
+app.use(bodyParser.json());
 
-const url = 'mongodb://localhost:27017/mystreet';
-MongoClient.connect(url, (err, db) => {});
+app.use(log('dev'));
+passportConfig(app);
+app.use(routes);
 
-const httpServer = http.Server(app);
-httpServer.listen(port);
-console.log(`Server started on ${port}`);
+app.listen(port, () => {
+    console.log(`Server started on ${port}`);
+});

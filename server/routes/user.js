@@ -69,18 +69,17 @@ router.get('/getFriends', function(req,res){
     });
 })
 
-router.get('/login/facebook', passport.authenticate('facebook', { scope: ['email,user_friends,public_profile'] }));
+router.get('/login/facebook', passport.authenticate('facebook'));
 
 router.get('/login/facebook/callback',
-    passport.authenticate('facebook', {
-        failureRedirect: '/',
-    }),
-    function(req, res) {
-        console.log(req);
+    passport.authenticate('facebook', { failureRedirect: '/user/login/facebook' }),
+    (req, res) => {
         req.user.local.lastLogged = Date.now();
         req.session.user = req.user;
         req.session.streetID = null;
         req.session.postID = null;
+
+        res.redirect('/');
     });
 
 function isLoggedIn(req, res, next) {
