@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import postApi from './post.js';
 import streetApi from './street.js';
-import userApi from './users.js';
+import userApi from './user.js';
 
 const router = Router();
 

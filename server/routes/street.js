@@ -63,6 +63,46 @@ router.get('/getMembers', function(req,res){
 
 });
 
+router.get('/getStreetAdmins', function(req,res){
+
+    var streetID = req.session.streetID;
+
+    if(streetID == null){
+        res.send('streetID',400);
+    }
+
+    Street.findOne({'_id':streetID},{'admins':1, '_id':0})
+        .populate('admins')
+        .exec( function(err,street) {
+            if (err) throw err;
+
+            if (street) {
+                res.send(street.admins)
+            }
+        })
+
+});
+
+router.get('/getAdmins', function(req,res){
+
+    var streetID = req.session.streetID;
+
+    if(streetID == null){
+        return res.send('streetID',400);
+    }
+
+    Street.findOne({'_id':streetID},{'admins':1, '_id':0})
+        .populate('admins')
+        .exec( function(err,street) {
+            if (err) throw err;
+
+            if (street) {
+                res.send(street.admins)
+            }
+        })
+
+});
+
 //POST
 
 router.post('/addStreet', function(req,res,next){
@@ -180,6 +220,27 @@ router.put('/changePrimaryStreet', function(req,res){
                 res.status(200).send({msg: 'Primary street has been changed'});
             }
         })
+})
+
+router.put('/addAdmin',function(req,res){
+
+    var newAdminID = req.body.newAdmin,
+        streetID = req.session.streetID;
+
+    req.check('newAdmin', 'newAdmin is empty').notEmpty();
+
+    var errors = req.validationErrors();
+
+    if (errors || streetID == null) {
+        return res.status(500).send('There have been validation errors: ' + errors, 400);
+    };
+
+    Street.findByIdAndUpdate( streetID, {$addToSet: { admins: newAdminID }}).exec()
+        .then(function(street) {
+            if(street) {
+                return res.status(200).send({msg: 'Added admin'})
+            }
+        });
 })
 
 module.exports = router;

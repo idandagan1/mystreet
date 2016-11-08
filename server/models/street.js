@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var ObjectId = Schema.Types.ObjectId;
 
 var streetSchema = new Schema({
 
@@ -16,12 +17,16 @@ var streetSchema = new Schema({
         type: Date,
         default: Date.now
     },
+    admins: [{
+        type: ObjectId,
+        ref: 'user'
+    }],
     members: [{
-        type: Schema.Types.ObjectId,
+        type: ObjectId,
         ref: 'user'
     }],
     postList: [{
-        type: Schema.Types.ObjectId,
+        type: ObjectId,
         ref: 'post'
     }]
 
@@ -62,4 +67,7 @@ module.exports.removeMemberFromStreet =  function(memberID, streetID){
                 throw err;
         }
     )
+
 }
+
+

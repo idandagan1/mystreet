@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var ObjectId = Schema.Types.ObjectId;
 
 var userSchema = new Schema({
 
@@ -21,11 +22,11 @@ var userSchema = new Schema({
             default: Date.now
         },
         primaryStreet: {
-            type: Schema.Types.ObjectId,
+            type: ObjectId,
             ref: 'street'
         },
         streets: [{
-            type: Schema.Types.ObjectId,
+            type: ObjectId,
             ref: 'street'
         }]
     },
@@ -62,4 +63,7 @@ module.exports.removeStreetFromMembersList = function(memberID, streetID){
             }
         }
     )
+
 }
+
+
