@@ -23,6 +23,7 @@ var userSchema = new Schema({
         },
         primaryStreet: {
             type: ObjectId,
+            default: null,
             ref: 'street'
         },
         streets: [{
@@ -41,29 +42,25 @@ var userSchema = new Schema({
 
 var User = module.exports = mongoose.model('user', userSchema);
 
-module.exports.removeStreetFromMembersList = function(memberID, streetID){
+module.exports.removeStreet = function(memberID, streetID){
 
     if(streetID == null || memberID == null){
         return;
     }
 
-    User.findByIdAndUpdate(
-        {_id : memberID },
-        {$pull : {'local.streets' : streetID}},
-        { new : true},function(err,user){
-            if(err)
-                throw err;
-            if(user){
-
-                if(user.local.streets.length === 0){
-                    user.local.primaryStreet = null;
-                }else if(user.local.primaryStreet === streetID){
-                    user.local.primaryStreet = user.local.streets[0];
+    User.findByIdAndUpdate({_id : memberID }, {$pull : {'local.streets' : streetID}},
+        { new : true}).exec()
+        .then(function(user) {
+                if (user) {
+                    if (user.local.streets.length === 0) {
+                        user.local.primaryStreet = null;
+                    } else if (user.local.primaryStreet === streetID) {
+                        user.local.primaryStreet = user.local.streets[0];
+                    }
+                    user.save();
+                    console.log('Removed street from users list');
                 }
             }
-        }
-    )
+        )
 
 }
-
-

@@ -34,39 +34,37 @@ var streetSchema = new Schema({
 
 var Street = module.exports = mongoose.model('street', streetSchema);
 
-module.exports.addMemberToStreet =  function(newMemberID, street){
+module.exports.addMember =  function(newMemberID, streetID){
 
-    if(street == null || newMemberID == null){
+    if(streetID == null || newMemberID == null){
         return;
     }
 
-    var isMemberExist = street.members.some(function(existingMember){
-
-        return existingMember.equals(newMemberID);
-
-    })
-
-    if(!isMemberExist){
-        street.members.push(newMemberID);
-        street.save();
-    }
+    Street.findByIdAndUpdate( streetID, {$addToSet: { members: newMemberID }}).exec()
+        .then(function(street) {
+            if(street) {
+                console.log('Added member');
+            }
+        });
 
 }
 
-module.exports.removeMemberFromStreet =  function(memberID, streetID){
+module.exports.removeMember =  function(memberID, streetID){
 
     if(streetID == null || memberID == null){
         return;
     }
 
-    Street.update(
-        {_id:streetID},
-        {$pull: {members: memberID}
-        },function(err){
-            if(err)
-                throw err;
-        }
-    )
+    Street.findByIdAndUpdate(streetID, {$pull: {members: memberID, admins: memberID}},{new:true}).exec()
+        .then(function(street) {
+            if (street) {
+                console.log('Removed member');
+                if (street.members.length === 0) {
+                    street.remove();
+                    console.log('Removed street');
+                }
+            }
+        });
 
 }
 

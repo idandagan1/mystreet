@@ -12,16 +12,12 @@ router.post('/addLikeToPost', function(req,res){
         return res.send('There have been validation errors', 400);
     }
 
-    Post.findByIdAndUpdate(
-        postID,
-        {$addToSet: { likes: userID }},
-        function(err) {
-            if(err)
-                throw err;
-            else
-                res.status(200).send({msg: 'Added like'});
-        }
-    )
+    Post.findByIdAndUpdate( postID, {$addToSet: { likes: userID }}).exec()
+        .then(function(post) {
+            if(post) {
+                return res.status(200).send({msg: 'Added like'})
+            }
+        });
 
 });
 
@@ -34,7 +30,7 @@ router.delete('/unlikePost', function(req,res){
         return res.send('post or user is missing', 400);
     }
 
-    Post.update(
+    Post.findByIdAndUpdate(
         {_id:postID},
         {$pull: {likes: userID}
         },function(err){
@@ -76,14 +72,13 @@ router.post('/addPost', function(req,res) {
 
     Street.findByIdAndUpdate(streetID, {
         $push: { postList: newPost}
-    }, function(err, post){
-        if(err)
-            throw err;
-        else {
-            console.log('Added post');
-            res.status(200).send({msg: 'New post'});
-        }
-    });
+    }).exec()
+        .then(function(street) {
+            if (street) {
+                console.log('Added post');
+                res.status(200).send({msg: 'New post'});
+            }
+        });
 
 });
 
@@ -98,24 +93,23 @@ router.post('/addComment', function(req,res){
 
     var errors = req.validationErrors();
 
-    if(errors || userID == null){
-        res.send('There have been validation errors: ' + errors, 400);
+    if(errors || userID == null || postID == null){
+        return res.send('There have been validation errors: ' + errors, 400);
     }
 
-    Post.findByIdAndUpdate(postID, {
+
+    Post.findByIdAndUpdate(postID,{
         $push: { comments: {
             createDate: Date.now(),
             author: userID,
-            body: comment
-        }}
-    }, function(err){
-        if(err)
-            throw err;
-        else{
+            body: comment}
+        }
+    }).then(function(user) {
+        if (user) {
             console.log('Added comment');
             res.status(200).send({msg:'New comment'});
-        }
-    });
+        };
+    })
 
 });
 
@@ -141,15 +135,31 @@ router.get('/getPosts', function(req,res){
                 model: 'user',
                 select: { 'name': 1 }
             }]
-        })
-        .exec(function(err,street){
-            if(err)
-                throw err;
-            if(street){
+        }).exec()
+        .then(function(street) {
+            if (street) {
+                console.log('getPosts executed successfully');
                 return res.send(street.postList);
             }
         })
 
+});
+
+router.delete('/deletePost', function(req,res){
+
+    var postID = req.session.postID;
+
+    if(postID == null){
+        return res.send('postID', 400);
+    }
+
+    Post.findByIdAndRemove(postID).exec()
+        .then(function(post){
+            if(post){
+                console.log('Deleted post');
+                res.status(200).send({msg: 'Deleted post'});
+            }
+        })
 });
 
 module.exports = router;

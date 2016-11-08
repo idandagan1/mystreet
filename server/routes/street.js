@@ -14,12 +14,11 @@ router.get('/getStreet', function(req,res){
         return res.send('StreetID', 400);
     }
 
-    Street.findById(streetID, function(err,street){
-        if(err)
-            throw err;
-        if(street)
-            res.send(street);
-    })
+    Street.findById(streetID).exec()
+        .then(function(street) {
+            if (street)
+                res.send(street);
+        })
 
 });
 
@@ -29,16 +28,16 @@ router.get('/getStreets', function(req,res) {
     var userID = req.session.user._id;// TO CHANGE
 
     if(userID == null){
-        return;
+        return res.send('UserID', 400);
     }
 
-    User.findOne({'_id': userID}).populate('local.streets').exec(function(err,user){
-        if(err)
-            throw err;
-        if(user){
-            return res.send(user.local.streets);
-        }
-    })
+    User.findOne({'_id': userID}).populate('local.streets').exec()
+        .then(function(user) {
+            if (user) {
+                console.log('getStreets execute successfully');
+                return res.send(user.local.streets);
+            }
+        })
 
 });
 
@@ -51,17 +50,14 @@ router.get('/getMembers', function(req,res){
         return res.send('StreetID', 400);
     }
 
-    Street.findOne({'_id': streetID})
-        .populate('members')
-        .exec(function(err,street){
-            if(err)
-                throw err;
-            if(street){
+    Street.findById(streetID).populate('members').exec()
+        .then(function(street) {
+            if (street) {
+                console.log('getMembers executed successfully');
                 return res.send(street.members);
             }
         })
-
-});
+})
 
 router.get('/getStreetAdmins', function(req,res){
 
@@ -91,13 +87,10 @@ router.get('/getAdmins', function(req,res){
         return res.send('streetID',400);
     }
 
-    Street.findOne({'_id':streetID},{'admins':1, '_id':0})
-        .populate('admins')
-        .exec( function(err,street) {
-            if (err) throw err;
-
+    Street.findOne({'_id':streetID},{'admins':1, '_id':0}).populate('admins').exec()
+        .then(function(street) {
             if (street) {
-                res.send(street.admins)
+                return res.send(street.admins);
             }
         })
 
@@ -105,7 +98,7 @@ router.get('/getAdmins', function(req,res){
 
 //POST
 
-router.post('/addStreet', function(req,res,next){
+router.post('/addStreet', function(req,res){
 //This method is execute when the user choose a street the already exist
 // and click on the "Add Street" button.
 
@@ -122,53 +115,50 @@ router.post('/addStreet', function(req,res,next){
     var errors = req.validationErrors();
 
     if (errors || userID == null) {
-        res.send('There have been validation errors: ' + errors, 400);
+        return res.status(500).send('There have been validation errors: ' + errors, 400);
     };
 
-    Street.findOne(
-        { 'place_id' : placeID }
-        ,function(err, street) {
+    Street.findOne({ 'place_id' : placeID }).exec()
+        .then(
+            function(street) {
 
-            if (err) throw err;
-
-            if (street) {
-                req.session.streetID = street._id;
-                Street.addMemberToStreet(userID, street);
-                console.log('Street already exist');
-
-            } else {
-                var newStreet = new Street({
-                    name: streetName,
-                    place_id: placeID,
-                    address: address,
-                    members: userID
-                });
-                newStreet.save(function (err) {
-                    if(err) throw err;
-                });
-                req.session.streetID = newStreet._id;
-                console.log('New street added');
-
-            }
-
-            User.findByIdAndUpdate( userID,
-                {$addToSet: { 'local.streets': req.session.streetID }},{new:true},
-                function(err,user) {
-
-                    if (err) throw err;
-
-                    if (user) {
-                        if(user.local.streets.length === 1){
-                            user.local.primaryStreet = req.session.streetID;
-                            user.save();
-                        }
-                    };
+                if (street) {
+                    req.session.streetID = street._id;
+                    Street.addMember(userID, street._id);
+                    //return street;
+                } else {
+                    var newStreet = new Street({
+                        name: streetName,
+                        place_id: placeID,
+                        address: address,
+                        members: userID,
+                        admins: userID
+                    });
+                    newStreet.save();
+                    req.session.streetID = newStreet._id;
+                    console.log('New street added');
+                    //return newStreet;
                 }
-            )
-            req.session.save();
-            res.status(200).send({msg:'AddStreet execute successfully'});
-        }
-    );
+                req.session.save();
+            })
+        .then(function(street) {
+
+            User.findOneAndUpdate({'_id': userID},
+                {$addToSet: {'local.streets': req.session.streetID}},
+                {new: true}).exec()
+                .then(
+                    function (user) {
+                        if (user) {
+                            if (user.local.streets.length === 1) {
+                                user.local.primaryStreet = req.session.streetID;
+                                req.session.user.local.primaryStreet = req.session.streetID;
+                                user.save();
+                                req.session.save();
+                            }
+                        }
+                        return res.status(200).send({msg: 'AddStreet execute successfully'});
+                    })
+        });
 
 });
 
@@ -181,18 +171,17 @@ router.delete('/removeStreet', function(req,res){
         userID = req.session.user._id;
 
     if(userID == null || streetID == null){
-        res.send('userID',400);
+        return res.send('userID',400);
     }
 
     try {
-        Street.removeMemberFromStreet(userID, streetID);
-        User.removeStreetFromMembersList(userID, streetID);
-        console.log('Removed street');
+        Street.removeMember(userID, streetID);
+        User.removeStreet(userID, streetID);
     }catch (e){
         res.send({title:'Error while removing', msg: e},400);
     }
 
-});
+})
 
 //PUT
 
@@ -205,17 +194,14 @@ router.put('/changePrimaryStreet', function(req,res){
 
     var errors = req.validationErrors();
 
-    if (errors || userID == null) {
-        res.send('There have been validation errors: ' + errors, 400);
+    if (errors || userID == null || newPrimaryStreet == null) {
+        return res.send('There have been validation errors: ' + errors, 400);
     };
 
-    User.findOneAndUpdate({'_id': userID},
-        {'local.primaryStreet': newPrimaryStreet },
-        { upsert : true },
-        function(err) {
-            if(err)
-                throw err;
-            else {
+    User.findOneAndUpdate({'_id': userID}, {'local.primaryStreet': newPrimaryStreet },
+        { upsert : true }).exec()
+        .then(function(user) {
+            if(user) {
                 console.log('Primary street has been changed');
                 res.status(200).send({msg: 'Primary street has been changed'});
             }
@@ -231,13 +217,14 @@ router.put('/addAdmin',function(req,res){
 
     var errors = req.validationErrors();
 
-    if (errors || streetID == null) {
+    if (errors || newAdminID == null) {
         return res.status(500).send('There have been validation errors: ' + errors, 400);
     };
 
     Street.findByIdAndUpdate( streetID, {$addToSet: { admins: newAdminID }}).exec()
         .then(function(street) {
             if(street) {
+                console.log('Added admin');
                 return res.status(200).send({msg: 'Added admin'})
             }
         });
