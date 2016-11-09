@@ -1,6 +1,6 @@
 import passport from 'passport';
 import { Strategy as FacebookStrategy } from 'passport-facebook';
-import User from '../models/user';
+import { User } from '../models/user';
 import configAuth from './auth';
 
 export default function (app) {

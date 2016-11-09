@@ -1,62 +1,61 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-var ObjectId = Schema.Types.ObjectId;
+import mongoose from 'mongoose';
 
-var streetSchema = new Schema({
+const Schema = mongoose.Schema;
+const ObjectId = Schema.Types.ObjectId;
+
+const streetSchema = new Schema({
 
     place_id: {
-        type:String
+        type: String,
     },
     name: {
-        type: String
+        type: String,
     },
-    address:{
-        type: String
+    address: {
+        type: String,
     },
     createDate: {
         type: Date,
-        default: Date.now
+        default: Date.now,
     },
     admins: [{
         type: ObjectId,
-        ref: 'user'
+        ref: 'user',
     }],
     members: [{
         type: ObjectId,
-        ref: 'user'
+        ref: 'user',
     }],
     postList: [{
         type: ObjectId,
-        ref: 'post'
-    }]
+        ref: 'post',
+    }],
+}, { collection: 'street' });
 
-},{collection: 'street'});
+export const Street = mongoose.model('street', streetSchema);
 
-var Street = module.exports = mongoose.model('street', streetSchema);
+export function addMember(newMemberID, streetID) {
 
-module.exports.addMember =  function(newMemberID, streetID){
-
-    if(streetID == null || newMemberID == null){
+    if (streetID == null || newMemberID == null) {
         return;
     }
 
-    Street.findByIdAndUpdate( streetID, {$addToSet: { members: newMemberID }}).exec()
-        .then(function(street) {
-            if(street) {
+    Street.findByIdAndUpdate(streetID, { $addToSet: { members: newMemberID } }).exec()
+        .then(street => {
+            if (street) {
                 console.log('Added member');
             }
         });
-
 }
 
-module.exports.removeMember =  function(memberID, streetID){
+export function removeMember(memberID, streetID) {
 
-    if(streetID == null || memberID == null){
+    if (streetID == null || memberID == null) {
         return;
     }
 
-    Street.findByIdAndUpdate(streetID, {$pull: {members: memberID, admins: memberID}},{new:true}).exec()
-        .then(function(street) {
+    Street.findByIdAndUpdate(streetID, { $pull: { members: memberID, admins: memberID } }, { new: true }).exec()
+        .then(street => {
             if (street) {
                 console.log('Removed member');
                 if (street.members.length === 0) {
@@ -65,7 +64,4 @@ module.exports.removeMember =  function(memberID, streetID){
                 }
             }
         });
-
 }
-
-

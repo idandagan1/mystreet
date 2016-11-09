@@ -1,19 +1,19 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+import mongoose from 'mongoose';
 
-var postListSchema = new Schema({
+const Schema = mongoose.Schema;
 
-    bucket:{
-        type: Number
+const postListSchema = new Schema({
+
+    bucket: {
+        type: Number,
     },
     count: {
-        type: Number
+        type: Number,
     },
-    posts:[{
+    posts: [{
         type: Schema.Types.ObjectId,
-        ref: 'post'
-    }]
+        ref: 'post',
+    }],
+}, { collection: 'postList' });
 
-}, {collection: 'postList'});
-
-module.exports = mongoose.model('postList', postListSchema);
+export default mongoose.model('postList', postListSchema);

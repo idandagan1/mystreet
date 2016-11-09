@@ -1,27 +1,27 @@
-var https = require('https');
+import https from 'https';
 
-exports.getFbData = function(accessToken, apiPath, callback) {
-    var options = {
+export default function getFbData(accessToken, apiPath, callback) {
+    const options = {
         host: 'graph.facebook.com',
         port: 443,
-        path: apiPath + '?access_token=' + accessToken, //apiPath example: '/me/friends'
-        method: 'GET'
+        path: `${apiPath}?access_token=${accessToken}`, // apiPath example: '/me/friends'
+        method: 'GET',
     };
 
-    var buffer = ''; //this buffer will be populated with the chunks of the data received from facebook
-    var request = https.get(options, function(result){
+    let buffer = ''; // this buffer will be populated with the chunks of the data received from facebook
+    const request = https.get(options, result => {
         result.setEncoding('utf8');
-        result.on('data', function(chunk){
+        result.on('data', chunk => {
             buffer += chunk;
         });
 
-        result.on('end', function(){
+        result.on('end', () => {
             callback(buffer);
         });
     });
 
-    request.on('error', function(e){
-        console.log('error from facebook.getFbData: ' + e.message)
+    request.on('error', e => {
+        console.log(`error from facebook.getFbData: ${e.message}`);
     });
 
     request.end();

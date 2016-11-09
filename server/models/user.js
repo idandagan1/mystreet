@@ -1,66 +1,65 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-var ObjectId = Schema.Types.ObjectId;
+import mongoose from 'mongoose';
 
-var userSchema = new Schema({
+const Schema = mongoose.Schema;
+const ObjectId = Schema.Types.ObjectId;
+
+const userSchema = new Schema({
 
     name: {
-        type:String,
-        required: true
+        type: String,
+        required: true,
     },
     local: {
 
         isPremium: {
             type: Boolean,
-            default: false
+            default: false,
         },
         isActive: {
-            type: Boolean
+            type: Boolean,
         },
         lastLogged: {
             type: Date,
-            default: Date.now
+            default: Date.now,
         },
         primaryStreet: {
             type: ObjectId,
             default: null,
-            ref: 'street'
+            ref: 'street',
         },
         streets: [{
             type: ObjectId,
-            ref: 'street'
-        }]
+            ref: 'street',
+        }],
     },
     facebook: {
         id: String,
         token: String,
         email: String,
-        name: String
-    }
+        name: String,
+    },
 
-}, {collection: 'user'});
+}, { collection: 'user' });
 
-var User = module.exports = mongoose.model('user', userSchema);
+export const User = mongoose.model('user', userSchema);
 
-module.exports.removeStreet = function(memberID, streetID){
+export function removeStreet(memberID, streetID) {
 
-    if(streetID == null || memberID == null){
+    if (streetID == null || memberID == null) {
         return;
     }
 
-    User.findByIdAndUpdate({_id : memberID }, {$pull : {'local.streets' : streetID}},
-        { new : true}).exec()
-        .then(function(user) {
-                if (user) {
-                    if (user.local.streets.length === 0) {
-                        user.local.primaryStreet = null;
-                    } else if (user.local.primaryStreet === streetID) {
-                        user.local.primaryStreet = user.local.streets[0];
-                    }
-                    user.save();
-                    console.log('Removed street from users list');
+    User.findByIdAndUpdate({ _id: memberID }, { $pull: { 'local.streets': streetID } },
+        { new: true }).exec()
+        .then(user => {
+            if (user) {
+                if (user.local.streets.length === 0) {
+                    user.local.primaryStreet = null;
+                } else if (user.local.primaryStreet === streetID) {
+                    user.local.primaryStreet = user.local.streets[0];
                 }
+                user.save();
+                console.log('Removed street from users list');
             }
-        )
-
+        });
 }
