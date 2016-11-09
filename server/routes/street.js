@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle, consistent-return, no-param-reassign */
 import { Router as expressRouter } from 'express';
 import { Street, addMember, removeMember } from '../models/street';
 import { User, removeStreet } from '../models/user';
@@ -121,7 +122,7 @@ router.post('/addStreet', (req, res) => {
                     addMember(userID, street._id);
                     // return street;
                 } else {
-                    var newStreet = new Street({
+                    const newStreet = new Street({
                         name: streetName,
                         place_id: placeID,
                         address,

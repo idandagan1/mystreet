@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import mongoose from 'mongoose';
 
 const Schema = mongoose.Schema;

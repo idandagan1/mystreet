@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return, no-param-reassign */
 import passport from 'passport';
 import { Strategy as FacebookStrategy } from 'passport-facebook';
 import { User } from '../models/user';

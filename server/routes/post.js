@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle, consistent-return, no-param-reassign */
 import { Router as expressRouter } from 'express';
 import { Street } from '../models/street';
 import { Post } from '../models/post';
