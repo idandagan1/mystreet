@@ -6,6 +6,39 @@ import { User, removeStreet } from '../models/user';
 const router = expressRouter();
 
 // GET
+
+router.get('/getStreetsNearby', (req,res) => {
+
+    const userID = req.session.user._id;
+
+    if (userID == null) {
+        return res.send('UserID', 400);
+    }
+
+    User.findById(userID).populate('local.primaryStreet').exec()
+        .then(user => {
+            if (user) {
+                const coords = [];
+                coords[0] = user.local.primaryStreet.location[0];
+                coords[1] = user.local.primaryStreet.location[1];
+
+                Street.find({
+                    location: {
+                        $geoWithin: {
+                            $centerSphere: [coords, (1 / 3959)]
+                        }
+                    }
+                }).exec()
+                    .then(result => {
+                        if (result) {
+                            res.send(result);
+                        }
+                    })
+            }
+        })
+
+});
+
 router.get('/getStreet', (req, res) => {
     // TODO: Change parameters
     const streetID = req.session.streetID;
@@ -102,10 +135,12 @@ router.post('/addStreet', (req, res) => {
     const streetName = req.body.name;
     const placeID = req.body.place_id;
     const userID = req.session.user._id;
+    const location = [req.body.location.lng, req.body.location.lat] ;
 
     req.check('address', 'Address is empty').notEmpty();
     req.check('name', 'Name is empty').notEmpty();
     req.check('place_id', 'place_id is empty').notEmpty();
+    req.check('location', 'location is empty').notEmpty();
 
     const errors = req.validationErrors();
 
@@ -125,7 +160,8 @@ router.post('/addStreet', (req, res) => {
                     const newStreet = new Street({
                         name: streetName,
                         place_id: placeID,
-                        address,
+                        address: address,
+                        location: location,
                         members: userID,
                         admins: userID,
                     });

@@ -5,11 +5,15 @@ const ObjectId = Schema.Types.ObjectId;
 
 const streetSchema = new Schema({
 
+    name: {
+        type: String,
+    },
     place_id: {
         type: String,
     },
-    name: {
-        type: String,
+    location: {
+        type: [Number],
+        index: '2d'
     },
     address: {
         type: String,

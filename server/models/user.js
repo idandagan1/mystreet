@@ -16,9 +16,6 @@ const userSchema = new Schema({
             type: Boolean,
             default: false,
         },
-        isActive: {
-            type: Boolean,
-        },
         lastLogged: {
             type: Date,
             default: Date.now,
@@ -32,6 +29,10 @@ const userSchema = new Schema({
             type: ObjectId,
             ref: 'street',
         }],
+        personalDetails:{
+            type: ObjectId,
+            ref: 'personalDetails',
+        }
     },
     facebook: {
         id: String,
