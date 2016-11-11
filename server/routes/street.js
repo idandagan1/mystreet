@@ -10,6 +10,7 @@ const router = expressRouter();
 router.get('/getStreetsNearby', (req,res) => {
 
     const userID = req.session.user._id;
+    const radiusInMiles = 1;
 
     if (userID == null) {
         return res.send('UserID', 400);
@@ -18,20 +19,33 @@ router.get('/getStreetsNearby', (req,res) => {
     User.findById(userID).populate('local.primaryStreet').exec()
         .then(user => {
             if (user) {
-                const coords = [];
+                const coords = []
+                const myLocation = user.local.primaryStreet.place_id;
                 coords[0] = user.local.primaryStreet.location[0];
                 coords[1] = user.local.primaryStreet.location[1];
 
-                Street.find({
-                    location: {
-                        $geoWithin: {
-                            $centerSphere: [coords, (1 / 3959)]
+                Street.aggregate(
+                    {
+                        $match: {
+                            location: {
+                                $geoWithin: {
+                                    $centerSphere: [coords, (radiusInMiles / 3959)]
+                                }
+                            }
                         }
-                    }
-                }).exec()
+                    }, {
+                        $project: {
+                            _id: 0,
+                            details: {place_id: '$place_id'},
+                            members: 1
+                        }
+                    }).exec()
                     .then(result => {
                         if (result) {
-                            res.send(result);
+                            return res.send({
+                                myLocation: myLocation,
+                                list: result
+                            });
                         }
                     })
             }
