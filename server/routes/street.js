@@ -7,101 +7,131 @@ const router = expressRouter();
 
 // GET
 
-router.get('/getStreetsNearby', (req,res) => {
+router.get('/getStreetsNearPrimaryStreet', (req,res) => {
 
     const userID = req.session.user._id;
-    const radiusInMiles = 1;
+    const radiusInMeters = 2000;
+    const limit = 5;
+    let myLocation;
 
-    if (userID == null) {
+    if (!userID) {
         return res.send('UserID', 400);
     }
 
     User.findById(userID).populate('local.primaryStreet').exec()
         .then(user => {
             if (user) {
-                const coords = []
-                const myLocation = user.local.primaryStreet.place_id;
+                const coords = [];
+                myLocation = user.local.primaryStreet.place_id;
                 coords[0] = user.local.primaryStreet.location[0];
                 coords[1] = user.local.primaryStreet.location[1];
 
-                Street.aggregate(
-                    {
-                        $match: {
-                            location: {
-                                $geoWithin: {
-                                    $centerSphere: [coords, (radiusInMiles / 3959)]
-                                }
-                            }
-                        }
-                    }, {
-                        $project: {
-                            _id: 0,
-                            details: {place_id: '$place_id'},
-                            members: 1
-                        }
-                    }).exec()
-                    .then(result => {
-                        if (result) {
-                            return res.send({
-                                myLocation: myLocation,
-                                list: result
-                            });
-                        }
-                    })
+                getStreetsNearPoint(radiusInMeters, limit, coords, streets =>{
+
+                    if(streets) {
+                        return res.send({
+                            myLocation: myLocation,
+                            list: streets,
+                            status: "ok"
+                        });
+                    }
+
+                });
+
             }
         })
 
 });
 
-router.get('/getStreet', (req, res) => {
-    // TODO: Change parameters
-    const streetID = req.session.streetID;
+router.get('/getStreetsNearby', (req,res) => {
 
-    if (streetID == null) {
-        return res.send('StreetID', 400);
+    const coords = [];
+    const radiusInMeters = 500;
+    const limit = 8;
+    let myLocation;
+
+    req.check('location', 'location is missing').notEmpty();
+    req.check('place_id', 'place_id is missing').notEmpty();
+
+    const error = req.validationErrors();
+
+    if (error) {
+        return res.send('location is missing', 400);
     }
 
-    Street.findById(streetID).exec()
-        .then(street => {
-            if (street) res.send(street);
+    coords[0] = parseFloat(req.query.location.lng, 10);
+    coords[1] = parseFloat(req.query.location.lat, 10);
+    myLocation = req.query.place_id;
+
+    getStreetsNearPoint(radiusInMeters, limit, coords, streets => {
+
+        if (streets) {
+            return res.send({
+                myLocation: myLocation,
+                list: streets,
+                status: "ok"
+            });
         }
-    );
+    })
+
+});
+
+router.get('/getStreet', (req, res) => {
+
+    // TODO: Change parameters
+    const place_id = req.query.place_id;
+
+    req.check('place_id', 'place_id is missing').notEmpty();
+
+    const error = req.validationErrors();
+
+    if (error || !place_id) {
+        return res.send('place_id', 400);
+    }
+
+    Street.findOne({'place_id' : place_id}).exec()
+        .then(street => {
+                req.session.streetID = street._id;
+                req.session.save();
+                return res.send({street: street, status:"ok"});
+            }
+        );
 });
 
 router.get('/getStreets', (req, res) => {
     // This method returns a list of streets from the user's street list.
     const userID = req.session.user._id;// TO CHANGE
 
-    if (userID == null) {
+    if (!userID) {
         return res.send('UserID', 400);
     }
 
-    User.findOne({ _id: userID }).populate('local.streets').exec()
+    User.findOne({_id: userID}).populate('local.streets').exec()
         .then(user => {
-            if (user) {
-                console.log('getStreets execute successfully');
-                return res.send(user.local.streets);
+                if (user) {
+                    console.log('getStreets execute successfully');
+                    return res.send({content: user.local.streets, status: "ok"});
+                }
             }
-        }
-    );
+        );
 });
 
 router.get('/getMembers', (req, res) => {
     // TODO: Change Parameters.
     const streetID = req.session.streetID;
 
-    if (streetID == null) {
+    if (!streetID) {
         return res.send('StreetID', 400);
     }
 
     Street.findById(streetID).populate('members').exec()
         .then(street => {
-            if (street) {
-                console.log('getMembers executed successfully');
-                return res.send(street.members);
+                if (street) {
+                    console.log('getMembers executed successfully');
+                    return res.send({content: street.members, status: "ok"});
+                }
             }
-        }
-    );
+        );
 });
 
 router.get('/getStreetAdmins', (req, res) => {
@@ -149,7 +179,7 @@ router.post('/addStreet', (req, res) => {
     const streetName = req.body.name;
     const placeID = req.body.place_id;
     const userID = req.session.user._id;
-    const location = [req.body.location.lng, req.body.location.lat] ;
+    const location = [req.body.location.lng, req.body.location.lat];
 
     req.check('address', 'Address is empty').notEmpty();
     req.check('name', 'Name is empty').notEmpty();
@@ -158,53 +188,54 @@ router.post('/addStreet', (req, res) => {
 
     const errors = req.validationErrors();
 
-    if (errors || userID == null) {
+    if (errors || !userID) {
         return res.status(500).send(`There have been validation errors: ${errors}`, 400);
     }
 
-    Street.findOne({ place_id: placeID }).exec()
+    Street.findOneAndUpdate({place_id: placeID},
+        {$addToSet: {'members': userID}},
+        {new: true}).populate('members').exec()
         .then(
             street => {
 
                 if (street) {
                     req.session.streetID = street._id;
-                    addMember(userID, street._id);
-                    // return street;
+                    console.log('Street already exist');
                 } else {
                     const newStreet = new Street({
                         name: streetName,
                         place_id: placeID,
                         address: address,
-                        location: location,
                         members: userID,
+                        location: location,
                         admins: userID,
                     });
                     newStreet.save();
                     req.session.streetID = newStreet._id;
                     console.log('New street added');
-                    // return newStreet;
                 }
                 req.session.save();
-            })
-        .then(street => {
 
-            User.findOneAndUpdate({ _id: userID },
-                { $addToSet: { 'local.streets': req.session.streetID } },
-                { new: true }).exec()
-                .then(
-                    user => {
-                        if (user) {
-                            if (user.local.streets.length === 1) {
-                                user.local.primaryStreet = req.session.streetID;
-                                req.session.user.local.primaryStreet = req.session.streetID;
-                                user.save();
-                                req.session.save();
+                User.findOneAndUpdate({_id: userID},
+                    {$addToSet: {'local.streets': req.session.streetID}},
+                    {new: true, passRawResult : true}).exec()
+                    .then(
+                        user => {
+                            if (user) {
+                                if (user.local.streets.length === 1) {
+                                    user.local.primaryStreet = req.session.streetID;
+                                    req.session.user.local.primaryStreet = req.session.streetID;
+                                    user.save();
+                                    req.session.save();
+                                    console.log('Added street to members list');
+                                }
                             }
+                            return res.send({msg: 'AddStreet execute successfully'});
                         }
-                        return res.status(200).send({ msg: 'AddStreet execute successfully' });
-                    }
-                );
-        });
+                    );
+
+            });
+
 });
 
 // DELETE
@@ -272,5 +303,62 @@ router.put('/addAdmin', (req, res) => {
         }
     );
 });
+
+router.put('/changeStreetPrivacy', (req,res) => {
+
+    const streetID = req.session.streetID;//TODO: Change to req.body.streetID;
+    const userID = req.session.user._id;
+    const newStatus = req.body.status;
+
+    if (!streetID || !userID) {
+        return res.send('streetID or userID', 400);
+    }
+
+    if (newStatus !== 'false' && newStatus !== 'true') {
+        return res.send('newStatus', 400);
+    }
+
+    Street.findOneAndUpdate({_id: streetID, admins: userID},
+        {'isPublic': newStatus},
+        {new: true}).exec()
+        .then(
+            street => {
+                if (street) {
+                    res.send({content: street, status: "ok", msg: 'Street has been changed'});
+                }
+            })
+
+});
+
+function getStreetsNearPoint(radius, limit, coords, callback){
+
+    if(!radius || !coords || coords.length !== 2 ){
+        return;
+    }
+
+    Street.find(
+        {
+            'location': {
+                $near: {
+                    $geometry: {type: 'Point', coordinates: coords},
+                    $maxDistance: radius
+                }
+            }
+        }).lean()
+
+        .populate({path: 'members', model: 'user', select: 'name'})
+
+        .select({'_id': 0, 'place_id': 1, 'members': 1})
+
+        .limit(limit).exec()
+
+        .then(result => {
+
+            if (result) {
+                callback(result);
+            }
+        })
+
+}
 
 export default router;
