@@ -1,27 +1,44 @@
 import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
+const ObjectId = Schema.Types.ObjectId;
 
 const detailsSchema = new Schema({
 
+    userID:{
+        type: ObjectId,
+        ref: 'user'
+    },
+    //Basic info
     firstName:{
         type: String
     },
-    lastName:{
+    familyName:{
         type: String
     },
-    birthday:{
+    dateOfBirth:{
         type: Date
-    },
-    relationshipStatus:{
-        type: String
     },
     gender:{
         type: String
     },
-    job:{
+    //About
+    email:{
         type: String
     },
-    description:{
+    relationship:{
+        type: String
+    },
+    about:{
+        type: String
+    },
+    //Professional
+    work:{
+        type: String
+    },
+    skills:[{
+       type: String
+    }],
+    college:{
         type: String
     }
 

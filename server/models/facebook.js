@@ -5,7 +5,7 @@ export default function getFbData(accessToken, apiPath, callback) {
         host: 'graph.facebook.com',
         port: 443,
         path: `${apiPath}?access_token=${accessToken}`, // apiPath example: '/me/friends'
-        method: 'GET',
+        method: 'GET'
     };
 
     let buffer = ''; // this buffer will be populated with the chunks of the data received from facebook

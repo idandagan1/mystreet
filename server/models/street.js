@@ -6,33 +6,33 @@ const ObjectId = Schema.Types.ObjectId;
 const streetSchema = new Schema({
 
     name: {
-        type: String,
+        type: String
     },
     place_id: {
-        type: String,
+        type: String
     },
     location: {
         type: [Number],
         index: '2d'
     },
     address: {
-        type: String,
+        type: String
     },
     createDate: {
         type: Date,
-        default: Date.now,
+        default: Date.now
     },
     admins: [{
         type: ObjectId,
-        ref: 'user',
+        ref: 'user'
     }],
     members: [{
         type: ObjectId,
-        ref: 'user',
+        ref: 'user'
     }],
     postList: [{
         type: ObjectId,
-        ref: 'post',
+        ref: 'post'
     }],
 }, { collection: 'street' });
 
