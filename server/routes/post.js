@@ -5,22 +5,25 @@ import { Post } from '../models/post';
 
 const router = expressRouter();
 
-router.post('/addLikeToPost', (req, res) => {
+router.post('/addLikeToPost', function(req,res) {
 
+    //TODO: change parameters
     const postID = req.session.postID;
     const userID = req.session.user._id;
 
-    if (postID == null || userID == null) {
+    if (!postID || !userID) {
         return res.send('There have been validation errors', 400);
     }
 
-    Post.findByIdAndUpdate(postID, { $addToSet: { likes: userID } }).exec()
-        .then(post => {
-            if (post) {
-                return res.status(200).send({ msg: 'Added like' });
+    Post.findByIdAndUpdate(postID, {$addToSet: {likes: userID}}).exec()
+        .then(likes => {
+                if (likes) {
+                    console.log('Added like');
+                    return res.send({content: likes, status: "ok"});
+                }
             }
-        }
-    );
+        );
+
 });
 
 router.delete('/unlikePost', (req, res) => {
@@ -43,6 +46,7 @@ router.delete('/unlikePost', (req, res) => {
 });
 
 router.post('/addPost', (req, res) => {
+
     // TODO: Change Parameters.
     const userID = req.session.user._id;
     const post = req.body.post;
@@ -52,7 +56,7 @@ router.post('/addPost', (req, res) => {
 
     const errors = req.validationErrors();
 
-    if (errors || userID == null || streetID == null) {
+    if (errors || !userID || !streetID) {
         return res.send(`There have been validation errors: ${errors}`, 400);
     }
 
@@ -61,22 +65,24 @@ router.post('/addPost', (req, res) => {
         author: userID,
         body: post,
     });
-    newPost.save(err => {
-        if (err) throw err;
-        req.session.postID = newPost._id;
-        req.session.save();
-    });
+    newPost.save();
+    req.session.postID = newPost._id;
+    req.session.save();
 
     Street.findByIdAndUpdate(streetID, {
         $push: { postList: newPost },
     }).exec()
         .then(street => {
-            if (street) {
-                console.log('Added post');
-                res.status(200).send({ msg: 'New post' });
+                if (street) {
+                    console.log('Added post');
+                    res.send({
+                        createdDate: newPost.createDate,
+                        author: req.session.user.name,
+                        body: newPost.body
+                    });
+                }
             }
-        }
-    );
+        );
 });
 
 router.post('/addComment', (req, res) => {
@@ -101,10 +107,10 @@ router.post('/addComment', (req, res) => {
                 body: comment,
             },
         },
-    }).then(user => {
-        if (user) {
+    }).then(post => {
+        if (post) {
             console.log('Added comment');
-            res.status(200).send({ msg: 'New comment' });
+            res.send({content: post, status: "ok"});
         }
     });
 });
@@ -113,32 +119,32 @@ router.get('/getPosts', (req, res) => {
     // TODO: Change Parameters.
     const streetID = req.session.streetID;
 
-    if (streetID == null) {
+    if (!streetID) {
         return res.send('StreetID', 400);
     }
 
-    Street.findOne({ _id: streetID })
+    Street.findOne({_id: streetID})
         .populate({
             path: 'postList',
             model: 'post',
             populate: [{
                 path: 'author',
                 model: 'user',
-                select: { name: 1 },
+                select: {name: 1},
             },
-            {
-                path: 'likes',
-                model: 'user',
-                select: { name: 1 },
-            }],
+                {
+                    path: 'likes',
+                    model: 'user',
+                    select: {name: 1},
+                }],
         }).exec()
         .then(street => {
-            if (street) {
-                console.log('getPosts executed successfully');
-                return res.send(street.postList);
+                if (street) {
+                    console.log('getPosts executed successfully');
+                    return res.send({content: street.postList, status: "ok"});
+                }
             }
-        }
-    );
+        );
 });
 
 router.delete('/deletePost', (req, res) => {

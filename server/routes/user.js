@@ -4,6 +4,7 @@ import passport from 'passport';
 import { Street } from '../models/street';
 import { User } from '../models/user';
 import getFbData from '../models/facebook';
+import PersonalDetails from '../models/personalDetails';
 
 const router = expressRouter();
 
@@ -80,6 +81,62 @@ router.get('/login/facebook/callback',
         res.redirect('/');
     });
 
+router.post('/updateBasicInfo', (req,res) => {
+
+    const firstName = req.body.firstName;
+    const familyName = req.body.familyName;
+    const dateOfBirth = req.body.dateOfBirth;
+    const gender = req.body.gender;
+    const personalDetailsID = req.session.user.local.personalDetails;
+
+    if (!personalDetailsID) {
+        return res.send({msg:"personalDetailsId is missing", status: 400});
+    }
+
+    const newUpdates = new PersonalDetails({_id: personalDetailsID, firstName, familyName, dateOfBirth, gender});
+
+    updateUserDetails(personalDetailsID, newUpdates, (newUserDetails)=> {
+        if (newUserDetails) {
+            return res.send({content: newUserDetails, status: "ok"});
+        }
+    })
+
+})
+
+router.post('/updateProfessionalInfo', (req,res) => {
+
+    const work = req.body.work;
+    const college = req.body.college;
+    const skills = req.body.skills;
+    const personalDetailsID = req.session.user.local.personalDetails;
+
+    if (!personalDetailsID) {
+        return res.send({msg:"personalDetailsId is missing", status: 400});
+    }
+
+    const newUpdates = new PersonalDetails({_id: personalDetailsID, work, skills, college});
+
+    updateUserDetails(personalDetailsID, newUpdates, (newUserDetails)=> {
+        if (newUserDetails) {
+            return res.send({content: newUserDetails, status: "ok"});
+        }
+    })
+
+})
+
+function updateUserDetails(personalDetailsID, updates) {
+
+    PersonalDetails.findOneAndUpdate({'_id': personalDetailsID}, updates,{new:true}).exec()
+        .then(details => {
+            if (details) {
+                console.log('User details have been updated.');
+                return details;
+            } else {
+                console.log('Error while updating user details');
+            }
+        })
+}
+
 function isLoggedIn(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
@@ -87,6 +144,5 @@ function isLoggedIn(req, res, next) {
 
     res.redirect('/'); // TODO: change url
 }
-
 
 export default router;
