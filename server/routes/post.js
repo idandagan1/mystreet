@@ -5,7 +5,7 @@ import { Post } from '../models/post';
 
 const router = expressRouter();
 
-router.post('/addLikeToPost', function(req,res) {
+router.post('/addLikeToPost', (req,res) => {
 
     //TODO: change parameters
     const postID = req.session.postID;
@@ -36,11 +36,12 @@ router.delete('/unlikePost', (req, res) => {
     }
 
     Post.findByIdAndUpdate(
-        { _id: postID },
-        { $pull: { likes: userID },
+        {_id: postID},
+        {
+            $pull: {likes: userID},
         }, err => {
             if (err) throw err;
-            else res.status(200).send({ msg: 'unlike post' });
+            else res.status(200).send({msg: 'unlike post'});
         }
     );
 });
@@ -70,7 +71,7 @@ router.post('/addPost', (req, res) => {
     req.session.save();
 
     Street.findByIdAndUpdate(streetID, {
-        $push: { postList: newPost },
+        $push: {postList: newPost},
     }).exec()
         .then(street => {
                 if (street) {
@@ -157,12 +158,12 @@ router.delete('/deletePost', (req, res) => {
 
     Post.findByIdAndRemove(postID).exec()
         .then(post => {
-            if (post) {
-                console.log('Deleted post');
-                res.status(200).send({ msg: 'Deleted post' });
+                if (post) {
+                    console.log('Deleted post');
+                    res.status(200).send({msg: 'Deleted post'});
+                }
             }
-        }
-    );
+        );
 });
 
 export default router;

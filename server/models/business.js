@@ -22,7 +22,6 @@ const businessSchema = new Schema({
         ref: 'street'
     }
 
-
 }, { collection: 'businessSchema' });
 
 export default mongoose.model('businessSchema', businessSchema);

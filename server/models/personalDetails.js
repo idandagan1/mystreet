@@ -6,7 +6,7 @@ const detailsSchema = new Schema({
 
     userID:{
         type: ObjectId,
-        ref: 'user'
+        ref: 'user',
     },
     //Basic info
     firstName:{
