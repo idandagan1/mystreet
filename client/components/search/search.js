@@ -31,8 +31,8 @@ class Search extends React.Component {
     render() {
 
         return (
-            <div>
-                <form className="navbar-form navbar-left" onSubmit={this.onSubmit}>
+            <div className="col-md-12 n-search-wrapper">
+                <form className="navbar-form" onSubmit={this.onSubmit}>
                     <div className="form-group">
                         <input
                             type        = "text"
@@ -43,7 +43,7 @@ class Search extends React.Component {
                             value       = {this.state.streetname}
                         />
                     </div>
-                    <button type="submit" className="btn btn-default">Search</button>
+                    <button type="submit" className="btn n-btn-search">Search</button>
                 </form>
             </div>
         )
