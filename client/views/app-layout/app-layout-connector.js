@@ -1,5 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import Header from '../../components/header/header';
+import { Link } from 'react-router';
 import './app-layout.scss';
 
 function select(state) {
@@ -9,17 +11,12 @@ function select(state) {
 }
 
 class AppConnector extends Component {
-    static propTypes = {
-        children: PropTypes.node,
-    };
 
     render() {
-        const { children } = this.props;
-
         return (
             <div className='wrapper'>
-                AppLayout
-                {children}
+                <Header />
+                {this.props.children}
             </div>
         );
     }

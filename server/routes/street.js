@@ -76,7 +76,7 @@ router.get('/getStreetsNearby', (req,res) => {
 
 });
 
-router.get('/getStreet', (req, res) => {
+router.post('/getStreet', (req, res) => {
 
     // TODO: Change parameters
     const place_id = req.query.place_id;
@@ -93,7 +93,7 @@ router.get('/getStreet', (req, res) => {
         .then(street => {
                 req.session.streetID = street._id;
                 req.session.save();
-                return res.send({street: street, status:"ok"});
+                return res.send({content: street, status:"ok"});
             }
         );
 });
