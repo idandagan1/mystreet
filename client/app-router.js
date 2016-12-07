@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Router, Route, browserHistory } from 'react-router';
 import { AppLayout, TestView } from './views';
-import MyStreets from './components/mystreets/mystreets';
+import { MyStreets, SearchStreet } from './components';
 
 export default class AppRouter extends Component {
     render() {

@@ -1,8 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router';
-import './search.scss';
+import './search-street.scss';
+import { Strings } from '../../resources';
 
-class Search extends React.Component {
+class SearchStreet extends React.Component {
 
     constructor(props) {
         super(props);
@@ -35,15 +36,16 @@ class Search extends React.Component {
                 <form className="navbar-form" onSubmit={this.onSubmit}>
                     <div className="form-group">
                         <input
+                            id          = "pac-input"
                             type        = "text"
                             className   = "form-control"
                             name        = "streetname"
                             onChange    = {this.onChange}
-                            placeholder = "Find my street.."
+                            placeholder = {Strings.findMyStreet}
                             value       = {this.state.streetname}
                         />
                     </div>
-                    <button type="submit" className="btn n-btn-search">Search</button>
+                    <button type="submit" className="btn n-btn-search">{Strings.search}</button>
                 </form>
             </div>
         )
@@ -51,8 +53,8 @@ class Search extends React.Component {
     }
 }
 
-Search.propTypes = {
+SearchStreet.propTypes = {
     searchStreet: React.PropTypes.func.isRequired
 }
 
-export default Search;
+export default SearchStreet;
