@@ -20,7 +20,7 @@ class Header extends React.Component {
                             <span className="icon-bar"></span>
                         </button>
                         <Link className="navbar-brand" to="/">
-                            <img src={logo} width="23" height="23" alt="React"/>
+                            <img src={logo} width="23" height="23" />
                         </Link>
                     </div>
 

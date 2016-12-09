@@ -36,8 +36,7 @@ class MyStreets extends React.Component {
         return (
             <div className="col-md-4 col-md-offset-4">
                 <SearchStreet searchStreet={searchStreet}/>
-                <div id="streetResult" className="container">
-                </div>
+                <div id="streetResult" className="container"></div>
                 <PostForm updatePostFeed={this.updatePostFeed} createPost={this.createPost}/>
                 <div> {this.state.postfeed.map(this.eachPost)} </div>
             </div>
