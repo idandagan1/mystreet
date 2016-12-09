@@ -2,6 +2,7 @@ import React from 'react';
 import './comment.scss';
 import { Strings } from '../../resources';
 
+
 class Comment extends React.Component {
 
     constructor(props) {

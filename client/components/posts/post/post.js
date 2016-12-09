@@ -1,6 +1,7 @@
 import React from 'react';
 import Comment from '../../comment/comment';
 import { Strings } from '../../../resources';
+import icon from 'file!../../../resources/images/profile.png';
 import './post.scss';
 
 class Post extends React.Component {
@@ -38,7 +39,16 @@ class Post extends React.Component {
                 <div className="panel-content">
                     <form onSubmit={this.onSubmit} className="form center-block">
                         <div className="panel-body">
-
+                            <div className="n-post-header row">
+                                <div >
+                                    <img  className="n-post-user-icon" src={icon}/>
+                                </div>
+                                <div>
+                                    <div className="n-post-user">Idan Dagan</div>
+                                    <div className="n-post-date">3 hrs</div>
+                                </div>
+                            </div>
+                            <hr/>
                             <div className="form-group">
                                 {this.props.content.text}
                             </div>

@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import './GoogleSearch.scss';
+import { Strings } from '../../resources';
+import './google-search.scss';
 
 class GoogleSearch extends React.Component{
 
@@ -7,13 +8,13 @@ class GoogleSearch extends React.Component{
 
         const input = this.refs.search;
         const autocomplete = new google.maps.places.Autocomplete(input);
-        autocomplete.bindTo(this.refs.lblresult);
+        google.maps.event.addListener(autocomplete, 'place_changed', ()=> {});
     }
 
     render() {
         return (
             <div>
-                <input id="pac-input" className="form-control" ref="search"/>
+                <input placeholder={Strings.findMyStreet} id="pac-input" className="form-control" ref="search"/>
                 <div ref="lblresult" ></div>
             </div>
         )

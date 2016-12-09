@@ -1,7 +1,7 @@
 import React from 'react';
 import './search-street.scss';
 import { Strings } from '../../resources';
-import  GoogleSearch  from '../GoogleSearch/GoogleSearch';
+import  GoogleSearch  from '../google-search/google-search';
 
 
 class SearchStreet extends React.Component {
