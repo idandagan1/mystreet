@@ -1,0 +1,35 @@
+
+.pac-container{
+    width:300px! important;
+    text-align: left!important;
+    margin:0!important;
+    padding:0!important;
+}
+.pac-matched{
+    box-shadow: none!important;
+    margin:0px!important;
+    padding:0px!important;
+    font-size: 14px;
+}
+.pac-item{
+    height: 28px;
+    direction: ltr!important;
+}
+.pac-item-query{
+
+    margin:0px 3px 0px 3px !important;
+    padding:0px!important;
+    box-shadow: none!important;
+    font-size: 13px;
+}
+.pac-item:hover{
+    background-color: #E8E8E8 !important;
+    cursor: pointer;
+}
+.pac-container:after {
+    background-image: none !important;
+    display: none;
+}
+.pac-icon{
+    display: none;
+}
