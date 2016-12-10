@@ -14,8 +14,8 @@ class Post extends React.Component {
         this.state = {
             showComment: false,
             username: 'Idan Dagan',
-            isWritting:false,
-            writer:'',
+            isWritting: false,
+            writer: '',
             likes: [],
             comments: [],
             createDate: Moment(),
@@ -36,6 +36,7 @@ class Post extends React.Component {
             return <Comment/>
         }
     }
+
     updateDateTime() {
         const when = this.getPostTime();
         this.setState({when});
@@ -55,7 +56,7 @@ class Post extends React.Component {
         this.setState({showComment: true});
     }
 
-    displayComment(comment){
+    displayComment(comment) {
 
         let comments = this.state.comments;
         comments.push(comment);
@@ -101,7 +102,7 @@ class Post extends React.Component {
                     <div className="n-post-reactions">{this.state.comments.length}</div>
                 </div>
             )
-        }else{
+        } else {
             return null;
         }
     }
@@ -113,7 +114,7 @@ class Post extends React.Component {
                     <div className="n-post-reactions">{this.state.likes.length}</div>
                 </div>
             )
-        }else{
+        } else {
             return null;
         }
     }
@@ -140,10 +141,10 @@ class Post extends React.Component {
         }
     }
 
-    displayWriter(username){
-        if(username && !this.state.isWritting) {
+    displayWriter(username) {
+        if (username && !this.state.isWritting) {
             const msg = username + " is typing...";
-            this.setState({writer: msg, isWritting:true});
+            this.setState({writer: msg, isWritting: true});
             setTimeout(()=> {
                 this.setState({writer: '', isWritting: false})
             }, 2000);
@@ -159,7 +160,7 @@ class Post extends React.Component {
                         <div className="panel-body n-post-body">
                             <div className="n-post-header row">
                                 <div >
-                                    <img  className="n-post-user-icon" src={usericon}/>
+                                    <img className="n-post-user-icon" src={usericon}/>
                                 </div>
                                 <div>
                                     <div className="n-post-user">{this.state.username}</div>
@@ -184,14 +185,17 @@ class Post extends React.Component {
                                              onClick={this.onCommentClick}>{Strings.comment}</div>
                                     </div>
                                 </li>
-                                <li><div className="typing">{this.state.writer}</div></li>
+                                <li>
+                                    <div className="typing">{this.state.writer}</div>
+                                </li>
                             </ol>
                         </div>
                         <div className="panel-footer n-post-footer">
                             <div className="n-text-12">{this.displayPostReactions()}</div>
                             <div> {this.state.comments.map(this.eachComment)} </div>
                         </div>
-                        <div>{ this.state.showComment ? <Comment displayWriter={this.displayWriter} displayComment={this.displayComment}/> : '' }</div>
+                        <div>{ this.state.showComment ? <Comment displayWriter={this.displayWriter}
+                                                                 displayComment={this.displayComment}/> : '' }</div>
                     </form>
                 </div>
             </div>

@@ -14,7 +14,7 @@ class MyStreets extends React.Component {
         super(props);
         this.state = {
             postfeed: [],
-            currentWriter:''
+            currentWriter: ''
         }
 
         this.updatePostFeed = this.updatePostFeed.bind(this);
@@ -26,8 +26,8 @@ class MyStreets extends React.Component {
         this.setState({postfeed: postfeed});
     }
 
-    getWriter(user){
-        if(!user) {
+    getWriter(user) {
+        if (!user) {
             this.setState({currentWriter: user});
         }
     }

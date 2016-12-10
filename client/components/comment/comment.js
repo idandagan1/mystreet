@@ -20,7 +20,7 @@ class Comment extends React.Component {
             username: this.state.username,
             content: this.refs.comment.value
         }
-        if(comment) {
+        if (comment) {
             this.props.displayComment(comment);
             this.refs.comment.value = '';
         }
@@ -36,7 +36,8 @@ class Comment extends React.Component {
 
             <div className="panel-footer n-comment-footer">
                 <div className="">
-                    <textarea onChange={this.onChange} ref="comment" className="form-control input-lg n-comment-textarea"
+                    <textarea onChange={this.onChange} ref="comment"
+                              className="form-control input-lg n-comment-textarea"
                               placeholder={Strings.writeComment}></textarea>
                     <div onClick={this.onCommentClick} className="btn btn-sm n-btn-comment">{Strings.comment}</div>
                 </div>
