@@ -5,7 +5,9 @@ const Strings = {
     findMyStreet: 'Find my street...',
     writeComment: 'Write a comment...',
     like: 'Like',
-    comment: 'Comment'
+    comment: 'Comment',
+    emptyLikes: 'Be the first to like this.',
+    youLikedIt: 'You liked it'
 
 }
 

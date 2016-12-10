@@ -1,8 +1,10 @@
 .n-post-footer {
-    height: 40px;
+
 }
 .n-footer-btn {
-    color: #006bb3;;
+    color: #006bb3;
+    margin: 0px 5px;
+    display: inline-block;
 }
 .n-footer-btn:hover {
     cursor: pointer;
@@ -42,5 +44,28 @@ hr {
 .n-post-date{
     font-size: 12px;
     color: grey;
+}
+
+.typing{
+    font-style: italic;
+    font-size: 11px;
+}
+
+.n-post-body{
+    padding: 15px 15px 0px 15px;
+}
+
+.n-text-12{
+    font-size: 12px;
+}
+
+.n-reactions-icon{
+    width: 15px;
+    height: 15px;
+}
+
+.n-post-reactions{
+    display: inline-block;
+    margin: 0px 5px;
 }
 

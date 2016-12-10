@@ -1,20 +1,54 @@
 .n-comment-textarea{
-  resize: none;
-  height: 29px !important;
-  font-size: 11px;
-  padding: 6px;
-  overflow: auto;
-  width: 100%;
+    resize: none;
+    height: 29px !important;
+    font-size: 11px;
+    padding: 6px;
+    border-radius: 2px;
+    overflow: auto;
+    width: 78%;
+    display: inline-block;
 }
 
 .n-comment-footer{
-  height: 70px;
+    height: 50px;
 }
-.n-comment-btn{
-  font-size: 11px;
-  color:#006bb3;
+
+.n-btn-comment{
+    font-size: 11px;
+    color:#006bb3;
+    border-color: grey;
+    margin: -22px 0px 0px 9px;
 }
-.n-comment-btn:hover{
-  cursor: pointer;
-  text-decoration: underline;
+
+.n-btn-comment:hover{
+    cursor: pointer;
+}
+
+.n-comment-username{
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.n-comment-user-icon{
+    width: 25px;
+    height: 25px;
+    float: left;
+    margin: 3px;
+}
+
+.n-comment-body{
+    margin: 0;
+    padding-left: 27px;
+}
+
+.n-comment-wrapper{
+    border-color: black;
+    border-width: 1px;
+    border: black;
+    font-size: 12px;
+}
+
+.n-comment-icon{
+    width: 15px;
+    height: 15px;
 }

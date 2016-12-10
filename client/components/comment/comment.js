@@ -1,17 +1,33 @@
 import React from 'react';
+import { Link } from 'react-router';
 import './comment.scss';
 import { Strings } from '../../resources';
-
 
 class Comment extends React.Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            username: 'Idan'
+        }
+
         this.onCommentClick = this.onCommentClick.bind(this);
+        this.onChange = this.onChange.bind(this);
     }
 
     onCommentClick() {
-        this.refs.comment.value = '';
+        const comment = {
+            username: this.state.username,
+            content: this.refs.comment.value
+        }
+        if(comment) {
+            this.props.displayComment(comment);
+            this.refs.comment.value = '';
+        }
+    }
+
+    onChange() {
+        this.props.displayWriter(this.state.username);
     }
 
     render() {
@@ -20,18 +36,9 @@ class Comment extends React.Component {
 
             <div className="panel-footer n-comment-footer">
                 <div className="">
-                    <textarea ref="comment" className="form-control input-lg n-comment-textarea"
+                    <textarea onChange={this.onChange} ref="comment" className="form-control input-lg n-comment-textarea"
                               placeholder={Strings.writeComment}></textarea>
-                </div>
-                <div className="n-comment-footer">
-                    <ol className="pull-left list-inline">
-                        <li>
-                            <div className="n-comment-btn">{Strings.like}</div>
-                        </li>
-                        <li>
-                            <div onClick={this.onCommentClick} className="n-comment-btn">{Strings.comment}</div>
-                        </li>
-                    </ol>
+                    <div onClick={this.onCommentClick} className="btn btn-sm n-btn-comment">{Strings.comment}</div>
                 </div>
             </div>
         )

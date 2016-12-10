@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router';
 import './post-form.scss';
 import { Strings } from '../../../resources';
 import {connect} from 'react-redux';
@@ -10,7 +11,7 @@ class PostForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            imageurl: '',
+            image: '',
             filename: '',
             text: Strings.postPlaceholder
         }
@@ -35,6 +36,7 @@ class PostForm extends React.Component {
         this.refs.text.value = '';
         this.props.createPost(newPost);
         this.props.updatePostFeed(newPost);
+
     }
 
     render() {
@@ -52,14 +54,17 @@ class PostForm extends React.Component {
                             <h3>{this.state.filename || ''}</h3>
                         </div>
                         <div className="panel-footer">
-                            <ul className="pull-left list-inline">
-                                <li><input onChange={this.uploadFile} ref="file" className='filepicker' id="file"
-                                           type="file"/>
-                                </li>
-                            </ul>
-                            <button className="btn btn-sm postbutton n-btn-post">{Strings.post}</button>
+                            <div>
+                                <ul className="pull-left list-inline">
+                                    <li><input onChange={this.uploadFile} ref="file" className='filepicker' id="file"
+                                               type="file"/></li>
+                                </ul>
+                                <button type="submit"
+                                        className="btn btn-sm postbutton n-btn-post">{Strings.post}</button>
+                            </div>
                         </div>
                     </form>
+
                 </div>
             </div>
         )

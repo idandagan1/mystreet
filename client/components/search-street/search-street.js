@@ -31,7 +31,7 @@ class SearchStreet extends React.Component {
             <div className="col-md-12 n-search-wrapper">
                 <form className="navbar-form" onSubmit={this.onSubmit}>
                     <div className="form-group">
-                        <GoogleSearch />
+                        <GoogleSearch/>
                     </div>
                     <button type="submit" className="btn n-btn-search">{Strings.search}</button>
                 </form>

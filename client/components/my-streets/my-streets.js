@@ -7,12 +7,14 @@ import {createPost} from '../../actions/sendPostActions'
 import './my-streets.scss';
 import {bindActionCreators} from 'redux';
 
+
 class MyStreets extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            postfeed: []
+            postfeed: [],
+            currentWriter:''
         }
 
         this.updatePostFeed = this.updatePostFeed.bind(this);
@@ -22,6 +24,12 @@ class MyStreets extends React.Component {
         let postfeed = this.state.postfeed;
         postfeed.push(newPost);
         this.setState({postfeed: postfeed});
+    }
+
+    getWriter(user){
+        if(!user) {
+            this.setState({currentWriter: user});
+        }
     }
 
     eachPost(post, i) {
@@ -38,6 +46,7 @@ class MyStreets extends React.Component {
                 <SearchStreet searchStreet={searchStreet}/>
                 <div id="streetResult" className="container"></div>
                 <PostForm updatePostFeed={this.updatePostFeed} createPost={this.createPost}/>
+                <div>{this.state.currentWriter}</div>
                 <div> {this.state.postfeed.map(this.eachPost)} </div>
             </div>
         )
