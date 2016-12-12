@@ -22,7 +22,7 @@ class MyStreets extends React.Component {
 
     updatePostFeed(newPost) {
         let postfeed = this.state.postfeed;
-        postfeed.push(newPost);
+        postfeed.unshift(newPost);
         this.setState({postfeed: postfeed});
     }
 
@@ -39,11 +39,9 @@ class MyStreets extends React.Component {
     }
 
     render() {
-        const {searchStreet} = this.props;
 
         return (
             <div className="col-md-4 col-md-offset-4">
-                <SearchStreet searchStreet={searchStreet}/>
                 <div id="streetResult" className="container"></div>
                 <PostForm updatePostFeed={this.updatePostFeed} createPost={this.createPost}/>
                 <div>{this.state.currentWriter}</div>
@@ -51,10 +49,6 @@ class MyStreets extends React.Component {
             </div>
         )
     }
-}
-
-MyStreets.propTypes = {
-    searchStreet: React.PropTypes.func.isRequired
 }
 
 function mapStateToProps(state) {
@@ -67,4 +61,4 @@ function matchDispatchToProps(dispatch){
     return bindActionCreators({createPost: createPost}, dispatch);
 }
 
-export default connect(mapStateToProps, {matchDispatchToProps,searchStreet})(MyStreets);
+export default connect(mapStateToProps, {matchDispatchToProps})(MyStreets);

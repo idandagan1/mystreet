@@ -53,7 +53,7 @@ class PostForm extends React.Component {
                             </div>
                             <h3>{this.state.filename || ''}</h3>
                         </div>
-                        <div className="panel-footer">
+                        <div className="panel-footer n-postform-footer">
                             <div>
                                 <ul className="pull-left list-inline">
                                     <li><input onChange={this.uploadFile} ref="file" className='filepicker' id="file"
