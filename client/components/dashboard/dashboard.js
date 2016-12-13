@@ -3,6 +3,7 @@ import SearchStreet from '../search-street/search-street';
 import { searchStreet } from '../../actions/searchActions';
 import streetimage from 'file!../../resources/images/street.jpg';
 import { connect } from 'react-redux';
+import './dashboard.scss';
 
 
 class Dashboard extends React.Component {
@@ -16,8 +17,8 @@ class Dashboard extends React.Component {
         const {searchStreet} = this.props;
 
         return (
-            <div className="col-md-4 col-md-offset-4">
-                <SearchStreet searchStreet={searchStreet}/>
+            <div className="n-dashboard-wrapper">
+                <SearchStreet  searchStreet={searchStreet}/>
             </div>
 
         )

@@ -15,7 +15,7 @@ class GoogleSearch extends React.Component {
     render() {
         return (
             <div>
-                <input placeholder={Strings.findMyStreet} id="pac-input" className="form-control" ref="search"/>
+                <input placeholder={Strings.findMyStreet} id="pac-input" className="form-control n-search-textfield" ref="search"/>
                 <div ref="lblresult"></div>
             </div>
         )

@@ -147,7 +147,7 @@ class Post extends React.Component {
             this.setState({writer: msg, isWritting: true});
             setTimeout(()=> {
                 this.setState({writer: '', isWritting: false})
-            }, 2000);
+            }, 1000);
         }
     }
 

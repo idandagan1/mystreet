@@ -7,13 +7,17 @@
 }
 
 .n-postform-footer{
-    min-height: 50px;
+    display: flex;
 }
 
 .n-btn-post{
     float: right;
     background: orange;
     border-color: grey;
+}
+
+.n-post-btn-wrapper{
+    flex:1;
 }
 
 .n-btn-post:hover{
@@ -26,4 +30,11 @@
     border-radius: 2px;
     width:100%;
     overflow: auto;
+}
+.n-footer-filepicker{
+    flex:1;
+}
+
+.n-postform-panel{
+    min-width: 360px;
 }

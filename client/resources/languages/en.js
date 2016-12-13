@@ -7,7 +7,8 @@ const Strings = {
     like: 'Like',
     comment: 'Comment',
     emptyLikes: 'Be the first to like this.',
-    youLikedIt: 'You liked it'
+    youLikedIt: 'You liked it',
+    memberstitle: 'Members'
 
 }
 
