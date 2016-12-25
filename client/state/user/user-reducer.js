@@ -1,4 +1,4 @@
-import createReducer from '../../util/create-reducer';
+import createReducer from 'util/create-reducer';
 
 const initialState = {
 

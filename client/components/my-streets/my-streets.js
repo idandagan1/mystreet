@@ -1,11 +1,11 @@
 import React from 'react';
-import { PostForm, Post } from '../posts';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import {createPost} from '../../actions/sendPostActions'
+import { PostForm, Post } from 'components/posts';
+import { createPost } from 'actions/sendPostActions';
+import { Strings } from 'resources';
+import usericon from 'resources/images/profile.png';
 import './my-streets.scss';
-import { Strings } from '../../resources';
-import {bindActionCreators} from 'redux';
-import usericon from 'file!../../resources/images/profile.png';
 
 
 class MyStreets extends React.Component {

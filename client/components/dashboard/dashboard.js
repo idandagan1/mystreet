@@ -1,8 +1,8 @@
 import React from 'react';
-import SearchStreet from '../search-street/search-street';
-import { searchStreet } from '../../actions/searchActions';
-import streetimage from 'file!../../resources/images/street.jpg';
 import { connect } from 'react-redux';
+import SearchStreet from 'components/search-street/search-street';
+import { searchStreet } from 'actions/searchActions';
+import streetimage from 'resources/images/street.jpg';
 import './dashboard.scss';
 
 

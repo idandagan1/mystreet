@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import Header from '../../components/header/header';
+import Header from 'components/header/header';
 import { Link } from 'react-router';
 import './app-layout.scss';
 
