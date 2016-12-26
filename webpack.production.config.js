@@ -1,8 +1,8 @@
-var path = require('path');
-var webpack = require('webpack');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
+import path from 'path';
+import webpack from 'webpack';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 
-module.exports = {
+export default {
     entry: './client/entry.js',
 
     output: {
@@ -30,9 +30,35 @@ module.exports = {
                 },
             },
             {
-                loader: 'style!css!sass?' + 'includePaths[]=' + (path.resolve(__dirname, './node_modules')),
+                loader: 'style!css!sass',
                 test: /\.scss$/i,
+            },
+            {
+                test: /\.(?:png|svg|jpe?g)$/i,
+                loader: 'file-loader',
+                query: { name: 'images/[name].[ext]' },
             },
         ],
     },
+
+    resolve: {
+        extensions: ['', '.js', '.jsx'],
+        root: [
+            path.resolve(__dirname, 'client'),
+            path.resolve(__dirname, 'node_modules'),
+        ],
+    },
+
+    resolveLoader: {
+        root: path.resolve(__dirname, 'node_modules'),
+    },
+
+    sassLoader: {
+        includePaths: [
+            path.resolve(__dirname, 'client'),
+            path.resolve(__dirname, 'node_modules'),
+        ],
+    },
+
+    devtool: 'source-map',
 };

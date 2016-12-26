@@ -1,9 +1,9 @@
 import React from 'react';
-import Comment from '../../comment/comment';
-import { Strings } from '../../../resources';
-import usericon from 'file!../../../resources/images/profile.png';
-import commenticon from 'file!../../../resources/images/comment-icon.png';
-import likeicon from 'file!../../../resources/images/like-icon.png';
+import Comment from 'components/comment/comment';
+import { Strings } from 'resources';
+import usericon from 'resources/images/profile.png';
+import commenticon from 'resources/images/comment-icon.png';
+import likeicon from 'resources/images/like-icon.png';
 import Moment from 'moment';
 import './post.scss';
 

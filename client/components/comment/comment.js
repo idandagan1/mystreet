@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router';
+import { Strings } from 'resources';
 import './comment.scss';
-import { Strings } from '../../resources';
 
 class Comment extends React.Component {
 

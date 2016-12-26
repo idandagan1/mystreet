@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Strings } from '../../resources';
+import { Strings } from 'resources';
 import './google-search.scss';
 
 class GoogleSearch extends React.Component {

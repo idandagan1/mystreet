@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router';
-import logo from 'file!./logo2.png';
+import logo from './logo2.png';
 import './header.scss';
 
 class Header extends React.Component {
