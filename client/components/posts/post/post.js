@@ -1,5 +1,5 @@
 import React from 'react';
-import Comment from 'components/comment/comment';
+import { Comment, CommentForm } from 'components/comment';
 import { Strings } from 'resources';
 import usericon from 'resources/images/profile.png';
 import commenticon from 'resources/images/comment-icon.png';
@@ -12,7 +12,7 @@ class Post extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            showComment: false,
+            showCommentForm: false,
             username: 'Idan Dagan',
             isWritting: false,
             writer: '',
@@ -32,8 +32,8 @@ class Post extends React.Component {
     }
 
     showCommentArea() {
-        if (this.state.showComment) {
-            return <Comment/>
+        if (this.state.showCommentForm) {
+            return <CommentForm/>
         }
     }
 
@@ -53,7 +53,7 @@ class Post extends React.Component {
     }
 
     onCommentClick() {
-        this.setState({showComment: true});
+        this.setState({showCommentForm: !this.state.showCommentForm});
     }
 
     displayComment(comment) {
@@ -64,20 +64,9 @@ class Post extends React.Component {
     }
 
     eachComment(comment, i) {
+
         return (
-            <div key={i}>
-                <img src={usericon} className="n-comment-user-icon"/>
-                <div className="n-comment-body">
-                    <div>
-                        <div className="n-comment-username">
-                            {comment.username}
-                        </div>
-                        <div className="n-comment-wrapper" key={i}>
-                            {comment.content}
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <Comment key={i} comment={comment}></Comment>
         )
     }
 
@@ -194,7 +183,7 @@ class Post extends React.Component {
                             <div className="n-text-12">{this.displayPostReactions()}</div>
                             <div> {this.state.comments.map(this.eachComment)} </div>
                         </div>
-                        <div>{ this.state.showComment ? <Comment displayWriter={this.displayWriter}
+                        <div>{ this.state.showCommentForm ? <CommentForm displayWriter={this.displayWriter}
                                                                  displayComment={this.displayComment}/> : '' }</div>
                     </form>
                 </div>

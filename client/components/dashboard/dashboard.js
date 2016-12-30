@@ -17,8 +17,11 @@ class Dashboard extends React.Component {
         const {searchStreet} = this.props;
 
         return (
-            <div className="n-dashboard-wrapper">
-                <SearchStreet  searchStreet={searchStreet}/>
+            <div>
+                <div className="n-dashboard-wrapper"></div>
+                <div className="n-dashboard-search">
+                    <SearchStreet  searchStreet={searchStreet}/>
+                </div>
             </div>
 
         )

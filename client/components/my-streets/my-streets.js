@@ -35,7 +35,7 @@ class MyStreets extends React.Component {
 
     eachMember(member, i) {
         return (
-            <div className="n-mystreet-member">
+            <div className="n-mystreet-member" key={i}>
                 <img src={usericon} className="n-comment-user-icon"/>
                 <div key={i} className="n-member-name">{member}</div>
             </div>
@@ -45,7 +45,7 @@ class MyStreets extends React.Component {
     render() {
 
         return (
-            <div>
+            <div className="n-mystreet-wrapper">
                 <div className="col-md-4 col-md-offset-4">
                     <div>
                         <div id="streetResult" className="container"></div>

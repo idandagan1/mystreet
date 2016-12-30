@@ -1,9 +1,8 @@
 import React from 'react';
-import { Link } from 'react-router';
 import { Strings } from 'resources';
-import './comment.scss';
+import './comment-form.scss';
 
-class Comment extends React.Component {
+class CommentForm extends React.Component {
 
     constructor(props) {
         super(props);
@@ -46,4 +45,4 @@ class Comment extends React.Component {
     }
 }
 
-export default Comment;
+export default CommentForm;
