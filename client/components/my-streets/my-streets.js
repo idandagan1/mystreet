@@ -2,6 +2,7 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { PostForm, Post } from 'components/posts';
+import Map from 'components/map/map';
 import { createPost } from 'actions/sendPostActions';
 import { Strings } from 'resources';
 import usericon from 'resources/images/profile.png';
@@ -45,21 +46,30 @@ class MyStreets extends React.Component {
     render() {
 
         return (
-            <div className="n-mystreet-wrapper">
-                <div className="col-md-4 col-md-offset-4">
-                    <div>
-                        <div id="streetResult" className="container"></div>
-                        <PostForm updatePostFeed={this.updatePostFeed} createPost={this.createPost}/>
-                        <div>{this.state.currentWriter}</div>
-                        <div> {this.state.postfeed.map(this.eachPost)} </div>
-                    </div>
-                </div>
-                <div className="panel col-md-2 n-mystreet-group-details">
-                    <div>{Strings.memberstitle}</div>
-                    <div className="n-mystreet-members-panel">
-                        {this.state.members.map(this.eachMember)}
-                    </div>
-                </div>
+            <div className="n-mystreet-mainContainer">
+                <ol className="list-inline">
+                    <li className="n-mystreet-leftCol col-md-3">
+                        <Map></Map>
+                    </li>
+                    <li className="n-mystreet-content col-md-4">
+                        <div className="">
+                            <div>
+                                <div id="streetResult" className="container"></div>
+                                <PostForm updatePostFeed={this.updatePostFeed} createPost={this.createPost}/>
+                                <div>{this.state.currentWriter}</div>
+                                <div> {this.state.postfeed.map(this.eachPost)} </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li className="col-md-2">
+                        <div className="panel n-mystreet-group-details">
+                            <div>{Strings.memberstitle}</div>
+                            <div className="n-mystreet-members-panel">
+                                {this.state.members.map(this.eachMember)}
+                            </div>
+                        </div>
+                    </li>
+                </ol>
             </div>
         )
     }

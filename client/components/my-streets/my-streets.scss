@@ -4,6 +4,12 @@
   zoom: 1;
 }
 
+.n-mystreet-leftCol{
+    margin: 0px 40px;
+    height: 300px;
+    border: black 1px solid;
+}
+
 .n-mystreet-members-panel{
     text-align: center;
 }
@@ -23,6 +29,10 @@
     text-align: center;
 }
 
-.n-mystreet-wrapper{
+.n-mystreet-mainContainer{
     margin-top: 20px;
+}
+
+.n-mystreet-content{
+    maring:0px;
 }

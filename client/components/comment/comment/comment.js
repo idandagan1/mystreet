@@ -5,11 +5,6 @@ import './comment.scss';
 
 class Comment extends React.Component {
 
-    constructor(props) {
-        super(props);
-
-    }
-
     render(){
         if(this.props.comment){
             return (

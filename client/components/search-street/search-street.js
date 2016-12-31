@@ -14,34 +14,22 @@ class SearchStreet extends React.Component {
         this.onSubmit = this.onSubmit.bind(this);
     }
 
-    onSubmit(e) {
-        e.preventDefault();
-        this.props.searchStreet(this.state).then(
-            (res) => {
-                if (res) {
-                    console.log(res);
-                }
-            })
+    onSubmit(street) {
+
     }
 
     render() {
 
         return (
             <div className="n-street-search">
-                <form className="navbar-form" onSubmit={this.onSubmit}>
+                <div className="navbar-form">
                     <div className="form-group">
-                        <GoogleSearch/>
+                        <GoogleSearch onSubmit={this.onSubmit}/>
                     </div>
-                    <button type="submit" className="btn n-btn-search">{Strings.search}</button>
-                </form>
-
+                </div>
             </div>
         )
     }
-}
-
-SearchStreet.propTypes = {
-    searchStreet: React.PropTypes.func.isRequired
 }
 
 export default SearchStreet;
