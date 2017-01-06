@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { PostForm, Post } from 'components/posts';
 import Map from 'components/map/map';
-import { createPost } from 'actions/sendPostActions';
+import { createPost } from 'actions/postActions';
 import { Strings } from 'resources';
 import usericon from 'resources/images/profile.png';
 import './my-streets.scss';

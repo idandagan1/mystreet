@@ -1,11 +1,51 @@
 import React from 'react';
 import { Link } from 'react-router';
 import logo from './logo2.png';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { login } from 'actions/userActions';
+import FacebookLogin from 'components/facebook/facebook-button';
+import ProfileButton from './profile-button';
 import './header.scss';
+
 
 class Header extends React.Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            name: '',
+            isLoggedIn: false
+        };
+
+        this.responseFacebook = this.responseFacebook.bind(this);
+    }
+
+    responseFacebook(response) {
+        if (response) {
+            this.setState({
+                name: response.name,
+                isLoggedIn: true
+            });
+            console.log(response);
+        }
+    }
+
     render() {
+
+        const isLoggedIn = this.state.isLoggedIn;
+
+        let button = null;
+
+        if (isLoggedIn) {
+            button = <ProfileButton name={this.state.name} />;
+        } else {
+            button = <FacebookLogin
+                appId="678252172335402"
+                isLoggedIn = {this.state.isLoggedIn}
+                callback={this.responseFacebook}
+            >Login</FacebookLogin>;
+        }
 
         return (
             <nav className="navbar navbar-default n-header-theme">
@@ -31,19 +71,7 @@ class Header extends React.Component {
                         </ul>
 
                         <ul className="nav navbar-nav navbar-right">
-                            <li><a href="#"></a></li>
-                            <li className="dropdown">
-                                <a href="profile" className="dropdown-toggle" data-toggle="dropdown" role="button"
-                                   aria-haspopup="true" aria-expanded="false">Profile <span
-                                    className="caret"></span></a>
-                                <ul className="dropdown-menu">
-                                    <li><Link to="/">Edit Profile</Link></li>
-                                    <li><Link to="/">Settings</Link></li>
-                                    <li><Link to="/">Help</Link></li>
-                                    <li role="separator" className="divider"></li>
-                                    <li><Link to="/">Logout</Link></li>
-                                </ul>
-                            </li>
+                            {button}
                         </ul>
                     </div>
                 </div>
@@ -53,4 +81,9 @@ class Header extends React.Component {
     }
 }
 
-export default Header;
+function matchDispatchToProps(dispatch){
+    return bindActionCreators({login: login}, dispatch);
+}
+
+export default connect(null, {matchDispatchToProps})(Header);
+

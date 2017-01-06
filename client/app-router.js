@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Router, Route, browserHistory, IndexRoute } from 'react-router';
 import { AppLayout, TestView } from 'views';
-import { MyStreets, SearchStreet, Dashboard } from 'components';
+import { MyStreets, SearchStreet, Dashboard, Profile } from 'components';
 
 export default class AppRouter extends Component {
     render() {
@@ -10,6 +10,7 @@ export default class AppRouter extends Component {
                 <Route path='/' component={AppLayout}>
                     <IndexRoute component={Dashboard} />
                     <Route path='/mystreets' component={MyStreets}/>
+                    <Route path='/user' component={Profile}/>
                 </Route>
             </Router>
         );

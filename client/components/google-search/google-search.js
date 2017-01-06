@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import { Strings } from 'resources';
+import { Link } from 'react-router';
 import './google-search.scss';
 
 class GoogleSearch extends React.Component {
@@ -54,7 +55,7 @@ class GoogleSearch extends React.Component {
                         <div ref="lblresult"></div>
                     </li>
                     <li>
-                        <button onClick={this.onSubmit} className="btn n-btn-search">{Strings.search}</button>
+                        <Link to="/mystreets"> <button onClick={this.onSubmit} className="btn n-btn-search">{Strings.search}</button> </Link>
                     </li>
                 </ol>
             </div>

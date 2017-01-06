@@ -1,9 +1,8 @@
 import React from 'react';
-import { Link } from 'react-router';
 import { Strings } from 'resources';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { createPost } from 'actions/sendPostActions';
+import { createPost } from 'actions/postActions';
 import './post-form.scss';
 
 class PostForm extends React.Component {
