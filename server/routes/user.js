@@ -68,20 +68,42 @@ router.get('/getFriends', (req, res) => {
     });
 });
 
-router.get('/login/facebook', passport.authenticate('facebook'));
-
-router.get('/login/facebook/callback',
-    passport.authenticate('facebook', { failureRedirect: '/user/login/facebook' }),
+router.post('/login/facebook',
     (req, res) => {
-        req.user.local.lastLogged = Date.now();
-        req.session.user = req.user;
-        req.session.streetID = null;
-        req.session.postID = null;
+        console.log('IN HERE', req.body);
+        const { id, name, accessToken: token } = req.body;
+        let sessionUser;
 
-        res.redirect('/');
+        // find the user in the database based on their facebook id
+        User.findOne({ 'facebook.id': id }, (err, user) => {
+            // if the user is found, then log them in
+            if (!user) {
+                const newUser = new User({
+                    facebook: {
+                        id,
+                        token,
+                        name,
+                    },
+                    name,
+                });
+
+                newUser.save(error => {
+                    if (error) throw error;
+                });
+
+                sessionUser = newUser;
+            } else {
+                user.local.lastLogged = Date.now();
+                user.save();
+                sessionUser = user;
+            }
+
+        });
+        console.log(sessionUser);
+        req.session.user = sessionUser;
     });
 
-router.post('/updateBasicInfo', (req,res) => {
+router.post('/updateBasicInfo', (req, res) => {
 
     const firstName = req.body.firstName;
     const familyName = req.body.familyName;

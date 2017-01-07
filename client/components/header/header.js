@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 import logo from './logo2.png';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { login } from 'actions/userActions';
+import { facebookLoginSucceeded } from 'actions/userActions';
 import FacebookLogin from 'components/facebook/facebook-button';
 import ProfileButton from './profile-button';
 import './header.scss';
@@ -27,7 +27,8 @@ class Header extends React.Component {
                 name: response.name,
                 isLoggedIn: true
             });
-            console.log(response);
+
+            this.props.facebookLoginSucceeded(response);
         }
     }
 
@@ -82,8 +83,8 @@ class Header extends React.Component {
 }
 
 function matchDispatchToProps(dispatch){
-    return bindActionCreators({login: login}, dispatch);
+    return bindActionCreators({ facebookLoginSucceeded }, dispatch);
 }
 
-export default connect(null, {matchDispatchToProps})(Header);
+export default connect(null, matchDispatchToProps)(Header);
 

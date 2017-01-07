@@ -1,7 +1,30 @@
-import axios from 'axios';
+import * as mystreetsApi from 'api/mystreets-api';
+import searchActionTypes from './search-action-types';
 
-export function searchStreet(street) {
+export function searchStreetSubmitted(streetObject) {
     return dispatch => {
-        return axios.post('/mystreets/getStreet', street);
-    }
+        dispatch({
+            type: searchActionTypes.SUBMITTED,
+            data: { streetObject },
+        });
+
+        mystreetsApi.getStreet(streetObject.placeId)
+            .then(
+                response => dispatch(searchStreetSucceeded(response)),
+                error => dispatch(searchStreetFailed(error)),
+            );
+    };
+}
+
+export function searchStreetSucceeded(response) {
+    return {
+        type: searchActionTypes.SUCCEEDED,
+        data: { response },
+    };
+}
+
+export function searchStreetFailed(error) {
+    return {
+        type: searchActionTypes.FAILED,
+    };
 }

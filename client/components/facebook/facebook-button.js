@@ -20,7 +20,7 @@ class FacebookLogin extends React.Component {
     };
 
     static defaultProps = {
-        redirectUri: 'http://localhost:8000/login/facebook/callback',
+        redirectUri: 'http://localhost:8001/user/login/facebook/callback',
         scope: 'user_friends,public_profile,email',
         xfbml: false,
         cookie: false,

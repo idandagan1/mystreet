@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import log from 'morgan';
 import mongoose from 'mongoose';
 import session from 'express-session';
+import expressValidator from 'express-validator';
 import routes from './routes/';
 import passportConfig from './config/passport';
 
@@ -22,6 +23,7 @@ app.use(bodyParser.urlencoded({
     extended: true,
 }));
 app.use(bodyParser.json());
+app.use(expressValidator());
 
 app.use(log('dev'));
 passportConfig(app);

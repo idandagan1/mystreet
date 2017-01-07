@@ -76,7 +76,7 @@ router.get('/getStreetsNearby', (req,res) => {
 
 });
 
-router.post('/getStreet', (req, res) => {
+router.get('/getStreet', (req, res) => {
 
     // TODO: Change parameters
     const place_id = req.query.place_id;
@@ -89,13 +89,15 @@ router.post('/getStreet', (req, res) => {
         return res.send('place_id', 400);
     }
 
-    Street.findOne({'place_id' : place_id}).exec()
-        .then(street => {
-                req.session.streetID = street._id;
-                req.session.save();
-                return res.send({content: street, status:"ok"});
-            }
-        );
+    Street.findOne({'place_id' : place_id}, street => {
+        if (street) {
+            req.session.streetID = street._id;
+            req.session.save();
+            return res.send({content: street, status:"ok"});
+        }
+
+        return res.send();
+    });
 });
 
 router.get('/getStreets', (req, res) => {
@@ -175,13 +177,13 @@ router.post('/addStreet', (req, res) => {
     // and click on the "Add Street" button.
 
     // TO DO: Change parameters.
-    const address = req.body.address;
+    // const address = req.body.address;
     const streetName = req.body.name;
     const placeID = req.body.place_id;
     const userID = req.session.user._id;
     const location = [req.body.location.lng, req.body.location.lat];
 
-    req.check('address', 'Address is empty').notEmpty();
+    // req.check('address', 'Address is empty').notEmpty();
     req.check('name', 'Name is empty').notEmpty();
     req.check('place_id', 'place_id is empty').notEmpty();
     req.check('location', 'location is empty').notEmpty();
@@ -205,7 +207,7 @@ router.post('/addStreet', (req, res) => {
                     const newStreet = new Street({
                         name: streetName,
                         place_id: placeID,
-                        address: address,
+                        // address: address,
                         members: userID,
                         location: location,
                         admins: userID,
