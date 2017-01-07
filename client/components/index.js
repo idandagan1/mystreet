@@ -1,5 +1,5 @@
 export Header from './header/header';
 export MyStreets from './my-streets/my-streets';
 export SearchStreet from './search-street/search-street';
-export Dashboard from './dashboard/dashboard';
 export Profile from './profile/profile';
+export Dashboard from './dashboard/dashboard';

@@ -1,29 +1,21 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import SearchStreet from 'components/search-street/search-street';
-import { searchStreet } from 'actions/searchActions';
+import React, { PropTypes } from 'react';
+import { SearchStreet } from 'components';
 import './dashboard.scss';
 
+export default function Dashboard(props) {
+    const { searchStreet } = props;
 
-class Dashboard extends React.Component {
-
-    constructor(props) {
-        super(props);
-
-    }
-
-    render() {
-        const {searchStreet} = this.props;
-
-        return (
-            <div>
-                <div className="n-dashboard-wrapper"></div>
-                <div className="n-dashboard-search">
-                    <SearchStreet searchStreet={searchStreet}/>
-                </div>
+    return (
+        <div>
+            <div className='n-dashboard-wrapper' />
+            <div className='n-dashboard-search'>
+                <SearchStreet searchStreet={searchStreet} />
             </div>
-        )
-    }
+        </div>
+    );
 }
 
-export default connect(null, {searchStreet})(Dashboard);
+Dashboard.propTypes = {
+    street: PropTypes.object.isRequired,
+    searchStreet: PropTypes.func.isRequired,
+};
