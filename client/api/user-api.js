@@ -5,7 +5,7 @@ export function getFacebookLogin(user) {
     return new Promise((resolve, reject) => {
         $.ajax(`${config.user}/login/facebook`, {
             method: 'POST',
-            data: user,
+            data: JSON.stringify(user),
             success: (res, status, xhr) => resolve(res),
             error: (xhr, status, error) => reject(xhr.responseJSON),
         });

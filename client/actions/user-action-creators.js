@@ -5,19 +5,21 @@ export function facebookLoginSucceeded(user) {
     return dispatch => {
         dispatch({
             type: userActionTypes.FACEBOOK_LOGIN_SUCCEEDED,
+            data: { user },
         });
 
         userApi.getFacebookLogin(user)
             .then(
-                response => dispatch(mystreetLoginSucceeded()),
+                response => dispatch(mystreetLoginSucceeded(response)),
                 error => dispatch(mystreetLoginFailed()),
             );
     };
 }
 
-function mystreetLoginSucceeded() {
+function mystreetLoginSucceeded(user) {
     return {
         type: userActionTypes.LOGIN_SUCCEEDED,
+        data: { ...user },
     };
 }
 

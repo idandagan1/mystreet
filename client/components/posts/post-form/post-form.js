@@ -2,7 +2,7 @@ import React from 'react';
 import { Strings } from 'resources';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { createPost } from 'actions/postActions';
+import { createPost } from 'actions/post-action-creators';
 import './post-form.scss';
 
 class PostForm extends React.Component {

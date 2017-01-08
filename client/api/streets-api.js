@@ -10,3 +10,14 @@ export function getStreet(placeId) {
         });
     });
 }
+
+export function addStreet(street) {
+    return new Promise((resolve, reject) => {
+        $.ajax(`${config.mystreets}/addStreet`, {
+            method: 'POST',
+            data: JSON.stringify(street),
+            success: (res, status, xhr) => resolve(res),
+            error: (xhr, status, error) => reject(xhr.responseJSON),
+        });
+    });
+}

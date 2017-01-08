@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as searchActions from 'actions/searchActions';
+import * as searchActions from 'actions/search-action-creators';
 import { Dashboard } from 'components';
 
 const select = state => ({

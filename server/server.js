@@ -5,7 +5,6 @@ import mongoose from 'mongoose';
 import session from 'express-session';
 import expressValidator from 'express-validator';
 import routes from './routes/';
-import passportConfig from './config/passport';
 
 const SERVER_DEV_PORT = 8001;
 const port = process.env.PORT || SERVER_DEV_PORT;
@@ -25,8 +24,14 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 app.use(expressValidator());
 
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH');
+    next();
+});
+
 app.use(log('dev'));
-passportConfig(app);
 app.use(routes);
 
 app.listen(port, () => {

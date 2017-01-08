@@ -17,36 +17,7 @@ export default function (app) {
     },
     (token, refreshToken, profile, done) => {
         // asynchronous
-        process.nextTick(() => {
-            const { id, displayName } = profile;
-            // find the user in the database based on their facebook id
-            User.findOne({ 'facebook.id': id }, (err, user) => {
-                // if there is an error, stop everything and return that
-                // ie an error connecting to the database
-                if (err) return done(err);
-                // if the user is found, then log them in
-                if (!user) {
-                    const newUser = new User({
-                        facebook: {
-                            id,
-                            token,
-                            name: displayName,
-                        },
-                        name: displayName,
-                    });
-
-                    newUser.save(error => {
-                        if (error) throw error;
-                        return done(error, newUser);
-                    });
-                } else {
-                    user.local.lastLogged = Date.now();
-                    user.save();
-                    return done(err, user); // user found, return that user
-                }
-
-            });
-        });
+        process.nextTick(() => {});
     }));
 
     passport.serializeUser((user, done) => {

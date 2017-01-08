@@ -68,40 +68,39 @@ router.get('/getFriends', (req, res) => {
     });
 });
 
-router.post('/login/facebook',
-    (req, res) => {
-        console.log('IN HERE', req.body);
-        const { id, name, accessToken: token } = req.body;
+router.post('/login/facebook', (req, res) => {
+    const { id, name, accessToken: token } = req.body;
+
+    // find the user in the database based on their facebook id
+    User.findOne({ 'facebook.id': id }, (err, user) => {
         let sessionUser;
 
-        // find the user in the database based on their facebook id
-        User.findOne({ 'facebook.id': id }, (err, user) => {
-            // if the user is found, then log them in
-            if (!user) {
-                const newUser = new User({
-                    facebook: {
-                        id,
-                        token,
-                        name,
-                    },
+        // if the user is found, then log them in
+        if (!user) {
+            const newUser = new User({
+                facebook: {
+                    id,
+                    token,
                     name,
-                });
+                },
+                name,
+            });
 
-                newUser.save(error => {
-                    if (error) throw error;
-                });
+            newUser.save(error => {
+                if (error) throw error;
+            });
 
-                sessionUser = newUser;
-            } else {
-                user.local.lastLogged = Date.now();
-                user.save();
-                sessionUser = user;
-            }
+            sessionUser = newUser;
+        } else {
+            user.local.lastLogged = Date.now();
+            user.save();
+            sessionUser = user;
+        }
 
-        });
-        console.log(sessionUser);
         req.session.user = sessionUser;
+        res.send({ user: sessionUser });
     });
+});
 
 router.post('/updateBasicInfo', (req, res) => {
 

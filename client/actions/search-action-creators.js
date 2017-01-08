@@ -1,4 +1,4 @@
-import * as mystreetsApi from 'api/mystreets-api';
+import * as streetsApi from 'api/streets-api';
 import searchActionTypes from './search-action-types';
 
 export function searchStreetSubmitted(streetObject) {
@@ -8,7 +8,7 @@ export function searchStreetSubmitted(streetObject) {
             data: { streetObject },
         });
 
-        mystreetsApi.getStreet(streetObject.placeId)
+        streetsApi.getStreet(streetObject.placeId)
             .then(
                 response => dispatch(searchStreetSucceeded(response)),
                 error => dispatch(searchStreetFailed(error)),
