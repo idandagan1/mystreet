@@ -1,29 +1,34 @@
 import * as userApi from 'api/user-api';
+import { push } from 'react-router-redux';
 import userActionTypes from './user-action-types';
 
-export function facebookLoginSucceeded(user) {
+export function facebookLoginSubmitted(user) {
     return dispatch => {
         dispatch({
-            type: userActionTypes.FACEBOOK_LOGIN_SUCCEEDED,
+            type: userActionTypes.FACEBOOK_LOGIN_SUBMITTED,
             data: { user },
         });
 
         userApi.getFacebookLogin(user)
             .then(
-                response => dispatch(mystreetLoginSucceeded(response)),
-                error => dispatch(mystreetLoginFailed()),
+                response => dispatch(loginSucceded(response)),
+                error => dispatch(loginFailed()),
             );
     };
 }
 
-function mystreetLoginSucceeded(user) {
-    return {
-        type: userActionTypes.LOGIN_SUCCEEDED,
-        data: { ...user },
+function loginSucceded(user) {
+    return dispatch => {
+        dispatch({
+            type: userActionTypes.LOGIN_SUCCEEDED,
+            data: { ...user },
+        });
+
+        dispatch(push('/mystreets'));
     };
 }
 
-function mystreetLoginFailed() {
+function loginFailed() {
     return {
         type: userActionTypes.LOGIN_FAILED,
     };

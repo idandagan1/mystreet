@@ -1,0 +1,44 @@
+.n-mystreet {
+    margin-top: 20px;
+    padding: 0 40px;
+
+    &-leftCol {
+        height: 300px;
+        border: black 1px solid;
+    }
+
+    &-members-panel{
+        text-align: center;
+    }
+
+    &-member{
+        height: 35px;
+        width: 100px;
+        margin: auto;
+        display: block;
+    }
+
+    &-member-name{
+        font-weight: bold;
+        padding: 5px;
+    }
+
+    &-group-details{
+        text-align: center;
+    }
+
+    &-content{
+        maring:0px;
+    }
+
+    &__add-street {
+        display: flex;
+        margin-left: -5px;
+
+        &-btn{
+            height: 35px;
+            background: orange;
+            border-color: grey;
+        }
+    }
+}

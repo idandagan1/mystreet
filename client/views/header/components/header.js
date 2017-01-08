@@ -9,11 +9,12 @@ import './header.scss';
 export default class Header extends Component {
     static propTypes = {
         isAuthenticated: PropTypes.bool.isRequired,
-        facebookLoginSucceeded: PropTypes.func.isRequired,
+        loginSubmitted: PropTypes.func.isRequired,
+        user: PropTypes.object.isRequired,
     };
 
     render() {
-        const { isAuthenticated, facebookLoginSucceeded } = this.props;
+        const { isAuthenticated, loginSubmitted, user: { name } } = this.props;
 
         return (
             <nav className='navbar navbar-default n-header-theme'>
@@ -46,11 +47,11 @@ export default class Header extends Component {
                         <ul className='nav navbar-nav navbar-right'>
                             {
                                 isAuthenticated ?
-                                    <ProfileButton name={this.state.name} /> :
+                                    <ProfileButton name={name} /> :
                                     <FacebookLogin
                                         appId='678252172335402'
                                         isLoggedIn={isAuthenticated}
-                                        callback={facebookLoginSucceeded}
+                                        callback={loginSubmitted}
                                     >
                                         Login
                                     </FacebookLogin>

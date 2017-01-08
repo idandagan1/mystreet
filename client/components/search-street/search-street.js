@@ -1,5 +1,4 @@
 import React, { PropTypes, Component } from 'react';
-import { Strings } from 'resources';
 import GoogleSearch from 'components/google-search/google-search';
 import './search-street.scss';
 

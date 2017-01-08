@@ -1,4 +1,4 @@
-const Strings = {
+export default {
     search: 'Search',
     post: 'Post',
     postPlaceholder: 'What\'s on your mind?',
@@ -8,8 +8,5 @@ const Strings = {
     comment: 'Comment',
     emptyLikes: 'Be the first to like this.',
     youLikedIt: 'You liked it',
-    memberstitle: 'Members'
-
-}
-
-export default Strings;
+    memberstitle: 'Members',
+};

@@ -1,60 +1,42 @@
+/* eslint-disable no-undef */
 import React from 'react';
 import './map.scss';
 
-class Map extends React.Component {
+export default class Map extends React.Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
             mapOptions: {
-                center: {lat: 40.9418601, lng: 13.5616095},
+                center: { lat: 40.9418601, lng: 13.5616095 },
                 zoom: 10,
-                scrollwheel: false
-            }
-        }
+                scrollwheel: false,
+            },
+        };
     }
 
     componentDidMount() {
+        const { mapOptions } = this.state;
 
-        let browserSupportFlag = new Boolean();
+        const map = new google.maps.Map(this.mainMap, mapOptions);
 
-        const map = new google.maps.Map(this.refs.mainMap, this.state.mapOptions),
-            newyork = new google.maps.LatLng(40.69847032728747, -73.9514422416687);
-
-            // Try W3C Geolocation (Preferred)
+        // Try W3C Geolocation (Preferred)
         if (navigator && navigator.geolocation) {
-            browserSupportFlag = true;
-            navigator.geolocation.getCurrentPosition( (position) => {
-                this.setState({initialLocation: new google.maps.LatLng(position.coords.latitude, position.coords.longitude)});
-                map.setCenter(this.state.initialLocation);
+            navigator.geolocation.getCurrentPosition((position) => {
+                map.setCenter(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
                 map.setZoom(17);
             }, () => {
-                handleNoGeolocation(browserSupportFlag);
+                map.setCenter(mapOptions.center);
             });
-        }
-
-        // Browser doesn't support Geolocation
-        else {
-            browserSupportFlag = false;
-            handleNoGeolocation(browserSupportFlag);
-        }
-        function handleNoGeolocation(errorFlag) {
-            if (errorFlag == true) {
-                initialLocation = newyork;
-            } else {
-                initialLocation = newyork;
-            }
-            map.setCenter(initialLocation);
+        } else { // Browser doesn't support Geolocation
+            map.setCenter(mapOptions.center);
         }
     }
 
     render() {
         return (
-            <div ref="mainMap" className="n-map-wrapper"></div>
-        )
+            <div ref={mainMap => { this.mainMap = mainMap; }} className='n-map-wrapper'></div>
+        );
     }
 
 }
-
-export default Map;
-

@@ -19,7 +19,7 @@ const initialState = {
 
 export default createReducer(initialState, {
     [userActionTypes.LOGIN_SUCCEEDED](state, action) {
-        const { data: { local, name } } = action;
+        const { data: { user: { local, name } } } = action;
 
         return {
             ...state,
@@ -28,8 +28,8 @@ export default createReducer(initialState, {
         };
     },
 
-    [userActionTypes.FACEBOOK_LOGIN_SUCCEEDED](state, action) {
-        const { data: { accessToken: token, id, name } } = action;
+    [userActionTypes.FACEBOOK_LOGIN_SUBMITTED](state, action) {
+        const { data: { user: { accessToken: token, id, name } } } = action;
         const facebook = { id, name, token };
 
         return {

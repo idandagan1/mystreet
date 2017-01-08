@@ -10,7 +10,7 @@ const store = configureStore();
 
 const Application = (
     <Provider store={store}>
-        <AppRouter />
+        <AppRouter store={store} />
     </Provider>
 );
 
