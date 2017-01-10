@@ -3,10 +3,17 @@ import { Router, Route, browserHistory, IndexRoute } from 'react-router';
 import { AppLayout, Dashboard, MyStreets } from 'views';
 import { Profile } from 'components';
 import { syncHistoryWithStore } from 'react-router-redux';
+import * as appActions from 'actions/app-action-creators';
 
 export default class AppRouter extends Component {
     static propTypes = {
         store: PropTypes.object.isRequired,
+    }
+
+    componentDidMount() {
+        const { store } = this.props;
+        const { dispatch } = store;
+        dispatch(appActions.appLoaded());
     }
 
     render() {

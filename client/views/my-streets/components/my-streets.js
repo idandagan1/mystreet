@@ -8,7 +8,18 @@ import './my-streets.scss';
 export default class MyStreets extends React.Component {
 
     static propTypes = {
+        activeStreet: PropTypes.shape({
+            street: PropTypes.string,
+            placeId: PropTypes.string,
+            location: PropTypes.shape({
+                lng: PropTypes.number,
+                lat: PropTypes.number,
+            }),
+        }),
+
         createPost: PropTypes.func.isRequired,
+        searchStreetSubmitted: PropTypes.func.isRequired,
+        addStreetSubmitted: PropTypes.func.isRequired,
     };
 
     constructor(props) {
@@ -36,24 +47,36 @@ export default class MyStreets extends React.Component {
         );
     }
 
+    handleAddStreet = e => {
+        const { addStreetSubmitted, activeStreet } = this.props;
+        addStreetSubmitted(activeStreet);
+    };
+
+    handleSearchStreet = street => {
+        const { searchStreetSubmitted } = this.props;
+        searchStreetSubmitted(street);
+    };
+
     render() {
         const { currentWriter, postfeed, members } = this.state;
-        const { createPost } = this.props;
+        const { createPost, activeStreet: { placeId, location: { lat, lng } } } = this.props;
 
         return (
             <div className='n-mystreet'>
                 <div className='n-mystreet__add-street'>
-                    <GoogleSearch onSubmit={this.onSubmit} />
+                    <GoogleSearch onSubmit={this.handleSearchStreet} />
                     <button
                         type='submit'
                         className='n-mystreet__add-street-btn btn btn-sm n-btn-post'
+                        disabled={!placeId}
+                        onClick={this.handleAddStreet}
                     >
                         Add Street
                     </button>
                 </div>
                 <ol className='list-inline'>
                     <li className='n-mystreet-leftCol col-md-3'>
-                        <Map />
+                        <Map lat={lat} lng={lng} />
                     </li>
                     <li className='n-mystreet-content col-md-4'>
                         <div>

@@ -40,7 +40,7 @@ export default class GoogleSearch extends Component {
         });
     }
 
-    onSubmit() {
+    handleSearchClicked = e => {
         const { onSubmit } = this.props;
         const { short_name, location, placeId } = this.state;
         const res = {
@@ -50,7 +50,7 @@ export default class GoogleSearch extends Component {
         };
 
         onSubmit(res);
-    }
+    };
 
     render() {
         return (
@@ -68,7 +68,7 @@ export default class GoogleSearch extends Component {
                     </li>
                     <li>
                         <Link to='/mystreets'>
-                            <button onClick={this.onSubmit} className='btn n-btn-search'>
+                            <button onClick={this.handleSearchClicked} className='btn n-btn-search'>
                                 {Strings.search}
                             </button>
                         </Link>

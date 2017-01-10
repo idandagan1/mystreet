@@ -1,5 +1,5 @@
 import React, { PropTypes, Component } from 'react';
-import GoogleSearch from 'components/google-search/google-search';
+import { GoogleSearch } from 'components';
 import './search-street.scss';
 
 export default class SearchStreet extends Component {
@@ -8,16 +8,7 @@ export default class SearchStreet extends Component {
         searchStreet: PropTypes.func.isRequired,
     };
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            streetname: '',
-        };
-
-        this.onSubmit = this.onSubmit.bind(this);
-    }
-
-    onSubmit(street) {
+    handleSubmit = street => {
         const { searchStreet } = this.props;
         searchStreet(street);
     }
@@ -28,7 +19,7 @@ export default class SearchStreet extends Component {
             <div className='n-street-search'>
                 <div className='navbar-form'>
                     <div className='form-group'>
-                        <GoogleSearch onSubmit={this.onSubmit} />
+                        <GoogleSearch onSubmit={this.handleSubmit} />
                     </div>
                 </div>
             </div>

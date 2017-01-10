@@ -39,6 +39,10 @@
             height: 35px;
             background: orange;
             border-color: grey;
+
+            &:hover {
+                color: #333333;
+            }
         }
     }
 }

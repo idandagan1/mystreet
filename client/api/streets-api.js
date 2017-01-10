@@ -11,11 +11,19 @@ export function getStreet(placeId) {
     });
 }
 
-export function addStreet(street) {
+export function addStreet(street, userId) {
+    const { placeId: place_id, street: name, location } = street;
+    const data = {
+        place_id,
+        name,
+        location,
+        userId,
+    };
+
     return new Promise((resolve, reject) => {
         $.ajax(`${config.mystreets}/addStreet`, {
             method: 'POST',
-            data: JSON.stringify(street),
+            data: JSON.stringify(data),
             success: (res, status, xhr) => resolve(res),
             error: (xhr, status, error) => reject(xhr.responseJSON),
         });
