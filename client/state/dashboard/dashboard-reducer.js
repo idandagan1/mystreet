@@ -1,5 +1,5 @@
 import createReducer from 'util/create-reducer';
-import searchActionTypes from 'actions/search-action-types';
+import dashboardActionTypes from 'actions/dashboard-action-types';
 
 const initialState = {
     street: '',
@@ -11,7 +11,7 @@ const initialState = {
 };
 
 export default createReducer(initialState, {
-    [searchActionTypes.SUCCEEDED](state, action) {
+    [dashboardActionTypes.SEARCH_SUCCEEDED](state, action) {
         const { data: { streetObject } } = action;
 
         return {
@@ -20,7 +20,7 @@ export default createReducer(initialState, {
         };
     },
 
-    [searchActionTypes.FAILED]() {
+    [dashboardActionTypes.SEARCH_FAILED]() {
         return {
             ...initialState,
         };

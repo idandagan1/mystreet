@@ -1,11 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as searchActions from 'actions/search-action-creators';
+import * as dashboardActions from 'actions/dashboard-action-creators';
 import { Dashboard } from 'components';
 
 const select = state => ({
-    street: state.street,
+    ...state.dashboard,
 });
 
 function DashboardConnector(props) {
@@ -14,7 +14,7 @@ function DashboardConnector(props) {
     return (
         <Dashboard
             {...props}
-            {...bindActionCreators(searchActions, dispatch)}
+            {...bindActionCreators(dashboardActions, dispatch)}
         />
     );
 }

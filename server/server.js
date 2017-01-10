@@ -15,9 +15,13 @@ mongoose.connect('mongodb://localhost/mystreet');
 
 app.use(session({
     secret: 'keyboard cat',
-    resave: true,
-    saveUninitialized: true,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        httpOnly: false,
+    },
 }));
+
 app.use(bodyParser.urlencoded({
     extended: true,
 }));

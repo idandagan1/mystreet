@@ -95,7 +95,7 @@ router.get('/getStreet', (req, res) => {
             req.session.save();
         }
 
-        return res.status({ status: 'ok' }).send({ street });
+        return res.status(200).send(street);
     });
 });
 
@@ -179,7 +179,7 @@ router.post('/addStreet', (req, res) => {
     // const address = req.body.address;
     const streetName = req.body.name;
     const placeID = req.body.place_id;
-    const userID = req.session.user._id;
+    const userID = req.body.userId;
     const location = [req.body.location.lng, req.body.location.lat];
 
     // req.check('address', 'Address is empty').notEmpty();
@@ -214,7 +214,7 @@ router.post('/addStreet', (req, res) => {
             }
             req.session.save();
 
-            User.findOneAndUpdate({ _id: userID },
+            User.findOneAndUpdate({ 'facebook.id': userID },
                 { $addToSet: { 'local.streets': req.session.streetID } },
                 { new: true, passRawResult: true }).exec((error, user) => {
                     if (user) {

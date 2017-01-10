@@ -98,7 +98,7 @@ router.post('/login/facebook', (req, res) => {
         }
 
         req.session.user = sessionUser;
-        res.send({ user: sessionUser });
+        res.status(200).send({ user: sessionUser });
     });
 });
 

@@ -3,19 +3,18 @@ import { SearchStreet } from 'components';
 import './dashboard.scss';
 
 export default function Dashboard(props) {
-    const { searchStreetSubmitted } = props;
+    const { dashboardSearchSubmitted } = props;
 
     return (
         <div>
             <div className='n-dashboard-wrapper' />
             <div className='n-dashboard-search'>
-                <SearchStreet searchStreet={searchStreetSubmitted} />
+                <SearchStreet searchStreet={dashboardSearchSubmitted} />
             </div>
         </div>
     );
 }
 
 Dashboard.propTypes = {
-    street: PropTypes.object.isRequired,
-    searchStreetSubmitted: PropTypes.func.isRequired,
+    dashboardSearchSubmitted: PropTypes.func.isRequired,
 };
