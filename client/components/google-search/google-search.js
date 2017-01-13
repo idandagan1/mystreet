@@ -13,13 +13,15 @@ export default class GoogleSearch extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            short_name: '',
+            streetName: '',
             placeId: '',
             location: {
                 lat: null,
                 lng: null,
             },
         };
+
+        this.handleSearchClicked = this.handleSearchClicked.bind(this);
     }
 
     componentDidMount() {
@@ -30,7 +32,7 @@ export default class GoogleSearch extends Component {
         google.maps.event.addListener(autocomplete, 'place_changed', () => {
             const place = autocomplete.getPlace();
             this.setState({
-                short_name: place.address_components[0].short_name,
+                streetName: place.address_components[0].short_name,
                 placeId: place.place_id,
                 location: {
                     lng: place.geometry.location.lng(),
@@ -42,9 +44,9 @@ export default class GoogleSearch extends Component {
 
     handleSearchClicked = e => {
         const { onSubmit } = this.props;
-        const { short_name, location, placeId } = this.state;
+        const { streetName, location, placeId } = this.state;
         const res = {
-            street: short_name,
+            streetName,
             location,
             placeId,
         };
@@ -68,7 +70,7 @@ export default class GoogleSearch extends Component {
                     </li>
                     <li>
                         <Link to='/mystreets'>
-                            <button onClick={this.handleSearchClicked} className='btn n-btn-search'>
+                            <button onClick={this.handleSearchClicked} className='btn n-search-btn-search'>
                                 {Strings.search}
                             </button>
                         </Link>

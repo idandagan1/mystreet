@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as headerActions from 'actions/header-action-creators';
+import * as headerActions from './state/header-action-creators';
 import Header from './components/header';
 
 const select = state => ({
