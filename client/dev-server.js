@@ -9,4 +9,4 @@ function startServerCallback(err, result) {
     console.log(`Listening at http://localhost:${CLIENT_DEV_PORT}/`);
 }
 
-new WebpackDevServer(webpack(config)).listen(CLIENT_DEV_PORT, startServerCallback);
+new WebpackDevServer(webpack(config), { historyApiFallback: true }).listen(CLIENT_DEV_PORT, startServerCallback);
