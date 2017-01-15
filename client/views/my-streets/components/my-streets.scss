@@ -28,9 +28,19 @@
     }
 
     &-content{
-        maring:0px;
+        margin:0px;
     }
 
+    &-page-header{
+        text-align: center;
+        padding-bottom: 9px;
+        border-bottom: 1px solid #eed;
+    }
+
+    &-street-name{
+        margin: auto;
+        font-size: 24px;
+    }
     &__add-street {
         display: flex;
         margin-left: -5px;

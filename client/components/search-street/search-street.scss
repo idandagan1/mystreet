@@ -1,22 +1,24 @@
-.n-search-wrapper{
-  text-align: center;
-    padding: 0px;
-}
+.n-search{
+    &-wrapper {
+        text-align: center;
+        padding: 0px;
+    }
 
-.n-btn-search{
-  background: orange;
-  border-color: grey;
-}
+    &-textfield{
+        width:200px;
+    }
 
-.n-btn-search:hover{
-  background: #ffa500;
-  color:whitesmoke;
+    &-btn-search{
+        background: orange;
+        border-color: grey;
+    }
+
+    &-btn-search:hover{
+        background: #ffa500;
+        color:whitesmoke;
+    }
 }
 
 .n-street-search{
     margin: 25% auto;
-}
-
-.n-search-textfield{
-    width:200px;
 }

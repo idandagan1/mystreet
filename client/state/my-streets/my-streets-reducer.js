@@ -2,8 +2,8 @@ import createReducer from 'util/create-reducer';
 import myStreetsActionTypes from 'actions/my-streets-action-types';
 
 const initialState = {
-    activeStreet: {
-        street: '',
+    selectedStreet: {
+        streetName: '',
         placeId: '',
         location: {
             lng: 34.7818,
@@ -18,7 +18,7 @@ export default createReducer(initialState, {
 
         return {
             ...state,
-            activeStreet: streetObject,
+            selectedStreet: streetObject,
         };
     },
 
