@@ -1,4 +1,6 @@
+const apiUrl = 'http://localhost:8001';
+
 export default {
-    user: 'http://localhost:8001/user',
-    mystreets: 'http://localhost:8001/mystreets',
+    user: `${apiUrl}/user`,
+    mystreets: `${apiUrl}/mystreets`,
 };
