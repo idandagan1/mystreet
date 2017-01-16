@@ -39,6 +39,8 @@ export default class MyStreets extends React.Component {
             currentWriter: '',
             members: [],
         };
+
+        this.onJoinClick = this.onJoinClick.bind(this);
     }
 
     updatePostFeed(newPost) {

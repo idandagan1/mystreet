@@ -16,12 +16,8 @@ export default class SearchStreet extends Component {
     render() {
 
         return (
-            <div className='n-street-search'>
-                <div className='navbar-form'>
-                    <div className='form-group'>
-                        <GoogleSearch onSubmit={this.handleSubmit} />
-                    </div>
-                </div>
+            <div className='form-group'>
+                <GoogleSearch onSubmit={this.handleSubmit} />
             </div>
         );
     }
