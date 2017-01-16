@@ -167,8 +167,7 @@ router.get('/getAdmins', (req, res) => {
 router.post('/addStreet', (req, res) => {
     // This method is execute when the user choose a street the already exist
     // and click on the "Add Street" button.
-
-    // TO DO: Change parameters.
+  
     // const address = req.body.address;
     const { streetName, place_id } = req.body;
     const location = [req.body.location.lng, req.body.location.lat]
