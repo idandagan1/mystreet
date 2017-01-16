@@ -10,22 +10,24 @@ export function dashboardSearchSubmitted(streetObject) {
 
         streetsApi.getStreet(streetObject.placeId)
             .then(
-                response => dispatch(dashboardSearchSucceeded(response)),
-                error => dispatch(dashboardSearchFailed(error)),
+                response => dispatch(dashboardSearchSucceeded(streetObject, response)),
+                error => dispatch(dashboardSearchFailed(streetObject, error)),
             );
     };
 }
 
-export function dashboardSearchSucceeded(streetObject) {
+export function dashboardSearchSucceeded(selectedStreet, response) {
     return {
         type: dashboardActionTypes.SEARCH_SUCCEEDED,
-        data: { streetObject },
+
+        data: { selectedStreet },
     };
 }
 
-export function dashboardSearchFailed(error) {
+export function dashboardSearchFailed(selectedStreet, error) {
     return {
         type: dashboardActionTypes.SEARCH_FAILED,
-        data: { error },
+
+        data: { selectedStreet },
     };
 }

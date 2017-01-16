@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { PostForm, Post, GoogleSearch, Map } from 'components';
+import { PostForm, Post, Map } from 'components';
 import { Strings } from 'resources';
 import usericon from 'resources/images/profile.png';
 import './my-streets.scss';
@@ -10,10 +10,19 @@ export default class MyStreets extends React.Component {
     static propTypes = {
         selectedStreet: PropTypes.shape({
             streetName: PropTypes.string,
-            placeId: PropTypes.string,
+            place_id: PropTypes.string,
             location: PropTypes.shape({
                 lng: PropTypes.number,
                 lat: PropTypes.number,
+            }),
+        }),
+        activeUser: PropTypes.shape({
+            name: PropTypes.string,
+            local: PropTypes.shape({
+                isPremium: PropTypes.bool,
+                lastLogged: PropTypes.string,
+                primaryStreet: PropTypes.string,
+                streets: PropTypes.array,
             }),
         }),
         isAuthenticated: PropTypes.bool.isRequired,
@@ -28,7 +37,7 @@ export default class MyStreets extends React.Component {
             isMember: false,
             postfeed: [],
             currentWriter: '',
-            members: ['Idan', 'Michael', 'Daniel'],
+            members: [],
         };
 
         this.onJoinClick = this.onJoinClick.bind(this);
@@ -45,15 +54,17 @@ export default class MyStreets extends React.Component {
         return (
             <div className='n-mystreet-member' key={i}>
                 <img alt='user-icon' src={usericon} className='n-comment-user-icon' />
-                <div className='n-member-name'>{member}</div>
+                <span className='n-member-name'>{member}</span>
             </div>
         );
     }
 
-    onJoinClick() {
-        const { addStreetSubmitted, selectedStreet } = this.props;
+    onJoinClick = () => {
+        const { members } = this.state;
+        const { addStreetSubmitted, selectedStreet, activeUser: { name } } = this.props;
 
-        addStreetSubmitted({ selectedStreet });
+        addStreetSubmitted(selectedStreet);
+        members.push(name);
         this.setState({ isMember: true });
     }
 

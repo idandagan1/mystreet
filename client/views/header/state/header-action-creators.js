@@ -19,8 +19,8 @@ export function searchSubmitted(query) {
             data: { query },
         });
 
-        if (query.placeId) {
-            streetsApi.getStreet(query.placeId)
+        if (query.place_id) {
+            streetsApi.getStreet(query.place_id)
                 .then(
                     response => dispatch(streetSearchSucceeded(response)),
                     error => dispatch(streetSearchFailed(error)),

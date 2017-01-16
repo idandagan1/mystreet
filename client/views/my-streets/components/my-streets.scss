@@ -13,7 +13,7 @@
 
     &-member{
         height: 35px;
-        width: 100px;
+        width: 130px;
         margin: auto;
         display: block;
     }
@@ -25,6 +25,7 @@
 
     &-group-details{
         text-align: center;
+        min-height: 70px;
     }
 
     &-content{
@@ -33,6 +34,8 @@
 
     &-page-header{
         text-align: center;
+        font-size: 35px;
+        font-weight: bold;
         padding-bottom: 9px;
         border-bottom: 1px solid #eed;
     }

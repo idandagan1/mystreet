@@ -14,7 +14,7 @@ export default class GoogleSearch extends Component {
         super(props);
         this.state = {
             streetName: '',
-            placeId: '',
+            place_id: '',
             location: {
                 lat: null,
                 lng: null,
@@ -33,7 +33,7 @@ export default class GoogleSearch extends Component {
             const place = autocomplete.getPlace();
             this.setState({
                 streetName: place.address_components[0].short_name,
-                placeId: place.place_id,
+                place_id: place.place_id,
                 location: {
                     lng: place.geometry.location.lng(),
                     lat: place.geometry.location.lat(),
@@ -44,13 +44,13 @@ export default class GoogleSearch extends Component {
 
     handleSearchClicked = e => {
         const { onSubmit } = this.props;
-        const { streetName, location, placeId } = this.state;
+        const { streetName, location, place_id } = this.state;
         const res = {
             streetName,
             location,
-            placeId,
+            place_id,
         };
-
+        this.search.value = '';
         onSubmit(res);
     };
 

@@ -8,7 +8,7 @@ import ProfileButton from './profile-button';
 import './header.scss';
 
 
-function Header(props) {
+export default function Header(props) {
 
     const { isAuthenticated, loginSubmitted, searchSubmitted, user: { name } } = props;
 
@@ -71,5 +71,3 @@ Header.propTypes = {
     searchSubmitted: PropTypes.func.isRequired,
     user: PropTypes.object.isRequired,
 };
-
-export default Header;
