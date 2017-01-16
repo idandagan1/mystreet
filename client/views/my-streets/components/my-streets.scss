@@ -13,7 +13,7 @@
 
     &-member{
         height: 35px;
-        width: 100px;
+        width: 130px;
         margin: auto;
         display: block;
     }
@@ -25,12 +25,25 @@
 
     &-group-details{
         text-align: center;
+        min-height: 70px;
     }
 
     &-content{
-        maring:0px;
+        margin:0px;
     }
 
+    &-page-header{
+        text-align: center;
+        font-size: 35px;
+        font-weight: bold;
+        padding-bottom: 9px;
+        border-bottom: 1px solid #eed;
+    }
+
+    &-street-name{
+        margin: auto;
+        font-size: 24px;
+    }
     &__add-street {
         display: flex;
         margin-left: -5px;

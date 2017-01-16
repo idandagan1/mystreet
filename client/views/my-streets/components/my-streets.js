@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { PostForm, Post, GoogleSearch, Map } from 'components';
+import { PostForm, Post, Map } from 'components';
 import { Strings } from 'resources';
 import usericon from 'resources/images/profile.png';
 import './my-streets.scss';
@@ -8,15 +8,24 @@ import './my-streets.scss';
 export default class MyStreets extends React.Component {
 
     static propTypes = {
-        activeStreet: PropTypes.shape({
-            street: PropTypes.string,
-            placeId: PropTypes.string,
+        selectedStreet: PropTypes.shape({
+            streetName: PropTypes.string,
+            place_id: PropTypes.string,
             location: PropTypes.shape({
                 lng: PropTypes.number,
                 lat: PropTypes.number,
             }),
         }),
-
+        activeUser: PropTypes.shape({
+            name: PropTypes.string,
+            local: PropTypes.shape({
+                isPremium: PropTypes.bool,
+                lastLogged: PropTypes.string,
+                primaryStreet: PropTypes.string,
+                streets: PropTypes.array,
+            }),
+        }),
+        isAuthenticated: PropTypes.bool.isRequired,
         createPost: PropTypes.func.isRequired,
         searchStreetSubmitted: PropTypes.func.isRequired,
         addStreetSubmitted: PropTypes.func.isRequired,
@@ -25,9 +34,10 @@ export default class MyStreets extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            isMember: false,
             postfeed: [],
             currentWriter: '',
-            members: ['Idan', 'Michael', 'Daniel'],
+            members: [],
         };
     }
 
@@ -42,14 +52,23 @@ export default class MyStreets extends React.Component {
         return (
             <div className='n-mystreet-member' key={i}>
                 <img alt='user-icon' src={usericon} className='n-comment-user-icon' />
-                <div className='n-member-name'>{member}</div>
+                <span className='n-member-name'>{member}</span>
             </div>
         );
     }
 
+    onJoinClick = () => {
+        const { members } = this.state;
+        const { addStreetSubmitted, selectedStreet, activeUser: { name } } = this.props;
+
+        addStreetSubmitted(selectedStreet);
+        members.push(name);
+        this.setState({ isMember: true });
+    }
+
     handleAddStreet = e => {
-        const { addStreetSubmitted, activeStreet } = this.props;
-        addStreetSubmitted(activeStreet);
+        const { addStreetSubmitted, selectedStreet } = this.props;
+        addStreetSubmitted(selectedStreet);
     };
 
     handleSearchStreet = street => {
@@ -58,21 +77,26 @@ export default class MyStreets extends React.Component {
     };
 
     render() {
-        const { currentWriter, postfeed, members } = this.state;
-        const { createPost, activeStreet: { placeId, location: { lat, lng } } } = this.props;
+        const { currentWriter, postfeed, members, isMember } = this.state;
+        const { createPost, isAuthenticated, selectedStreet: { placeId, streetName, location: { lat, lng } } } = this.props;
 
         return (
             <div className='n-mystreet'>
+                <div className='n-mystreet-page-header'>{ streetName }</div>
                 <div className='n-mystreet__add-street'>
-                    <GoogleSearch onSubmit={this.handleSearchStreet} />
-                    <button
-                        type='submit'
-                        className='n-mystreet__add-street-btn btn btn-sm n-btn-post'
-                        disabled={!placeId}
-                        onClick={this.handleAddStreet}
-                    >
-                        Add Street
-                    </button>
+                    {
+                        isMember ?
+                            null :
+                            <button
+                                type='submit'
+                                className='n-mystreet__add-street-btn btn btn-sm n-btn-post'
+                                onClick={this.onJoinClick}
+                                disabled={!isAuthenticated}
+                                title='You must sign in'
+                            >
+                                { Strings.join }
+                            </button>
+                    }
                 </div>
                 <ol className='list-inline'>
                     <li className='n-mystreet-leftCol col-md-3'>
@@ -81,8 +105,12 @@ export default class MyStreets extends React.Component {
                     <li className='n-mystreet-content col-md-4'>
                         <div>
                             <div>
-                                <div id='streetResult' className='container'></div>
-                                <PostForm updatePostFeed={this.updatePostFeed} createPost={createPost} />
+                                <div id='streetResult' className='container' />
+                                {
+                                    isMember ?
+                                        <PostForm updatePostFeed={this.updatePostFeed} createPost={createPost} /> :
+                                        null
+                                }
                                 <div>{currentWriter}</div>
                                 <div> {postfeed.map((post, i) => <Post key={i} content={post} />)} </div>
                             </div>

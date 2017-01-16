@@ -16,6 +16,9 @@ const Application = (
 
 $.ajaxSetup({
     contentType: 'application/json',
+    xhrFields: {
+        withCredentials: true,
+    },
 });
 
 ReactDOM.render(Application, document.getElementById('application'));

@@ -12,7 +12,7 @@ export default class Map extends Component {
         const { lat, lng } = this.props;
         this.mapOptions = {
             center: { lat, lng },
-            zoom: 10,
+            zoom: 17,
             scrollwheel: false,
         };
 
@@ -31,7 +31,7 @@ export default class Map extends Component {
 
         this.mapOptions = {
             center: { lat, lng },
-            zoom: 10,
+            zoom: 17,
             scrollwheel: false,
         };
 

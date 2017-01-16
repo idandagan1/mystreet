@@ -79,23 +79,16 @@ router.get('/getStreetsNearby', (req,res) => {
 router.get('/getStreet', (req, res) => {
 
     // TODO: Change parameters
-    const placeId = req.query.place_id;
+    const { place_id } = req.query;
 
-    req.check('place_id', 'place_id is missing').notEmpty();
-
-    const error = req.validationErrors();
-
-    if (error || !placeId) {
+    if (!place_id) {
         return res.send('place_id', 400);
     }
 
-    Street.findOne({ place_id: placeId }, street => {
+    Street.findOne({ place_id }, (err, street) => {
         if (street) {
-            req.session.streetID = street._id;
-            req.session.save();
+            return res.status(200).send(street);
         }
-
-        return res.status(200).send(street);
     });
 });
 
@@ -177,36 +170,35 @@ router.post('/addStreet', (req, res) => {
 
     // TO DO: Change parameters.
     // const address = req.body.address;
-    const streetName = req.body.name;
-    const placeID = req.body.place_id;
-    const userID = req.body.userId;
-    const location = [req.body.location.lng, req.body.location.lat];
+    const { streetName, place_id } = req.body;
+    const location = [req.body.location.lng, req.body.location.lat]
+    const user_id = req.session.user._id;
 
     // req.check('address', 'Address is empty').notEmpty();
-    req.check('name', 'Name is empty').notEmpty();
+    req.check('streetName', 'Name is empty').notEmpty();
     req.check('place_id', 'place_id is empty').notEmpty();
     req.check('location', 'location is empty').notEmpty();
 
     const errors = req.validationErrors();
 
-    if (errors || !userID) {
+    if (errors || !user_id) {
         return res.status(500).send(`There have been validation errors: ${errors}`, 400);
     }
 
-    Street.findOneAndUpdate({ place_id: placeID },
-        { $addToSet: { members: userID } },
+    Street.findOneAndUpdate({ place_id },
+        { $addToSet: { members: user_id } },
         { new: true }).populate('members').exec((err, street) => {
             if (street) {
                 req.session.streetID = street._id;
                 console.log('Street already exist');
             } else {
                 const newStreet = new Street({
-                    name: streetName,
-                    place_id: placeID,
+                    streetName,
+                    place_id,
                     // address: address,
-                    members: userID,
+                    members: user_id,
                     location,
-                    admins: userID,
+                    admins: user_id,
                 });
                 newStreet.save();
                 req.session.streetID = newStreet._id;
@@ -214,7 +206,7 @@ router.post('/addStreet', (req, res) => {
             }
             req.session.save();
 
-            User.findOneAndUpdate({ 'facebook.id': userID },
+            User.findOneAndUpdate({ _id: user_id },
                 { $addToSet: { 'local.streets': req.session.streetID } },
                 { new: true, passRawResult: true }).exec((error, user) => {
                     if (user) {

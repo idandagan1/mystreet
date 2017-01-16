@@ -11,13 +11,12 @@ export function getStreet(placeId) {
     });
 }
 
-export function addStreet(street, userId) {
-    const { placeId: place_id, street: name, location } = street;
+export function addStreet(street) {
+    const { place_id, streetName, location } = street;
     const data = {
         place_id,
-        name,
+        streetName,
         location,
-        userId,
     };
 
     return new Promise((resolve, reject) => {
