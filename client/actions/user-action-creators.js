@@ -2,7 +2,7 @@ import * as userApi from 'api/user-api';
 import { push } from 'react-router-redux';
 import userActionTypes from './user-action-types';
 
-export default function facebookLoginSubmitted(user) {
+export function facebookLoginSubmitted(user) {
     return dispatch => {
         dispatch({
             type: userActionTypes.FACEBOOK_LOGIN_SUBMITTED,
