@@ -80,7 +80,7 @@ export default class MyStreets extends React.Component {
 
     render() {
         const { currentWriter, postfeed, members, isMember } = this.state;
-        const { createPost, isAuthenticated, selectedStreet: { placeId, streetName, location: { lat, lng } } } = this.props;
+        const { createPost, isAuthenticated, selectedStreet: { streetName, location: { lat, lng } } } = this.props;
 
         return (
             <div className='n-mystreet'>

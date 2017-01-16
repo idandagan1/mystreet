@@ -56,4 +56,12 @@ export default createReducer(initialState, {
             selectedStreet: response,
         };
     },
+
+    [dashboardActionTypes.SEARCH_SUBMITTED](state, action) {
+        const { data: { selectedStreet } } = action;
+        return {
+            ...state,
+            selectedStreet,
+        };
+    },
 });

@@ -1,25 +1,32 @@
 import * as streetsApi from 'api/streets-api';
 import dashboardActionTypes from './dashboard-action-types';
 
-export function dashboardSearchSubmitted(streetObject) {
+export function dashboardSearchSubmitted(selectedStreet) {
     return dispatch => {
         dispatch({
             type: dashboardActionTypes.SEARCH_SUBMITTED,
-            data: { streetObject },
+            data: { selectedStreet },
         });
 
-        streetsApi.getStreet(streetObject.placeId)
+        streetsApi.getStreet(selectedStreet.place_id)
             .then(
-                response => dispatch(dashboardSearchSucceeded(streetObject, response)),
-                error => dispatch(dashboardSearchFailed(streetObject, error)),
+                response => dispatch(dashboardSearchSucceeded(selectedStreet, response)),
+                error => dispatch(dashboardSearchFailed(selectedStreet, error)),
             );
     };
 }
 
 export function dashboardSearchSucceeded(selectedStreet, response) {
+
+    if (response) {
+        return {
+            type: dashboardActionTypes.SEARCH_SUCCEEDED,
+            data: { response },
+        };
+    }
+
     return {
         type: dashboardActionTypes.SEARCH_SUCCEEDED,
-
         data: { selectedStreet },
     };
 }
@@ -27,7 +34,6 @@ export function dashboardSearchSucceeded(selectedStreet, response) {
 export function dashboardSearchFailed(selectedStreet, error) {
     return {
         type: dashboardActionTypes.SEARCH_FAILED,
-
         data: { selectedStreet },
     };
 }
