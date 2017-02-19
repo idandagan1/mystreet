@@ -21,7 +21,6 @@ export default class GoogleSearch extends Component {
             },
         };
 
-        this.handleSearchClicked = this.handleSearchClicked.bind(this);
     }
 
     componentDidMount() {
