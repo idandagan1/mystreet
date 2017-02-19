@@ -1,31 +1,39 @@
 import * as streetsApi from 'api/streets-api';
 import dashboardActionTypes from './dashboard-action-types';
 
-export function dashboardSearchSubmitted(streetObject) {
+export function dashboardSearchSubmitted(selectedStreet) {
     return dispatch => {
         dispatch({
-            type: dashboardActionTypes.SUBMITTED,
-            data: { streetObject },
+            type: dashboardActionTypes.SEARCH_SUBMITTED,
+            data: { selectedStreet },
         });
 
-        streetsApi.getStreet(streetObject.placeId)
+        streetsApi.getStreet(selectedStreet.place_id)
             .then(
-                response => dispatch(dashboardSearchSucceeded(response)),
-                error => dispatch(dashboardSearchFailed(error)),
+                response => dispatch(dashboardSearchSucceeded(selectedStreet, response)),
+                error => dispatch(dashboardSearchFailed(selectedStreet, error)),
             );
     };
 }
 
-export function dashboardSearchSucceeded(streetObject) {
+export function dashboardSearchSucceeded(selectedStreet, response) {
+
+    if (response) {
+        return {
+            type: dashboardActionTypes.SEARCH_SUCCEEDED,
+            data: { response },
+        };
+    }
+
     return {
-        type: dashboardActionTypes.SUCCEEDED,
-        data: { streetObject },
+        type: dashboardActionTypes.SEARCH_SUCCEEDED,
+        data: { selectedStreet },
     };
 }
 
-export function dashboardSearchFailed(error) {
+export function dashboardSearchFailed(selectedStreet, error) {
     return {
-        type: dashboardActionTypes.FAILED,
-        data: { error },
+        type: dashboardActionTypes.SEARCH_FAILED,
+        data: { selectedStreet },
     };
 }

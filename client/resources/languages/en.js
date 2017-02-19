@@ -9,4 +9,6 @@ export default {
     emptyLikes: 'Be the first to like this.',
     youLikedIt: 'You liked it',
     memberstitle: 'Members',
+    join: 'Join',
+    login: 'Login',
 };

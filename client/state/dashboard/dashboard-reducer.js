@@ -2,11 +2,13 @@ import createReducer from 'util/create-reducer';
 import dashboardActionTypes from 'actions/dashboard-action-types';
 
 const initialState = {
-    street: '',
-    placeId: '',
-    location: {
-        lng: null,
-        lat: null,
+    selectedStreet: {
+        streetName: '',
+        place_id: '',
+        location: {
+            lng: 34.7818,
+            lat: 32.0853,
+        },
     },
 };
 
@@ -16,7 +18,7 @@ export default createReducer(initialState, {
 
         return {
             ...state,
-            ...streetObject,
+            selectedStreet: streetObject,
         };
     },
 

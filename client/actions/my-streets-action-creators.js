@@ -8,7 +8,7 @@ export function searchStreetSubmitted(streetObject) {
             data: { streetObject },
         });
 
-        streetsApi.getStreet(streetObject.placeId)
+        streetsApi.getStreet(streetObject.place_id)
             .then(
                 response => dispatch(searchStreetSucceeded(response, streetObject)),
                 error => dispatch(searchStreetFailed(error)),
@@ -30,15 +30,14 @@ function searchStreetFailed(error) {
 }
 
 export function addStreetSubmitted(street) {
-    return (dispatch, getState) => {
-        const { user: { facebook: { id } } } = getState();
+    return (dispatch) => {
 
         dispatch({
             type: myStreetsActionTypes.ADD_STREET_SUBMITTED,
             data: { street },
         });
 
-        streetsApi.addStreet(street, id)
+        streetsApi.addStreet(street)
             .then(
                 response => addStreetSucceeded(response),
                 error => addStreetFailed(error),

@@ -9,7 +9,11 @@ export default function Dashboard(props) {
         <div>
             <div className='n-dashboard-wrapper' />
             <div className='n-dashboard-search'>
-                <SearchStreet searchStreet={dashboardSearchSubmitted} />
+                <div className='n-street-search'>
+                    <div className='navbar-form'>
+                        <SearchStreet searchStreet={dashboardSearchSubmitted} />
+                    </div>
+                </div>
             </div>
         </div>
     );

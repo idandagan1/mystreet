@@ -7,6 +7,7 @@ import Header from './components/header';
 const select = state => ({
     user: state.user,
     isAuthenticated: state.app.isAuthenticated,
+    street: state.myStreets,
 });
 
 function HeaderConnector(props) {
