@@ -17,6 +17,7 @@ export function dashboardSearchSubmitted(selectedStreet) {
 }
 
 export function dashboardSearchSucceeded(selectedStreet, response) {
+
     return {
         type: dashboardActionTypes.SEARCH_SUCCEEDED,
         data: { selectedStreet, response },
@@ -24,6 +25,7 @@ export function dashboardSearchSucceeded(selectedStreet, response) {
 }
 
 export function dashboardSearchFailed(selectedStreet, error) {
+
     return {
         type: dashboardActionTypes.SEARCH_FAILED,
         data: { selectedStreet, error },

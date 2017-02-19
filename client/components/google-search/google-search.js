@@ -20,7 +20,6 @@ export default class GoogleSearch extends Component {
                 lng: null,
             },
         };
-
     }
 
     componentDidMount() {
