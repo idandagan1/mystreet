@@ -17,23 +17,15 @@ export function dashboardSearchSubmitted(selectedStreet) {
 }
 
 export function dashboardSearchSucceeded(selectedStreet, response) {
-
-    if (response) {
-        return {
-            type: dashboardActionTypes.SEARCH_SUCCEEDED,
-            data: { response },
-        };
-    }
-
     return {
         type: dashboardActionTypes.SEARCH_SUCCEEDED,
-        data: { selectedStreet },
+        data: { selectedStreet, response },
     };
 }
 
 export function dashboardSearchFailed(selectedStreet, error) {
     return {
         type: dashboardActionTypes.SEARCH_FAILED,
-        data: { selectedStreet },
+        data: { selectedStreet, error },
     };
 }

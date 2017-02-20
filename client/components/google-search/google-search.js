@@ -20,8 +20,6 @@ export default class GoogleSearch extends Component {
                 lng: null,
             },
         };
-
-        this.handleSearchClicked = this.handleSearchClicked.bind(this);
     }
 
     componentDidMount() {
