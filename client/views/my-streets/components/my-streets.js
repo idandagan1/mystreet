@@ -11,33 +11,31 @@ export default class MyStreets extends React.Component {
         selectedStreet: PropTypes.shape({
             streetName: PropTypes.string,
             place_id: PropTypes.string,
-            location: PropTypes.shape({
-                lng: PropTypes.number,
-                lat: PropTypes.number,
-            }),
+            location: PropTypes.array,
+            members: PropTypes.array,
         }),
+        members: PropTypes.array,
         activeUser: PropTypes.shape({
+            userId: PropTypes.string,
             name: PropTypes.string,
             local: PropTypes.shape({
                 isPremium: PropTypes.bool,
                 lastLogged: PropTypes.string,
-                primaryStreet: PropTypes.string,
                 streets: PropTypes.array,
             }),
         }),
         isAuthenticated: PropTypes.bool.isRequired,
         createPost: PropTypes.func.isRequired,
-        searchStreetSubmitted: PropTypes.func.isRequired,
+        //searchStreetSubmitted: PropTypes.func.isRequired,
         addStreetSubmitted: PropTypes.func.isRequired,
     };
 
     constructor(props) {
         super(props);
         this.state = {
-            isMember: false,
             postfeed: [],
-            currentWriter: '',
             members: [],
+            currentWriter: '',
         };
     }
 
@@ -48,22 +46,38 @@ export default class MyStreets extends React.Component {
         this.setState({ postfeed });
     }
 
-    eachMember(member, i) {
+    eachMember(member, i, userId) {
+
+        if (member._id === userId) {
+            member = this.props.activeUser;
+        }
         return (
             <div className='n-mystreet-member' key={i}>
                 <img alt='user-icon' src={usericon} className='n-comment-user-icon' />
-                <span className='n-member-name'>{member}</span>
+                <span className='n-member-name'>{member.name}</span>
             </div>
         );
     }
 
-    onJoinClick = () => {
-        const { members } = this.state;
-        const { addStreetSubmitted, selectedStreet, activeUser: { name } } = this.props;
+    componentWillReceiveProps = (nextProps) => {
+        const members = nextProps.selectedStreet.members || [];
+        this.setState({ members });
+    }
 
+    onJoinClick = () => {
+        const { addStreetSubmitted, selectedStreet } = this.props;
         addStreetSubmitted(selectedStreet);
-        members.push(name);
-        this.setState({ isMember: true });
+    }
+
+    createMembersList = (members) => {
+        const { activeUser: { userId } } = this.props;
+        return members.map((member, i) => this.eachMember(member, i, userId));
+    }
+
+    isMember = () => {
+        const { members } = this.state;
+        const { activeUser: { userId } } = this.props;
+        return members.find(x => x._id === userId) !== undefined;
     }
 
     handleAddStreet = e => {
@@ -71,22 +85,21 @@ export default class MyStreets extends React.Component {
         addStreetSubmitted(selectedStreet);
     };
 
-    handleSearchStreet = street => {
+    /*handleSearchStreet = street => {
         const { searchStreetSubmitted } = this.props;
         searchStreetSubmitted(street);
-    };
+    };*/
 
     render() {
-        const { currentWriter, postfeed, members, isMember } = this.state;
-        const { createPost, isAuthenticated, selectedStreet: { streetName, location: { lat, lng } } } = this.props;
+        const { currentWriter, postfeed, members, isLogged } = this.state;
+        const { createPost, isAuthenticated, selectedStreet: { streetName, location } } = this.props;
 
         return (
             <div className='n-mystreet'>
                 <div className='n-mystreet-page-header'>{ streetName }</div>
                 <div className='n-mystreet__add-street'>
                     {
-                        isMember ?
-                            null :
+                        this.isMember() !== true ?
                             <button
                                 type='submit'
                                 className='n-mystreet__add-street-btn btn btn-sm n-btn-post'
@@ -95,21 +108,20 @@ export default class MyStreets extends React.Component {
                                 title='You must sign in'
                             >
                                 { Strings.join }
-                            </button>
+                            </button> : null
                     }
                 </div>
                 <ol className='list-inline'>
                     <li className='n-mystreet-leftCol col-md-3'>
-                        <Map lat={lat} lng={lng} />
+                        <Map lng={location[0]} lat={location[1]} />
                     </li>
                     <li className='n-mystreet-content col-md-4'>
                         <div>
                             <div>
                                 <div id='streetResult' className='container' />
                                 {
-                                    isMember ?
-                                        <PostForm updatePostFeed={this.updatePostFeed} createPost={createPost} /> :
-                                        null
+                                    this.isMember() !== true ?
+                                        null : <PostForm updatePostFeed={this.updatePostFeed} createPost={createPost} />
                                 }
                                 <div>{currentWriter}</div>
                                 <div> {postfeed.map((post, i) => <Post key={i} content={post} />)} </div>
@@ -118,9 +130,9 @@ export default class MyStreets extends React.Component {
                     </li>
                     <li className='col-md-2'>
                         <div className='panel n-mystreet-group-details'>
-                            <div>{Strings.memberstitle}</div>
+                            <div><b>{Strings.memberstitle}</b></div>
                             <div className='n-mystreet-members-panel'>
-                                {members.map(this.eachMember)}
+                                {members.length > 0 ? this.createMembersList(members) : 'Be the first to join the street'}
                             </div>
                         </div>
                     </li>

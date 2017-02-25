@@ -8,7 +8,6 @@ import MyStreets from './components/my-streets';
 function select(state) {
     return {
         ...state.myStreets,
-        selected: state.dashboard,
         isAuthenticated: state.app.isAuthenticated,
         activeUser: state.user,
     };

@@ -4,6 +4,12 @@ import { Strings } from 'resources';
 import { Link } from 'react-router';
 import './google-search.scss';
 
+const initialState = {
+    streetName: '',
+    place_id: '',
+    location: [34.7818, 32.0853],
+}
+
 export default class GoogleSearch extends Component {
 
     static propTypes = {
@@ -12,14 +18,7 @@ export default class GoogleSearch extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            streetName: '',
-            place_id: '',
-            location: {
-                lat: null,
-                lng: null,
-            },
-        };
+        this.state = initialState;
     }
 
     componentDidMount() {
@@ -32,10 +31,7 @@ export default class GoogleSearch extends Component {
             this.setState({
                 streetName: place.address_components[0].short_name,
                 place_id: place.place_id,
-                location: {
-                    lng: place.geometry.location.lng(),
-                    lat: place.geometry.location.lat(),
-                },
+                location: [place.geometry.location.lng(), place.geometry.location.lat()],
             });
         });
     }
@@ -43,12 +39,18 @@ export default class GoogleSearch extends Component {
     handleSearchClicked = e => {
         const { onSubmit } = this.props;
         const { streetName, location, place_id } = this.state;
+
+        if (!streetName || !place_id) {
+            return;
+        }
+
         const res = {
             streetName,
             location,
             place_id,
         };
         this.search.value = '';
+        this.setState(initialState);
         onSubmit(res);
     };
 

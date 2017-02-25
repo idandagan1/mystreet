@@ -11,6 +11,7 @@ import './header.scss';
 export default function Header(props) {
 
     const { isAuthenticated, loginSubmitted, searchSubmitted, user: { name } } = props;
+    const autoLoad = true;
 
     return (
         <nav className='navbar navbar-default n-header-theme'>
@@ -54,6 +55,7 @@ export default function Header(props) {
                                     appId='678252172335402'
                                     isLoggedIn={isAuthenticated}
                                     callback={loginSubmitted}
+                                    autoLoad={autoLoad}
                                 >
                                     { Strings.login }
                                 </FacebookLogin>

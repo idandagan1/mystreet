@@ -20,9 +20,9 @@ export function searchSubmitted(query) {
         });
 
         if (query.place_id) {
-            streetsApi.getStreet(query.place_id)
+            streetsApi.getStreetByPlaceId(query.place_id)
                 .then(
-                    response => dispatch(streetSearchSucceeded(response)),
+                    response => dispatch(streetSearchSucceeded(response, query)),
                     error => dispatch(streetSearchFailed(error)),
                 );
         }
@@ -33,10 +33,18 @@ export function searchSubmitted(query) {
     };
 }
 
-export function streetSearchSucceeded(streetObject) {
+export function getMembersSucceeded(members) {
+    return {
+        type: headerActionTypes.GET_MEMBERS_SUCCEEDED,
+        data: { members },
+    };
+}
+
+export function streetSearchSucceeded(streetObject, query) {
+    const selectedStreet = streetObject || query;
     return {
         type: headerActionTypes.SEARCH_SUCCEEDED,
-        data: { streetObject },
+        data: { selectedStreet },
     };
 }
 

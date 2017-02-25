@@ -8,4 +8,6 @@ export default createActionTypes('MY_STREETS', [
     'ADD_STREET_SUBMITTED',
     'ADD_STREET_SUCCEEDED',
     'ADD_STREET_FAILED',
+
+    'GET_MEMBERS_SUCCEEDED',
 ]);

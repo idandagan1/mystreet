@@ -76,7 +76,7 @@ router.get('/getStreetsNearby', (req,res) => {
 
 });
 
-router.get('/getStreet', (req, res) => {
+router.get('/getStreetByPlaceId', (req, res) => {
 
     // TODO: Change parameters
     const { place_id } = req.query;
@@ -85,10 +85,8 @@ router.get('/getStreet', (req, res) => {
         return res.send('place_id', 400);
     }
 
-    Street.findOne({ place_id }, (err, street) => {
-        if (street) {
-            return res.status(200).send(street);
-        }
+    Street.findOne({ place_id }).populate('members').then((street, err) => {
+        return res.status(200).send(street);
     });
 });
 
@@ -111,21 +109,18 @@ router.get('/getStreets', (req, res) => {
 });
 
 router.get('/getMembers', (req, res) => {
-    // TODO: Change Parameters.
-    const streetID = req.session.streetID;
 
-    if (!streetID) {
+    const { place_id } = req.query;
+
+    if (!place_id) {
         return res.send('StreetID', 400);
     }
 
-    Street.findById(streetID).populate('members').exec()
+    Street.findOne({ place_id }).populate('members')
         .then(street => {
-                if (street) {
-                    console.log('getMembers executed successfully');
-                    return res.send({content: street.members, status: "ok"});
-                }
-            }
-        );
+            console.log('getMembers executed successfully');
+            return res.send({ content: street ? street.members : null, status: 'ok' });
+        });
 });
 
 router.get('/getStreetAdmins', (req, res) => {
@@ -167,10 +162,10 @@ router.get('/getAdmins', (req, res) => {
 router.post('/addStreet', (req, res) => {
     // This method is execute when the user choose a street the already exist
     // and click on the "Add Street" button.
-  
+
     // const address = req.body.address;
     const { streetName, place_id } = req.body;
-    const location = [req.body.location.lng, req.body.location.lat]
+    const location = req.body.location ? [req.body.location[0], req.body.location[1]] : null;
     const user_id = req.session.user._id;
 
     // req.check('address', 'Address is empty').notEmpty();
@@ -187,39 +182,44 @@ router.post('/addStreet', (req, res) => {
     Street.findOneAndUpdate({ place_id },
         { $addToSet: { members: user_id } },
         { new: true }).populate('members').exec((err, street) => {
-            if (street) {
-                req.session.streetID = street._id;
-                console.log('Street already exist');
-            } else {
-                const newStreet = new Street({
-                    streetName,
-                    place_id,
-                    // address: address,
-                    members: user_id,
-                    location,
-                    admins: user_id,
-                });
-                newStreet.save();
-                req.session.streetID = newStreet._id;
-                console.log('New street added');
-            }
-            req.session.save();
+        if (street) {
+            req.session.selectedStreet = street;
+            console.log('Street already exist');
+        } else {
+            const newStreet = new Street({
+                streetName,
+                place_id,
+                // address: address,
+                members: user_id,
+                location,
+                admins: user_id,
+            });
+            newStreet.save((err) => {
+                if(err){
+                    throw err;
+                }
+            });
+            req.session.selectedStreet = newStreet;
+            console.log('New street added');
+        }
+        req.session.save();
 
-            User.findOneAndUpdate({ _id: user_id },
-                { $addToSet: { 'local.streets': req.session.streetID } },
-                { new: true, passRawResult: true }).exec((error, user) => {
-                    if (user) {
-                        if (user.local.streets.length === 1) {
-                            user.local.primaryStreet = req.session.streetID;
-                            req.session.user.local.primaryStreet = req.session.streetID;
-                            user.save();
-                            req.session.save();
-                            console.log('Added street to members list');
-                        }
-                    }
-                    return res.send({ msg: 'AddStreet execute successfully' });
-                });
+        User.findOneAndUpdate( {_id: user_id },
+            { $addToSet: { 'local.streets': req.session.selectedStreet._id } },
+            { new: true, passRawResult: true } ).exec((error, user) => {
+            if (user) {
+                if (user.local.streets.length === 1) {
+                    user.local.primaryStreet = req.session.selectedStreet._id;
+                    req.session.user.local.primaryStreet = req.session.selectedStreet._id;
+                    user.save();
+                    console.log('Added street to members list');
+                }
+                req.session.user = user;
+                req.session.save();
+            }
+            return res.send({ content: { selectedStreet: req.session.selectedStreet, activeUser: req.session.user }, msg: 'AddStreet execute successfully' });
         });
+    });
 });
 
 // DELETE

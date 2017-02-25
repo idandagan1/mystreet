@@ -5,25 +5,21 @@ import dashboardActionTypes from 'actions/dashboard-action-types';
 
 const initialState = {
     selectedStreet: {
-        streetName: '',
+        streetName: 'Search for your street',
         place_id: '',
-        location: {
-            lng: 34.7818,
-            lat: 32.0853,
-        },
+        members: [],
+        location: [34.7818, 32.0853],
     },
-    streetResult: {
-        _id: '',
-    },
+    members: [],
 };
 
 export default createReducer(initialState, {
     [myStreetsActionTypes.SEARCH_SUCCEEDED](state, action) {
-        const { data: { streetObject } } = action;
+        const { data: { selectedStreet } } = action;
 
         return {
             ...state,
-            selectedStreet: streetObject,
+            selectedStreet,
         };
     },
 
@@ -33,31 +29,26 @@ export default createReducer(initialState, {
         };
     },
 
-    [headerActionTypes.SEARCH_SUBMITTED](state, action) {
-        const { data: { query } } = action;
+    [myStreetsActionTypes.ADD_STREET_SUCCEEDED](state, action) {
+        const { data: { selectedStreet } } = action;
+
         return {
             ...state,
-            selectedStreet: query,
+            selectedStreet,
         };
     },
 
     [headerActionTypes.SEARCH_SUCCEEDED](state, action) {
-        const { data: { response } } = action;
+        const { data: { selectedStreet } } = action;
+
         return {
             ...state,
-            streetResult: response,
+            selectedStreet,
+            //members: selectedStreet.members,
         };
     },
 
     [dashboardActionTypes.SEARCH_SUCCEEDED](state, action) {
-        const { data: { response } } = action;
-        return {
-            ...state,
-            selectedStreet: response,
-        };
-    },
-
-    [dashboardActionTypes.SEARCH_SUBMITTED](state, action) {
         const { data: { selectedStreet } } = action;
         return {
             ...state,

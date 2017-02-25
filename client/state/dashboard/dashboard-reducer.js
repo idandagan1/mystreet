@@ -3,22 +3,18 @@ import dashboardActionTypes from 'actions/dashboard-action-types';
 
 const initialState = {
     selectedStreet: {
-        streetName: '',
+        streetName: 'Search for your street',
         place_id: '',
-        location: {
-            lng: 34.7818,
-            lat: 32.0853,
-        },
+        location: [34.7818, 32.0853],
     },
 };
 
 export default createReducer(initialState, {
     [dashboardActionTypes.SEARCH_SUCCEEDED](state, action) {
-        const { data: { streetObject } } = action;
-
+        const { data: { selectedStreet } } = action;
         return {
             ...state,
-            selectedStreet: streetObject,
+            selectedStreet,
         };
     },
 

@@ -39,23 +39,59 @@ export function addStreetSubmitted(street) {
 
         streetsApi.addStreet(street)
             .then(
-                response => addStreetSucceeded(response),
-                error => addStreetFailed(error),
+                response => dispatch(addStreetSucceeded(response, street)),
+                error => dispatch(addStreetFailed(error)),
             );
     };
 }
 
-function addStreetSucceeded(streetObject) {
+function searchStreetSucceeded(response, street) {
     return {
-        type: myStreetsActionTypes.ADD_STREET_SUCCEEDED,
-        data: { streetObject },
+        type: myStreetsActionTypes.SEARCH_SUCCEEDED,
+        data: { selectedStreet: response || street },
     };
 }
 
-function addStreetFailed(error) {
+function searchStreetFailed(error) {
+    return {
+        type: myStreetsActionTypes.SEARCH_FAILED,
+    };
+}
+
+export function getMembersSucceeded(members) {
+    return {
+        type: myStreetsActionTypes.GET_MEMBERS_SUCCEEDED,
+        data: { members },
+    };
+}
+
+export function addStreetSucceeded(response, street) {
+    const { content: { selectedStreet, activeUser } } = response;
+
+    return dispatch => {
+        dispatch({
+            type: myStreetsActionTypes.ADD_STREET_SUCCEEDED,
+            data: { selectedStreet, activeUser },
+        });
+
+        dispatch(getStreet(street));
+    };
+}
+
+export function addStreetFailed(error) {
     return {
         type: myStreetsActionTypes.ADD_STREET_FAILED,
         data: { error },
+    };
+}
+
+export function getStreet(street) {
+    return (dispatch) => {
+        streetsApi.getStreetByPlaceId(street.place_id)
+            .then(
+                response => dispatch(searchStreetSucceeded(response, street)),
+                error => dispatch(searchStreetFailed(error)),
+            );
     };
 }
 

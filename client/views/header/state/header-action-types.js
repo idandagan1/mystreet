@@ -5,4 +5,5 @@ export default createActionTypes('HEADER', [
     'SEARCH_SUBMITTED',
     'SEARCH_SUCCEEDED',
     'SEARCH_FAILED',
+    'GET_MEMBERS_SUCCEEDED',
 ]);

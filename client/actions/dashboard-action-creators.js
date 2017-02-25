@@ -8,24 +8,26 @@ export function dashboardSearchSubmitted(selectedStreet) {
             data: { selectedStreet },
         });
 
-        streetsApi.getStreet(selectedStreet.place_id)
+        streetsApi.getStreetByPlaceId(selectedStreet.place_id)
             .then(
-                response => dispatch(dashboardSearchSucceeded(selectedStreet, response)),
-                error => dispatch(dashboardSearchFailed(selectedStreet, error)),
+                response => dispatch(dashboardSearchSucceeded(response, selectedStreet)),
+                error => dispatch(dashboardSearchFailed(error)),
             );
     };
 }
 
-export function dashboardSearchSucceeded(selectedStreet, response) {
+export function dashboardSearchSucceeded(response, street) {
+
+    const selectedStreet = response || street;
     return {
         type: dashboardActionTypes.SEARCH_SUCCEEDED,
-        data: { selectedStreet, response },
+        data: { selectedStreet },
     };
 }
 
-export function dashboardSearchFailed(selectedStreet, error) {
+export function dashboardSearchFailed(error) {
+
     return {
         type: dashboardActionTypes.SEARCH_FAILED,
-        data: { selectedStreet, error },
     };
 }
