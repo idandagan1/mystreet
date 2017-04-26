@@ -42,3 +42,5 @@ app.use(routes);
 app.listen(port, () => {
     console.log(`Server started on ${port}`);
 });
+
+/*./mongod --bind_ip localhost*/

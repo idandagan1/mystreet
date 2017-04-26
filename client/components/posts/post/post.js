@@ -1,13 +1,23 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { Comment, CommentForm } from 'components/comment';
 import { Strings } from 'resources';
 import usericon from 'resources/images/profile.png';
 import commenticon from 'resources/images/comment-icon.png';
 import likeicon from 'resources/images/like-icon.png';
-import Moment from 'moment';
+import moment from 'moment';
 import './post.scss';
 
 class Post extends React.Component {
+
+    static propTypes = {
+        postContent: PropTypes.shape({
+            author: PropTypes.shape({
+                name: PropTypes.string,
+            }),
+            body: PropTypes.string,
+            createDate: PropTypes.date,
+        }),
+    }
 
     constructor(props) {
         super(props);
@@ -18,77 +28,69 @@ class Post extends React.Component {
             writer: '',
             likes: [],
             comments: [],
-            createDate: Moment(),
-            when: ''
+            createDate: moment(),
+            when: '',
         }
-
-        this.showCommentArea = this.showCommentArea.bind(this);
-        this.onCommentClick = this.onCommentClick.bind(this);
-        this.onLikeClick = this.onLikeClick.bind(this);
-        this.displayWriter = this.displayWriter.bind(this);
-        this.getPostTime = this.getPostTime.bind(this);
-        this.displayPostReactions = this.displayPostReactions.bind(this);
-        this.displayComment = this.displayComment.bind(this);
     }
 
-    showCommentArea() {
+    showCommentArea = () => {
         if (this.state.showCommentForm) {
-            return <CommentForm/>
+            return <CommentForm />
         }
     }
 
-    updateDateTime() {
-        const when = this.getPostTime();
-        this.setState({when});
+    showDateTime = (date) => {
+        const when = moment(date).format('MM/DD/YYYY');
+        return when;
     }
 
-    componentWillUnmount() {
+    componentWillUnmount = () => {
         clearInterval(this.interval);
     }
 
-    componentDidMount() {
+    componentDidMount = () => {
         const when = this.getPostTime();
         this.setState({when});
-        this.interval = setInterval(this.updateDateTime.bind(this), 60000);
+        this.interval = setInterval(this.updateDateTime, 60000);
     }
 
-    onCommentClick() {
+    onCommentClick = () =>{
         this.setState({showCommentForm: !this.state.showCommentForm});
     }
 
-    displayComment(comment) {
+    displayComment = (comment) =>{
 
         let comments = this.state.comments;
         comments.push(comment);
         this.setState({comments});
     }
 
-    eachComment(comment, i) {
+    eachComment = (comment, i) => {
 
         return (
             <Comment key={i} comment={comment}></Comment>
         )
     }
 
-    getPostTime() {
+    getPostTime = () => {
         let str = this.state.createDate.fromNow();
-        str = str.replace("a few seconds ago", "just now");
-        str = str.replace("minutes ago", "mins");
-        const when = str.replace("hours ago", "hrs");
+        str = str.replace('a few seconds ago', 'just now');
+        str = str.replace('minutes ago', 'mins');
+        const when = str.replace('hours ago', 'hrs');
         return when;
     }
 
-    onLikeClick() {
+    onLikeClick = () => {
         let likes = this.state.likes;
         likes.push(this.state.username);
         this.setState({likes})
     }
 
-    getComments() {
+    getComments = () => {
         if (this.state.comments.length !== 0) {
             return ( <div>
-                    <img src={commenticon} className="n-reactions-icon"/>
-                    <div className="n-post-reactions">{this.state.comments.length}</div>
+                    <img src={commenticon} className='n-reactions-icon'/>
+                    <div className='n-post-reactions'>{this.state.comments.length}</div>
                 </div>
             )
         } else {
@@ -96,11 +98,11 @@ class Post extends React.Component {
         }
     }
 
-    getLikes() {
+    getLikes = () => {
         if (this.state.likes.length !== 0) {
             return ( <div>
-                    <img src={likeicon} className="n-reactions-icon"/>
-                    <div className="n-post-reactions">{this.state.likes.length}</div>
+                    <img src={likeicon} className='n-reactions-icon'/>
+                    <div className='n-post-reactions'>{this.state.likes.length}</div>
                 </div>
             )
         } else {
@@ -108,7 +110,7 @@ class Post extends React.Component {
         }
     }
 
-    displayPostReactions() {
+    displayPostReactions = () =>{
 
         const comments = this.getComments();
         const likes = this.getLikes();
@@ -120,7 +122,7 @@ class Post extends React.Component {
         } else {
             return (
                 <div>
-                    <ol className="list-inline">
+                    <ol className='list-inline'>
                         <li>{likes}</li>
                         <li>{comments}</li>
                     </ol>
@@ -130,9 +132,9 @@ class Post extends React.Component {
         }
     }
 
-    displayWriter(username) {
+    displayWriter = (username) => {
         if (username && !this.state.isWritting) {
-            const msg = username + " is typing...";
+            const msg = username + ' is typing...';
             this.setState({writer: msg, isWritting: true});
             setTimeout(()=> {
                 this.setState({writer: '', isWritting: false})
@@ -141,46 +143,46 @@ class Post extends React.Component {
     }
 
     render() {
-
+        const { postContent: { body, createDate, author: { name } } } = this.props;
         return (
-            <div className="panel n-postform-panel">
-                <div className="panel-content">
-                    <form onSubmit={this.onSubmit} className="form center-block">
-                        <div className="panel-body n-post-body">
-                            <div className="n-post-header row">
+            <div className='panel n-postform-panel'>
+                <div className='panel-content'>
+                    <form onSubmit={this.onSubmit} className='form center-block'>
+                        <div className='panel-body n-post-body'>
+                            <div className='n-post-header row'>
                                 <div >
-                                    <img className="n-post-user-icon" src={usericon}/>
+                                    <img className='n-post-user-icon' src={usericon}/>
                                 </div>
                                 <div>
-                                    <div className="n-post-user">{this.state.username}</div>
-                                    <div className="n-post-date">{this.state.when}</div>
+                                    <div className='n-post-user'>{name}</div>
+                                    <div className='n-post-date'>{this.showDateTime(createDate)}</div>
                                 </div>
                             </div>
                             <hr/>
-                            <div className="form-group">
-                                {this.props.content.text}
+                            <div className='form-group'>
+                                {body}
                             </div>
                             <hr/>
-                            <ol className="pull-left list-inline">
+                            <ol className='pull-left list-inline'>
                                 <li>
                                     <div>
-                                        <div className="n-footer-btn" onClick={this.onLikeClick}>{Strings.like}</div>
+                                        <div className='n-footer-btn' onClick={this.onLikeClick}>{Strings.like}</div>
                                     </div>
                                 </li>
                                 <li>
                                     <div>
 
-                                        <div className="n-footer-btn"
+                                        <div className='n-footer-btn'
                                              onClick={this.onCommentClick}>{Strings.comment}</div>
                                     </div>
                                 </li>
                                 <li>
-                                    <div className="typing">{this.state.writer}</div>
+                                    <div className='typing'>{this.state.writer}</div>
                                 </li>
                             </ol>
                         </div>
-                        <div className="panel-footer n-post-footer">
-                            <div className="n-text-12">{this.displayPostReactions()}</div>
+                        <div className='panel-footer n-post-footer'>
+                            <div className='n-text-12'>{this.displayPostReactions()}</div>
                             <div> {this.state.comments.map(this.eachComment)} </div>
                         </div>
                         <div>{ this.state.showCommentForm ? <CommentForm displayWriter={this.displayWriter}

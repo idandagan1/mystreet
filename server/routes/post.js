@@ -19,7 +19,7 @@ router.post('/addLikeToPost', (req,res) => {
         .then(likes => {
                 if (likes) {
                     console.log('Added like');
-                    return res.send({content: likes, status: "ok"});
+                    return res.send({content: likes, status: 'ok'});
                 }
             }
         );
@@ -48,42 +48,39 @@ router.delete('/unlikePost', (req, res) => {
 
 router.post('/addPost', (req, res) => {
 
-    // TODO: Change Parameters.
-    const userID = req.session.user._id;
-    const post = req.body.post;
-    const streetID = req.session.streetID;
+    const userId = req.session.user._id;
+    const { post: { text }, streetId } = req.body;
 
     req.check('post', 'post is empty').notEmpty();
 
     const errors = req.validationErrors();
 
-    if (errors || !userID || !streetID) {
+    if (errors || !userId || !streetId) {
         return res.send(`There have been validation errors: ${errors}`, 400);
     }
 
     const newPost = new Post({
         createDate: Date.now(),
-        author: userID,
-        body: post,
+        author: userId,
+        body: text,
     });
-    newPost.save();
-    req.session.postID = newPost._id;
-    req.session.save();
+    newPost.save((err) => {
+        Post.populate(newPost, {
+            path: 'author',
+            select: { name: 1 },
+        }, (err, post) => {
+            Street.findByIdAndUpdate(streetId, {
+                $push: { postList: newPost },
+            }).exec()
+                .then(street => {
+                    if (street) {
+                        console.log('Added post');
+                        res.send({ newPost: post, status: 'ok' });
+                    }
+                });
+        })
+    });
 
-    Street.findByIdAndUpdate(streetID, {
-        $push: {postList: newPost},
-    }).exec()
-        .then(street => {
-                if (street) {
-                    console.log('Added post');
-                    res.send({
-                        createdDate: newPost.createDate,
-                        author: req.session.user.name,
-                        body: newPost.body
-                    });
-                }
-            }
-        );
 });
 
 router.post('/addComment', (req, res) => {
@@ -111,41 +108,44 @@ router.post('/addComment', (req, res) => {
     }).then(post => {
         if (post) {
             console.log('Added comment');
-            res.send({content: post, status: "ok"});
+            res.send({ post, status: 'ok' });
         }
     });
 });
 
-router.get('/getPosts', (req, res) => {
-    // TODO: Change Parameters.
-    const streetID = req.session.streetID;
+router.get('/getPostsByPlaceId', (req, res) => {
 
-    if (!streetID) {
-        return res.send('StreetID', 400);
+    const { place_id } = req.query;
+
+    if (!place_id) {
+        return res.send('place_id', 400);
     }
 
-    Street.findOne({_id: streetID})
+    Street.findOne({ place_id })
         .populate({
             path: 'postList',
             model: 'post',
+            options: {
+                sort: { createDate: -1},
+            },
             populate: [{
                 path: 'author',
                 model: 'user',
-                select: {name: 1},
+                select: { name: 1 },
             },
-                {
-                    path: 'likes',
-                    model: 'user',
-                    select: {name: 1},
-                }],
+            {
+                path: 'likes',
+                model: 'user',
+                select: { name: 1 },
+            }],
         }).exec()
         .then(street => {
-                if (street) {
-                    console.log('getPosts executed successfully');
-                    return res.send({content: street.postList, status: "ok"});
-                }
+            if (street) {
+                console.log('getPosts executed successfully');
+                return res.send({ postsfeed: street.postList, status: 'ok' });
             }
-        );
+            return res.send({ postsfeed: [], remark: 'street not found' });
+        });
 });
 
 router.delete('/deletePost', (req, res) => {

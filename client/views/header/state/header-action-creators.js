@@ -1,5 +1,6 @@
 import { facebookLoginSubmitted } from 'actions/user-action-creators';
 import * as streetsApi from 'api/streets-api';
+import * as postsApi from 'api/post-api';
 import headerActionTypes from './header-action-types';
 
 export function loginSubmitted(user) {
@@ -25,6 +26,11 @@ export function searchSubmitted(query) {
                     response => dispatch(streetSearchSucceeded(response, query)),
                     error => dispatch(streetSearchFailed(error)),
                 );
+            postsApi.getPostsByPlaceId(query.place_id)
+                .then(
+                    response => dispatch(getPostsSucceeded(response)),
+                    error => dispatch(getPostsFailed(error)),
+                );
         }
 
         if (query.userId) {
@@ -40,17 +46,32 @@ export function getMembersSucceeded(members) {
     };
 }
 
-export function streetSearchSucceeded(streetObject, query) {
-    const selectedStreet = streetObject || query;
+export function streetSearchSucceeded(response, streetSelected) {
+    const { street } = response;
     return {
         type: headerActionTypes.SEARCH_SUCCEEDED,
-        data: { selectedStreet },
+        data: { selectedStreet: street || streetSelected },
     };
 }
 
 export function streetSearchFailed(error) {
     return {
         type: headerActionTypes.SEARCH_FAILED,
+        data: { error },
+    };
+}
+
+export function getPostsSucceeded(streetObject) {
+    const { postsfeed } = streetObject;
+    return {
+        type: headerActionTypes.GET_POSTS_SUCCEEDED,
+        data: { postsfeed },
+    };
+}
+
+export function getPostsFailed(error) {
+    return {
+        type: headerActionTypes.GET_POSTS_FAILED,
         data: { error },
     };
 }

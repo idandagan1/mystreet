@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { PostForm, Post, Map } from 'components';
+import { PostsFeed, Map } from 'components';
 import { Strings } from 'resources';
 import usericon from 'resources/images/profile.png';
 import './my-streets.scss';
@@ -25,25 +25,14 @@ export default class MyStreets extends React.Component {
             }),
         }),
         isAuthenticated: PropTypes.bool.isRequired,
-        createPost: PropTypes.func.isRequired,
-        //searchStreetSubmitted: PropTypes.func.isRequired,
         addStreetSubmitted: PropTypes.func.isRequired,
     };
 
     constructor(props) {
         super(props);
         this.state = {
-            postfeed: [],
             members: [],
-            currentWriter: '',
         };
-    }
-
-    updatePostFeed(newPost) {
-        const { postfeed } = this.state;
-
-        postfeed.unshift(newPost);
-        this.setState({ postfeed });
     }
 
     eachMember(member, i, userId) {
@@ -85,21 +74,17 @@ export default class MyStreets extends React.Component {
         addStreetSubmitted(selectedStreet);
     };
 
-    /*handleSearchStreet = street => {
-        const { searchStreetSubmitted } = this.props;
-        searchStreetSubmitted(street);
-    };*/
-
     render() {
-        const { currentWriter, postfeed, members, isLogged } = this.state;
-        const { createPost, isAuthenticated, selectedStreet: { streetName, location } } = this.props;
+        const { members } = this.state;
+        const { isAuthenticated, selectedStreet, selectedStreet: { streetName, location } } = this.props;
+        const isMember = this.isMember();
 
         return (
             <div className='n-mystreet'>
                 <div className='n-mystreet-page-header'>{ streetName }</div>
                 <div className='n-mystreet__add-street'>
                     {
-                        this.isMember() !== true ?
+                        isMember !== true ?
                             <button
                                 type='submit'
                                 className='n-mystreet__add-street-btn btn btn-sm n-btn-post'
@@ -113,19 +98,14 @@ export default class MyStreets extends React.Component {
                 </div>
                 <ol className='list-inline'>
                     <li className='n-mystreet-leftCol col-md-3'>
-                        <Map lng={location[0]} lat={location[1]} />
                     </li>
                     <li className='n-mystreet-content col-md-4'>
                         <div>
-                            <div>
-                                <div id='streetResult' className='container' />
-                                {
-                                    this.isMember() !== true ?
-                                        null : <PostForm updatePostFeed={this.updatePostFeed} createPost={createPost} />
-                                }
-                                <div>{currentWriter}</div>
-                                <div> {postfeed.map((post, i) => <Post key={i} content={post} />)} </div>
-                            </div>
+                            {
+                                isMember === true ?
+                                <PostsFeed isMember={isMember} selectedStreet={selectedStreet} />
+                                    : null
+                            }
                         </div>
                     </li>
                     <li className='col-md-2'>

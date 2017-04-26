@@ -44,7 +44,6 @@ export default createReducer(initialState, {
         return {
             ...state,
             selectedStreet,
-            //members: selectedStreet.members,
         };
     },
 

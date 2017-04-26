@@ -1,6 +1,8 @@
 import * as userApi from 'api/user-api';
 import * as streetsApi from 'api/streets-api';
+import * as postsApi from 'api/post-api';
 import { push } from 'react-router-redux';
+import headerActionTypes from 'views/header/state/header-action-types';
 import userActionTypes from './user-action-types';
 import myStreetsActionTypes from './my-streets-action-types';
 
@@ -32,6 +34,11 @@ function loginSucceded({ user }) {
                     response => dispatch(searchStreetSucceeded(response, user.local.primaryStreet)),
                     error => dispatch(searchStreetFailed(error)),
             );
+            postsApi.getPostsByPlaceId(user.local.primaryStreet.place_id)
+                .then(
+                    response => dispatch(getPostsSucceeded(response)),
+                    error => dispatch(getPostsFailed(error)),
+                );
         }
 
         dispatch(push('/mystreets'));
@@ -39,20 +46,36 @@ function loginSucceded({ user }) {
 }
 
 function searchStreetSucceeded(response, primaryStreet) {
+    const { street } = response;
     return {
         type: myStreetsActionTypes.SEARCH_SUCCEEDED,
-        data: { selectedStreet: response || primaryStreet },
+        data: { selectedStreet: street || primaryStreet },
     };
 }
 
 function searchStreetFailed(error) {
     return {
-        type: myStreetsActionTypes.SEARCH_FAILED,
+        type: userActionTypes.SEARCH_FAILED,
     };
 }
 
 function loginFailed() {
     return {
         type: userActionTypes.LOGIN_FAILED,
+    };
+}
+
+export function getPostsSucceeded(streetObject) {
+    const { postsfeed } = streetObject;
+    return {
+        type: headerActionTypes.GET_POSTS_SUCCEEDED,
+        data: { postsfeed },
+    };
+}
+
+export function getPostsFailed(error) {
+    return {
+        type: headerActionTypes.GET_POSTS_FAILED,
+        data: { error },
     };
 }

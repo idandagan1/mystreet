@@ -85,8 +85,9 @@ router.get('/getStreetByPlaceId', (req, res) => {
         return res.send('place_id', 400);
     }
 
-    Street.findOne({ place_id }).populate('members').then((street, err) => {
-        return res.status(200).send(street);
+    Street.findOne({ place_id }).populate('members')
+        .then((street, err) => {
+            return res.status(200).send({ street });
     });
 });
 

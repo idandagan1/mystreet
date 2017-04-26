@@ -13,10 +13,10 @@ router.get('/getFriends', (req, res) => {
     // This method returns list of friends from facebook group by streets.
 
     const token = req.session.user.facebook.token;
-    const userID = req.session.user._id;
+    const userId = req.session.user._id;
     const myLocation = 'ChIJSR926opLHRUR6QH6ANhmFe4'; // TODO: replace to the users primaryStreet!
 
-    if (token == null || userID == null || myLocation == null) {
+    if (!token || !userId || !myLocation) {
         return res.send('There have been validation errors', 400);
     }
 
