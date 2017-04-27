@@ -97,7 +97,8 @@ export default class MyStreets extends React.Component {
                     }
                 </div>
                 <ol className='list-inline'>
-                    <li className='n-mystreet-leftCol col-md-3'>
+                    <li className='col-md-3'>
+                        <Map lat={location[1]} lng={location[0]} />
                     </li>
                     <li className='n-mystreet-content col-md-4'>
                         <div>

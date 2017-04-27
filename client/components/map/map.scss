@@ -1,8 +1,9 @@
 .n-map{
 
     &-wrapper {
-        position: static !important;
-        display: inline-block;
+        height: 300px;
+        width: 100%;
+        border: 1px black solid;
     }
 
     &__locate-btn {
