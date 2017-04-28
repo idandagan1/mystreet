@@ -1,5 +1,6 @@
 import createReducer from 'util/create-reducer';
 import postActionTypes from 'actions/post-action-types';
+import myStreetsActionTypes from 'actions/my-streets-action-types';
 import headerActionTypes from 'views/header/state/header-action-types';
 
 const initialState = {
@@ -19,7 +20,16 @@ export default createReducer(initialState, {
             newPost,
         };
     },
+
     [headerActionTypes.GET_POSTS_SUCCEEDED](state, action) {
+        const { data: { postsfeed } } = action;
+        return {
+            ...state,
+            postsfeed,
+        };
+    },
+
+    [myStreetsActionTypes.GET_POSTS_SUCCEEDED](state, action) {
         const { data: { postsfeed } } = action;
         return {
             ...state,

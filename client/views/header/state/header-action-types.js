@@ -8,4 +8,5 @@ export default createActionTypes('HEADER', [
     'GET_MEMBERS_SUCCEEDED',
     'GET_POSTS_SUCCEEDED',
     'GET_POSTS_FAILED',
+    'GET_STREETS_NEARBY_SUCCEEDED',
 ]);

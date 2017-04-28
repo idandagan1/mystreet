@@ -10,4 +10,8 @@ export default createActionTypes('MY_STREETS', [
     'ADD_STREET_FAILED',
 
     'GET_MEMBERS_SUCCEEDED',
+
+    'GET_POSTS_SUCCEEDED',
+    'GET_POSTS_FAILED',
+    'GET_STREETS_NEARBY_SUCCEEDED',
 ]);

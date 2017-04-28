@@ -54,4 +54,20 @@ export default createReducer(initialState, {
             selectedStreet,
         };
     },
+
+    [headerActionTypes.GET_STREETS_NEARBY_SUCCEEDED](state, action) {
+        const { data: { streetsNearby } } = action;
+        return {
+            ...state,
+            streetsNearby,
+        };
+    },
+
+    [myStreetsActionTypes.GET_STREETS_NEARBY_SUCCEEDED](state, action) {
+        const { data: { streetsNearby } } = action;
+        return {
+            ...state,
+            streetsNearby,
+        };
+    },
 });

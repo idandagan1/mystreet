@@ -11,4 +11,6 @@ export default {
     memberstitle: 'Members',
     join: 'Join',
     login: 'Login',
+    noStreetsNearBy: 'There\'s no streets nearby..',
+    StreetsNearbyTitle: 'Streets Nearby',
 };

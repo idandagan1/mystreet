@@ -43,36 +43,25 @@ router.get('/getStreetsNearPrimaryStreet', (req,res) => {
 
 });
 
-router.get('/getStreetsNearby', (req,res) => {
+router.get('/getStreetsNearby', (req, res) => {
 
-    const coords = [];
     const radiusInMeters = 500;
     const limit = 8;
-    let myLocation;
+    const coords = JSON.parse(req.query.location);
 
-    req.check('location', 'location is missing').notEmpty();
-    req.check('place_id', 'place_id is missing').notEmpty();
-
-    const error = req.validationErrors();
-
-    if (error) {
+    if (!coords) {
         return res.send('location is missing', 400);
     }
 
-    coords[0] = parseFloat(req.query.location.lng, 10);
-    coords[1] = parseFloat(req.query.location.lat, 10);
-    myLocation = req.query.place_id;
+    getStreetsNearPoint(radiusInMeters, limit, coords, streetsNearby => {
 
-    getStreetsNearPoint(radiusInMeters, limit, coords, streets => {
-
-        if (streets) {
+        if (streetsNearby) {
             return res.send({
-                myLocation: myLocation,
-                list: streets,
-                status: "ok"
+                streetsNearby,
+                status: 'ok',
             });
         }
-    })
+    });
 
 });
 
@@ -315,9 +304,9 @@ router.put('/changeStreetPrivacy', (req,res) => {
 
 });
 
-function getStreetsNearPoint(radius, limit, coords, callback){
+function getStreetsNearPoint(radius, limit, coords, callback) {
 
-    if(!radius || !coords || coords.length !== 2 ){
+    if (!radius || !coords || coords.length !== 2 ) {
         return;
     }
 
@@ -325,24 +314,23 @@ function getStreetsNearPoint(radius, limit, coords, callback){
         {
             'location': {
                 $near: {
-                    $geometry: {type: 'Point', coordinates: coords},
-                    $maxDistance: radius
-                }
-            }
+                    $geometry: { type: 'Point', coordinates: coords },
+                    $maxDistance: radius,
+                    $minDistance: 10,
+                },
+            },
         }).lean()
 
-        .populate({path: 'members', model: 'user', select: 'name'})
+        .populate({ path: 'members', model: 'user', select: 'name' })
 
-        .select({'_id': 0, 'place_id': 1, 'members': 1})
-
-        .limit(limit).exec()
+        .limit(limit)
 
         .then(result => {
 
             if (result) {
                 callback(result);
             }
-        })
+        });
 
 }
 

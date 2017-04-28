@@ -23,13 +23,18 @@ export function searchSubmitted(query) {
         if (query.place_id) {
             streetsApi.getStreetByPlaceId(query.place_id)
                 .then(
-                    response => dispatch(streetSearchSucceeded(response, query)),
-                    error => dispatch(streetSearchFailed(error)),
+                    response => dispatch(searchStreetSucceeded(response, query)),
+                    error => dispatch(searchStreetFailed(error)),
                 );
             postsApi.getPostsByPlaceId(query.place_id)
                 .then(
                     response => dispatch(getPostsSucceeded(response)),
                     error => dispatch(getPostsFailed(error)),
+                );
+            streetsApi.getStreetsNearby(query)
+                .then(
+                    response => dispatch(getStreetsNearbySucceeded(response, query)),
+                    error => dispatch(searchStreetFailed(error)),
                 );
         }
 
@@ -46,7 +51,7 @@ export function getMembersSucceeded(members) {
     };
 }
 
-export function streetSearchSucceeded(response, streetSelected) {
+export function searchStreetSucceeded(response, streetSelected) {
     const { street } = response;
     return {
         type: headerActionTypes.SEARCH_SUCCEEDED,
@@ -54,7 +59,17 @@ export function streetSearchSucceeded(response, streetSelected) {
     };
 }
 
-export function streetSearchFailed(error) {
+export function getStreetsNearbySucceeded(streets, selectedStreet) {
+    return {
+        type: headerActionTypes.GET_STREETS_NEARBY_SUCCEEDED,
+        data: {
+            ...streets,
+            selectedStreet,
+        },
+    };
+}
+
+export function searchStreetFailed(error) {
     return {
         type: headerActionTypes.SEARCH_FAILED,
         data: { error },

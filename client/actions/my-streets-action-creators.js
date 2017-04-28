@@ -1,5 +1,5 @@
 import * as streetsApi from 'api/streets-api';
-import * as postApi from 'api/post-api';
+import * as postsApi from 'api/post-api';
 import myStreetsActionTypes from './my-streets-action-types';
 
 export function searchStreetSubmitted(streetObject) {
@@ -8,10 +8,19 @@ export function searchStreetSubmitted(streetObject) {
             type: myStreetsActionTypes.SEARCH_SUBMITTED,
             data: { streetObject },
         });
-
-        streetsApi.getStreet(streetObject.place_id)
+        streetsApi.getStreetByPlaceId(streetObject.place_id)
             .then(
                 response => dispatch(searchStreetSucceeded(response, streetObject)),
+                error => dispatch(searchStreetFailed(error)),
+            );
+        postsApi.getPostsByPlaceId(streetObject.place_id)
+            .then(
+                response => dispatch(getPostsSucceeded(response)),
+                error => dispatch(getPostsFailed(error)),
+            );
+        streetsApi.getStreetsNearby(streetObject)
+            .then(
+                response => dispatch(getStreetsNearbySucceeded(response, streetObject)),
                 error => dispatch(searchStreetFailed(error)),
             );
     };
@@ -47,14 +56,14 @@ function searchStreetFailed(error) {
     };
 }
 
-export function getMembersSucceeded(members) {
+function getMembersSucceeded(members) {
     return {
         type: myStreetsActionTypes.GET_MEMBERS_SUCCEEDED,
         data: { members },
     };
 }
 
-export function addStreetSucceeded(response, street) {
+function addStreetSucceeded(response, street) {
     const { content: { selectedStreet, activeUser } } = response;
 
     return dispatch => {
@@ -67,20 +76,45 @@ export function addStreetSucceeded(response, street) {
     };
 }
 
-export function addStreetFailed(error) {
+function addStreetFailed(error) {
     return {
         type: myStreetsActionTypes.ADD_STREET_FAILED,
         data: { error },
     };
 }
 
-export function getStreet(street) {
+function getStreet(street) {
     return (dispatch) => {
         streetsApi.getStreetByPlaceId(street.place_id)
             .then(
                 response => dispatch(searchStreetSucceeded(response, street)),
                 error => dispatch(searchStreetFailed(error)),
             );
+    };
+}
+
+function getPostsSucceeded(streetObject) {
+    const { postsfeed } = streetObject;
+    return {
+        type: myStreetsActionTypes.GET_POSTS_SUCCEEDED,
+        data: { postsfeed },
+    };
+}
+
+function getPostsFailed(error) {
+    return {
+        type: myStreetsActionTypes.GET_POSTS_FAILED,
+        data: { error },
+    };
+}
+
+function getStreetsNearbySucceeded(streets, selectedStreet) {
+    return {
+        type: myStreetsActionTypes.GET_STREETS_NEARBY_SUCCEEDED,
+        data: {
+            ...streets,
+            selectedStreet,
+        },
     };
 }
 
