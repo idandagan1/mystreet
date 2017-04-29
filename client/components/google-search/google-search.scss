@@ -34,6 +34,17 @@
     display: none;
 }
 
-.n-search-textfield{
-    width: 260px !important
+.n-google-search{
+    &-form {
+        display: inline-block;
+    }
+    &-btn-search{
+        background: orange;
+        border-color: grey;
+    }
+    &-textfield{
+        width:260px;
+        margin: 0px 5px;
+        display: inline-block;
+    }
 }

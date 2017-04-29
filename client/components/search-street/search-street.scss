@@ -3,19 +3,22 @@
         text-align: center;
         padding: 0px;
     }
-
-    &-textfield{
-        width:200px;
-    }
-
-    &-btn-search{
-        background: orange;
-        border-color: grey;
-    }
-
     &-btn-search:hover{
         background: #ffa500;
         color:whitesmoke;
+    }
+    &-tip-icon{
+        height: 19px;
+        margin: 0px 5px;
+        cursor: pointer;
+    }
+    &-tips-container{
+        display: inline-block;
+    }
+    &-tips-content{
+        padding: 10px 10px 0px 27px;
+        list-style-type: disc;
+        min-width: 170px !important;
     }
 }
 

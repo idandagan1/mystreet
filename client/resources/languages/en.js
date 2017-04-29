@@ -13,4 +13,6 @@ export default {
     login: 'Login',
     noStreetsNearBy: 'There\'s no streets nearby..',
     StreetsNearbyTitle: 'Streets Nearby',
+    fillOutInput: 'Please type a street name',
+    onlyStreetNameMsg: 'Please search by street name only, don\'t include numbers.',
 };

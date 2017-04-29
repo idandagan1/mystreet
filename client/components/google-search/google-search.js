@@ -1,8 +1,8 @@
 /* eslint-disable no-undef */
 import React, { Component, PropTypes } from 'react';
 import { Strings } from 'resources';
-import { Link } from 'react-router';
 import './google-search.scss';
+
 
 const initialState = {
     streetName: '',
@@ -29,7 +29,7 @@ export default class GoogleSearch extends Component {
         google.maps.event.addListener(autocomplete, 'place_changed', () => {
             const place = autocomplete.getPlace();
             this.setState({
-                streetName: place.address_components[0].short_name,
+                streetName: place.address_components[1].short_name,
                 place_id: place.place_id,
                 location: [place.geometry.location.lng(), place.geometry.location.lat()],
             });
@@ -37,6 +37,7 @@ export default class GoogleSearch extends Component {
     }
 
     handleSearchClicked = e => {
+        e.preventDefault();
         const { onSubmit } = this.props;
         const { streetName, location, place_id } = this.state;
 
@@ -56,26 +57,22 @@ export default class GoogleSearch extends Component {
 
     render() {
         return (
-            <div>
-                <ol className='list-inline'>
-                    <li>
-                        <input
-                            placeholder={Strings.findMyStreet}
-                            id='pac-input'
-                            className='form-control n-search-textfield'
-                            ref={search => { this.search = search; }}
-                        />
-
-                        <div ref={lblresult => { this.lblresult = lblresult; }} />
-                    </li>
-                    <li>
-                        <Link to='/mystreets'>
-                            <button onClick={this.handleSearchClicked} className='btn n-search-btn-search'>
-                                {Strings.search}
-                            </button>
-                        </Link>
-                    </li>
-                </ol>
+            <div className='n-google-search-form'>
+                <form onSubmit={this.handleSearchClicked} className='form-horizontal'>
+                    <input
+                        type='text'
+                        placeholder={Strings.findMyStreet}
+                        autoComplete='off'
+                        className='form-control n-google-search-textfield'
+                        ref={search => { this.search = search; }}
+                        required='true'
+                    />
+                    <input
+                        type='submit'
+                        className='btn n-google-search-btn-search'
+                        value={Strings.search}
+                    />
+                </form>
             </div>
         );
     }
