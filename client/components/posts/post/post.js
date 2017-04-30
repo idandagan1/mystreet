@@ -143,7 +143,9 @@ class Post extends React.Component {
     }
 
     render() {
-        const { postContent: { body, createDate, author: { name } } } = this.props;
+        const { postContent: { body, createDate, author } } = this.props;
+        const picturePath = `http://graph.facebook.com/${author.facebook.id}/picture?type=normal`;
+
         return (
             <div className='panel n-postform-panel'>
                 <div className='panel-content'>
@@ -151,18 +153,18 @@ class Post extends React.Component {
                         <div className='panel-body n-post-body'>
                             <div className='n-post-header row'>
                                 <div >
-                                    <img className='n-post-user-icon' src={usericon}/>
+                                    <img alt='user-icon' className='n-post-user-icon' src={picturePath} />
                                 </div>
                                 <div>
-                                    <div className='n-post-user'>{name}</div>
+                                    <div className='n-post-user'>{author.name}</div>
                                     <div className='n-post-date'>{this.showDateTime(createDate)}</div>
                                 </div>
                             </div>
-                            <hr/>
+                            <hr />
                             <div className='form-group'>
                                 {body}
                             </div>
-                            <hr/>
+                            <hr />
                             <ol className='pull-left list-inline'>
                                 <li>
                                     <div>

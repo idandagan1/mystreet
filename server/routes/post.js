@@ -131,7 +131,6 @@ router.get('/getPostsByPlaceId', (req, res) => {
             populate: [{
                 path: 'author',
                 model: 'user',
-                select: { name: 1 },
             },
             {
                 path: 'likes',

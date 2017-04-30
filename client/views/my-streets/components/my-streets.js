@@ -40,12 +40,15 @@ export default class MyStreets extends React.Component {
 
     eachMember(member, i, userId) {
 
+        const picturePath = `http://graph.facebook.com/${member.facebook.id}/picture?type=normal`;
+
         if (member._id === userId) {
             member = this.props.activeUser;
         }
+
         return (
             <div className='n-mystreet-member' key={i}>
-                <img alt='user-icon' src={usericon} className='n-comment-user-icon' />
+                <img alt='user-icon' src={picturePath} className='n-comment-user-icon' />
                 <span className='n-member-name'>{member.name}</span>
             </div>
         );
