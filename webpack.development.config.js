@@ -59,6 +59,11 @@ export default {
                 loader: 'file-loader',
                 query: { name: 'images/[name].[ext]' },
             },
+            {
+                test: /\.(?:mp4)$/i,
+                loader: 'file-loader',
+                query: { name: 'videos/[name].[ext]' },
+            },
         ],
     },
 

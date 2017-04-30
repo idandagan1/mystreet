@@ -1,4 +1,5 @@
 import React, { PropTypes, Component } from 'react';
+import { browserHistory } from 'react-router';
 import { GoogleSearch } from 'components';
 import tipsIcon from 'resources/images/tip-icon.png';
 import './search-street.scss';
@@ -7,6 +8,7 @@ export default function SearchStreet(props) {
 
     function handleSubmit(street) {
         const { searchStreet } = props;
+        browserHistory.push('/mystreets');
         searchStreet(street);
     }
 
