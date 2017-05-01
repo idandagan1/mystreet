@@ -28,7 +28,6 @@
     &-content{
         margin:0px;
     }
-
     &-page-header{
         text-align: center;
         font-size: 35px;
@@ -43,10 +42,9 @@
     }
     &__add-street {
         display: flex;
-        margin-left: -5px;
-
         &-btn{
             height: 35px;
+            margin: 10px;
             background: orange;
             border-color: grey;
 
@@ -67,7 +65,7 @@
         display: inline-block;
         float: none !important;
         vertical-align: top;
-        margin: 10px 40px;
+        margin: 10px 30px;
         padding: 0px;
     }
     &-right-col {
@@ -104,4 +102,8 @@
         padding: 5px;
         border-bottom: 1px solid #eed;
     }
+}
+
+.po {
+    cursor: pointer;
 }

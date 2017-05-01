@@ -145,6 +145,7 @@ class Post extends React.Component {
     render() {
         const { postContent: { body, createDate, author } } = this.props;
         const picturePath = `http://graph.facebook.com/${author.facebook.id}/picture?type=normal`;
+        const linkToUserFacebook = `https://www.facebook.com/app_scoped_user_id/${author.facebook.id}`;
 
         return (
             <div className='panel n-postform-panel'>
@@ -156,7 +157,9 @@ class Post extends React.Component {
                                     <img alt='user-icon' className='n-post-user-icon' src={picturePath} />
                                 </div>
                                 <div>
-                                    <div className='n-post-user'>{author.name}</div>
+                                    <a className='n-post-user' rel='noopener noreferrer' target='_blank' href={linkToUserFacebook}>
+                                        {author.name}
+                                    </a>
                                     <div className='n-post-date'>{this.showDateTime(createDate)}</div>
                                 </div>
                             </div>

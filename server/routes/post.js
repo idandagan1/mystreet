@@ -67,8 +67,7 @@ router.post('/addPost', (req, res) => {
     newPost.save((err) => {
         Post.populate(newPost, {
             path: 'author',
-            select: { name: 1 },
-        }, (err, post) => {
+        }, (error, post) => {
             Street.findByIdAndUpdate(streetId, {
                 $push: { postList: newPost },
             }).exec()

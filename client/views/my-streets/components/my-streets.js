@@ -1,10 +1,9 @@
 import React, { PropTypes } from 'react';
 import { PostsFeed, Map } from 'components';
 import { Strings } from 'resources';
-import usericon from 'resources/images/profile.png';
 import StreetNearby from './streetNearby';
+import Member from './member';
 import './my-streets.scss';
-
 
 export default class MyStreets extends React.Component {
 
@@ -40,18 +39,11 @@ export default class MyStreets extends React.Component {
 
     eachMember(member, i, userId) {
 
-        const picturePath = `http://graph.facebook.com/${member.facebook.id}/picture?type=normal`;
-
         if (member._id === userId) {
             member = this.props.activeUser;
         }
 
-        return (
-            <div className='n-mystreet-member' key={i}>
-                <img alt='user-icon' src={picturePath} className='n-comment-user-icon' />
-                <span className='n-member-name'>{member.name}</span>
-            </div>
-        );
+        return <Member member={member} key={i} />;
     }
 
     componentWillReceiveProps = (nextProps) => {
@@ -66,7 +58,13 @@ export default class MyStreets extends React.Component {
 
     createMembersList = (members) => {
         const { activeUser: { userId } } = this.props;
-        return members.map((member, i) => this.eachMember(member, i, userId));
+        return (
+            <ul style={{ padding: 20, listStyleType: 'none', textAlign: 'left' }}>
+                {members.map((member, i) =>
+                    this.eachMember(member, i, userId))
+                }
+            </ul>
+        );
     }
 
     isMember = () => {
@@ -112,7 +110,7 @@ export default class MyStreets extends React.Component {
             <div className='n-mystreet'>
                 <div className='n-mystreet-page-header'>{ streetName }</div>
                 <ol>
-                    <li className='col-md-3 sub-main-li'>
+                    <li className='col-md-3 sub-main-li hidden-lg-down'>
                         <Map lat={location[1]} lng={location[0]} />
                     </li>
                     <li className='n-mystreet-content col-md-4 sub-main-li'>
@@ -134,11 +132,9 @@ export default class MyStreets extends React.Component {
                         </div>
                     </li>
                     <li className='col-md-2 sub-main-li'>
-                        <div className='panel n-mystreet-group-details'>
-                            <span className='n-mystreet-h1'>{Strings.memberstitle}</span>
-                            <div className='n-mystreet-members-panel'>
+                        <div className='panel' style={{ textAlign: 'center' }}>
+                            <div className='n-mystreet-h1'>{Strings.memberstitle}</div>
                                 {members.length > 0 ? this.createMembersList(members) : 'Be the first to join the street'}
-                            </div>
                             <div className='n-mystreet-footer'>
                                 {
                                     isMember !== true ?

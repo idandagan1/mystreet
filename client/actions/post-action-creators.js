@@ -5,6 +5,7 @@ export function addPostSubmitted(post, streetId) {
     return dispatch => {
         dispatch({
             type: postActionTypes.ADD_POST_SUBMITTED,
+            data: post,
         });
 
         postApi.addPost(post, streetId)

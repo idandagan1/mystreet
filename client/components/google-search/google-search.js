@@ -29,7 +29,7 @@ export default class GoogleSearch extends Component {
         google.maps.event.addListener(autocomplete, 'place_changed', () => {
             const place = autocomplete.getPlace();
             this.setState({
-                streetName: place.address_components[1].short_name,
+                streetName: place.address_components[0].long_name,
                 place_id: place.place_id,
                 location: [place.geometry.location.lng(), place.geometry.location.lat()],
             });
