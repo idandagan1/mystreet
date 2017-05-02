@@ -54,7 +54,7 @@ class PostsFeed extends Component {
                 : null}
                 </div>
             </div>
-        )
+        );
     }
 }
 

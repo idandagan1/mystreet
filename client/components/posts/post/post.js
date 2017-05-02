@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Comment, CommentForm } from 'components/comment';
 import { Strings } from 'resources';
-import usericon from 'resources/images/profile.png';
+import { replaceDateTime } from 'util/utils.js';
 import commenticon from 'resources/images/comment-icon.png';
 import likeicon from 'resources/images/like-icon.png';
 import moment from 'moment';
@@ -21,129 +21,111 @@ class Post extends React.Component {
 
     constructor(props) {
         super(props);
+        const { postContent: { createDate, _id } } = props;
+        const formattedDate = this.getFormattedDate(createDate);
+
         this.state = {
             showCommentForm: false,
-            username: 'Idan Dagan',
             isWritting: false,
             writer: '',
             likes: [],
             comments: [],
-            createDate: moment(),
-            when: '',
-        }
+            updateDateTime: true,
+        };
     }
 
     showCommentArea = () => {
-        if (this.state.showCommentForm) {
-            return <CommentForm />
-        }
+        const { showCommentForm } = this.state;
+        return showCommentForm ? <CommentForm /> : null;
     }
-
-    showDateTime = (date) => {
-        const when = moment(date).format('MM/DD/YYYY');
-        return when;
-    }
-
     componentWillUnmount = () => {
         clearInterval(this.interval);
     }
 
     componentDidMount = () => {
-        const when = this.getPostTime();
-        this.setState({when});
-        this.interval = setInterval(this.updateDateTime, 60000);
+        this.interval = setInterval(this.updatePostDate, 60000);
     }
 
-    onCommentClick = () =>{
-        this.setState({showCommentForm: !this.state.showCommentForm});
+    onCommentClick = () => {
+        this.setState({ showCommentForm: !this.state.showCommentForm });
     }
 
-    displayComment = (comment) =>{
-
-        let comments = this.state.comments;
+    displayComment = (comment) => {
+        const comments = this.state.comments;
         comments.push(comment);
-        this.setState({comments});
+        this.setState({ comments });
     }
 
-    eachComment = (comment, i) => {
-
-        return (
-            <Comment key={i} comment={comment}></Comment>
-        )
+    updatePostDate = () => {
+        const { updateDateTime } = this.state;
+        this.setState({ updateDateTime: !updateDateTime });
     }
 
-    getPostTime = () => {
-        let str = this.state.createDate.fromNow();
-        str = str.replace('a few seconds ago', 'just now');
-        str = str.replace('minutes ago', 'mins');
-        const when = str.replace('hours ago', 'hrs');
-        return when;
+    getFormattedDate = (createDate) => {
+        const fDate = moment().from(createDate);
+        return replaceDateTime(fDate);
     }
 
     onLikeClick = () => {
-        let likes = this.state.likes;
+        const likes = this.state.likes;
         likes.push(this.state.username);
-        this.setState({likes})
+        this.setState({ likes });
     }
 
     getComments = () => {
-        if (this.state.comments.length !== 0) {
-            return ( <div>
-                    <img src={commenticon} className='n-reactions-icon'/>
-                    <div className='n-post-reactions'>{this.state.comments.length}</div>
-                </div>
-            )
-        } else {
-            return null;
-        }
+        const { comments } = this.state;
+        return comments.length !== 0 ?
+        (
+            <div>
+                <img src={commenticon} className='n-reactions-icon' />
+                <div className='n-post-reactions'>{this.state.comments.length}</div>
+            </div>
+        ) : null;
+
     }
 
     getLikes = () => {
-        if (this.state.likes.length !== 0) {
-            return ( <div>
-                    <img src={likeicon} className='n-reactions-icon'/>
+
+        const { likes } = this.state;
+        return likes.length !== 0 ?
+            (
+                <div>
+                    <img src={likeicon} className='n-reactions-icon' />
                     <div className='n-post-reactions'>{this.state.likes.length}</div>
                 </div>
-            )
-        } else {
-            return null;
-        }
+            ) : null;
     }
 
-    displayPostReactions = () =>{
+    displayPostReactions = () => {
 
         const comments = this.getComments();
         const likes = this.getLikes();
 
-        if (!likes && !comments) {
-            return (
-                <div>{Strings.emptyLikes}</div>
-            )
-        } else {
-            return (
-                <div>
-                    <ol className='list-inline'>
-                        <li>{likes}</li>
-                        <li>{comments}</li>
-                    </ol>
-                    <hr/>
-                </div>
-            )
-        }
+        return (!likes && !comments) ?
+            <div>{Strings.emptyLikes}</div>
+            :
+            <div>
+                <ol className='list-inline'>
+                    <li>{likes}</li>
+                    <li>{comments}</li>
+                </ol>
+                <hr />
+            </div>;
     }
 
     displayWriter = (username) => {
         if (username && !this.state.isWritting) {
-            const msg = username + ' is typing...';
-            this.setState({writer: msg, isWritting: true});
-            setTimeout(()=> {
-                this.setState({writer: '', isWritting: false})
+            const msg = username.concat(' is typing...');
+            this.setState({ writer: msg, isWritting: true });
+            setTimeout(() => {
+                this.setState({ writer: '', isWritting: false });
             }, 1000);
         }
     }
 
     render() {
         const { postContent: { body, createDate, author } } = this.props;
+        const { formattedDate } = this.state;
         const picturePath = `http://graph.facebook.com/${author.facebook.id}/picture?type=normal`;
         const linkToUserFacebook = `https://www.facebook.com/app_scoped_user_id/${author.facebook.id}`;
 
@@ -160,7 +142,7 @@ class Post extends React.Component {
                                     <a className='n-post-user' rel='noopener noreferrer' target='_blank' href={linkToUserFacebook}>
                                         {author.name}
                                     </a>
-                                    <div className='n-post-date'>{this.showDateTime(createDate)}</div>
+                                    <div className='n-post-date'>{this.getFormattedDate(createDate)}</div>
                                 </div>
                             </div>
                             <hr />
@@ -176,9 +158,10 @@ class Post extends React.Component {
                                 </li>
                                 <li>
                                     <div>
-
-                                        <div className='n-footer-btn'
-                                             onClick={this.onCommentClick}>{Strings.comment}</div>
+                                        <div
+                                            className='n-footer-btn'
+                                            onClick={this.onCommentClick}
+                                        >{Strings.comment}</div>
                                     </div>
                                 </li>
                                 <li>
@@ -188,14 +171,18 @@ class Post extends React.Component {
                         </div>
                         <div className='panel-footer n-post-footer'>
                             <div className='n-text-12'>{this.displayPostReactions()}</div>
-                            <div> {this.state.comments.map(this.eachComment)} </div>
+                            <div> {this.state.comments.map((comment, i) => <Comment key={i} comment={comment} />)} </div>
                         </div>
-                        <div>{ this.state.showCommentForm ? <CommentForm displayWriter={this.displayWriter}
-                                                                 displayComment={this.displayComment}/> : '' }</div>
+                        <div>{
+                            this.state.showCommentForm ?
+                                <CommentForm
+                                    displayWriter={this.displayWriter}
+                                    displayComment={this.displayComment}
+                                /> : '' }</div>
                     </form>
                 </div>
             </div>
-        )
+        );
     }
 }
 
