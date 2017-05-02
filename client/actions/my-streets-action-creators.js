@@ -71,8 +71,6 @@ function addStreetSucceeded(response, street) {
             type: myStreetsActionTypes.ADD_STREET_SUCCEEDED,
             data: { selectedStreet, activeUser },
         });
-
-        dispatch(getStreet(street));
     };
 }
 
@@ -80,16 +78,6 @@ function addStreetFailed(error) {
     return {
         type: myStreetsActionTypes.ADD_STREET_FAILED,
         data: { error },
-    };
-}
-
-function getStreet(street) {
-    return (dispatch) => {
-        streetsApi.getStreetByPlaceId(street.place_id)
-            .then(
-                response => dispatch(searchStreetSucceeded(response, street)),
-                error => dispatch(searchStreetFailed(error)),
-            );
     };
 }
 

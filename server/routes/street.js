@@ -150,15 +150,12 @@ router.get('/getAdmins', (req, res) => {
 
 // POST
 router.post('/addStreet', (req, res) => {
-    // This method is execute when the user choose a street the already exist
-    // and click on the "Add Street" button.
 
-    // const address = req.body.address;
     const { streetName, place_id } = req.body;
     const location = req.body.location ? [req.body.location[0], req.body.location[1]] : null;
     const user_id = req.session.user._id;
+    let selectedStreet;
 
-    // req.check('address', 'Address is empty').notEmpty();
     req.check('streetName', 'Name is empty').notEmpty();
     req.check('place_id', 'place_id is empty').notEmpty();
     req.check('location', 'location is empty').notEmpty();
@@ -171,45 +168,54 @@ router.post('/addStreet', (req, res) => {
 
     Street.findOneAndUpdate({ place_id },
         { $addToSet: { members: user_id } },
-        { new: true }).populate('members').exec((err, street) => {
-        if (street) {
-            req.session.selectedStreet = street;
-            console.log('Street already exist');
-        } else {
-            const newStreet = new Street({
-                streetName,
-                place_id,
-                // address: address,
-                members: user_id,
-                location,
-                admins: user_id,
-            });
-            newStreet.save((err) => {
-                if(err){
-                    throw err;
-                }
-            });
-            req.session.selectedStreet = newStreet;
-            console.log('New street added');
-        }
-        req.session.save();
-
-        User.findOneAndUpdate( {_id: user_id },
-            { $addToSet: { 'local.streets': req.session.selectedStreet._id } },
-            { new: true, passRawResult: true } ).exec((error, user) => {
-            if (user) {
-                if (user.local.streets.length === 1) {
-                    user.local.primaryStreet = req.session.selectedStreet._id;
-                    req.session.user.local.primaryStreet = req.session.selectedStreet._id;
-                    user.save();
-                    console.log('Added street to members list');
-                }
-                req.session.user = user;
-                req.session.save();
+        { new: true })
+        .populate('members')
+        .then((err, street) => {
+            if (street) {
+                selectedStreet = street;
+                console.log('Street already exist');
+            } else {
+                selectedStreet = new Street({
+                    streetName,
+                    place_id,
+                    members: user_id,
+                    location,
+                    admins: user_id,
+                });
+                selectedStreet.save((error) => {
+                    if (err) {
+                        throw err;
+                    }
+                });
+                console.log('New street added');
+                return selectedStreet;
             }
-            return res.send({ content: { selectedStreet: req.session.selectedStreet, activeUser: req.session.user }, msg: 'AddStreet execute successfully' });
+        })
+        .then(selecte => {
+            User.findOneAndUpdate({ _id: user_id },
+                { $addToSet: { 'local.streets': selecte._id } },
+                { new: true, passRawResult: true })
+            .then((error, user) => {
+                if (user) {
+                    if (user.local.streets.length === 1) {
+                        user.local.primaryStreet = selecte._id;
+                        req.session.user.local.primaryStreet = selecte._id;
+                        user.save();
+                        console.log('Added street to members list');
+                    }
+                    req.session.user = user;
+                    req.session.save();
+                }
+                Street.populate(selectedStreet, { path: 'members' })
+                    .then(populatedStreet => res.send({
+                        content: {
+                            selectedStreet: populatedStreet,
+                            activeUser: req.session.user,
+                        },
+                        msg: 'AddStreet execute successfully',
+                    }));
+            });
         });
-    });
 });
 
 // DELETE
