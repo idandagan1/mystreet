@@ -108,12 +108,14 @@ export default class MyStreets extends React.Component {
 
         return (
             <div className='n-mystreet'>
-                <div className='n-mystreet-page-header'>{ streetName }</div>
+                <div className='n-mystreet-page-header'>
+                    <span>{ streetName }</span>
+                </div>
                 <ol>
-                    <li className='col-md-3 sub-main-li hidden-lg-down'>
+                    <li className='col-sm-3 sub-main-li hidden-sm  hidden-xs'>
                         <Map lat={location[1]} lng={location[0]} />
                     </li>
-                    <li className='n-mystreet-content col-md-4 sub-main-li'>
+                    <li className='n-mystreet-content col-sm-4 sub-main-li'>
                         <div>
                             {
                                 isMember === true ?
@@ -131,7 +133,7 @@ export default class MyStreets extends React.Component {
                             }
                         </div>
                     </li>
-                    <li className='col-md-2 sub-main-li'>
+                    <li className='col-md-2 col-sm-2 sub-main-li' style={{ minWidth: 200 }}>
                         <div className='panel' style={{ textAlign: 'center' }}>
                             <div className='n-mystreet-h1'>{Strings.memberstitle}</div>
                                 {members.length > 0 ? this.createMembersList(members) : 'Be the first to join the street'}

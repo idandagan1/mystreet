@@ -1,5 +1,6 @@
 .n-mystreet {
     margin-top: 20px;
+    min-width: 1024px;
     padding: 0 40px;
 
     &-members-panel{
@@ -26,7 +27,7 @@
     }
 
     &-content{
-        margin:0px;
+        min-width: 360px;
     }
     &-page-header{
         text-align: center;
@@ -63,9 +64,9 @@
     }
     & .sub-main-li {
         display: inline-block;
-        float: none !important;
+
         vertical-align: top;
-        margin: 10px 30px;
+        margin: 10px 2%;
         padding: 0px;
     }
     &-right-col {
@@ -107,3 +108,17 @@
 .po {
     cursor: pointer;
 }
+@media only screen and (max-width: 450px) {
+    .n-mystreet,
+    ol {
+        padding: 0px;
+    }
+    .n-mystreet-page-header {
+        text-align: left;
+    }
+    .n-mystreet-page-header span {
+        margin-left: 160px;
+    }
+}
+
+

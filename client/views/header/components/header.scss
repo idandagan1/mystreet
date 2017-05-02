@@ -11,3 +11,13 @@
     height: 48px;
 }
 
+@media only screen and (max-width: 760px) {
+    .n-search-street-header{
+        padding: 7px;
+        position: relative !important;
+        margin: 0px;
+        height: 48px;
+    }
+}
+
+
