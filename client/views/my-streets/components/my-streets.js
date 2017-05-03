@@ -30,25 +30,14 @@ export default class MyStreets extends React.Component {
         searchStreetSubmitted: PropTypes.func.isRequired,
     };
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            members: [],
-        };
-    }
-
     eachMember(member, i, userId) {
 
         if (member._id === userId) {
-            member = this.props.activeUser;
+            const { activeUser } = this.props;
+            return <Member member={activeUser} key={i} />;
         }
 
         return <Member member={member} key={i} />;
-    }
-
-    componentWillReceiveProps = (nextProps) => {
-        const members = nextProps.selectedStreet.members || [];
-        this.setState({ members });
     }
 
     onJoinClick = () => {
@@ -58,6 +47,10 @@ export default class MyStreets extends React.Component {
 
     createMembersList = (members) => {
         const { activeUser: { userId } } = this.props;
+        if (!members) {
+            return <span>{Strings.joinStreetTxt}</span>;
+        }
+
         return (
             <ul style={{ padding: 20, listStyleType: 'none', textAlign: 'left' }}>
                 {members.map((member, i) =>
@@ -68,8 +61,11 @@ export default class MyStreets extends React.Component {
     }
 
     isMember = () => {
-        const { members } = this.state;
+        const { selectedStreet: { members } } = this.props;
         const { activeUser: { userId } } = this.props;
+        if (!members) {
+            return false;
+        }
         return members.find(x => x._id === userId) !== undefined;
     }
     onStreetNearbyClick = (street) => {
@@ -96,14 +92,8 @@ export default class MyStreets extends React.Component {
         });
     }
 
-    handleAddStreet = e => {
-        const { addStreetSubmitted, selectedStreet } = this.props;
-        addStreetSubmitted(selectedStreet);
-    };
-
     render() {
-        const { members } = this.state;
-        const { isAuthenticated, streetsNearby, selectedStreet, selectedStreet: { streetName, location } } = this.props;
+        const { isAuthenticated, streetsNearby, selectedStreet, selectedStreet: { members, streetName, location } } = this.props;
         const isMember = this.isMember();
 
         return (
@@ -119,7 +109,7 @@ export default class MyStreets extends React.Component {
                         <div>
                             {
                                 isMember === true ?
-                                <PostsFeed isMember={isMember} selectedStreet={selectedStreet} />
+                                    <PostsFeed isMember={isMember} selectedStreet={selectedStreet} />
                                     : <div className='panel'>
                                         <div className='n-mystreet-h1'>
                                             <span>
@@ -136,18 +126,18 @@ export default class MyStreets extends React.Component {
                     <li className='col-md-2 col-sm-2 sub-main-li' style={{ minWidth: 200 }}>
                         <div className='panel' style={{ textAlign: 'center' }}>
                             <div className='n-mystreet-h1'>{Strings.memberstitle}</div>
-                                {members.length > 0 ? this.createMembersList(members) : 'Be the first to join the street'}
+                            {this.createMembersList(members)}
                             <div className='n-mystreet-footer'>
                                 {
                                     isMember !== true ?
-                                    <input
-                                        type='button'
-                                        className='n-mystreet__add-street-btn btn btn-sm'
-                                        onClick={this.onJoinClick}
-                                        disabled={!isAuthenticated}
-                                        title='You must sign in'
-                                        value={Strings.join}
-                                    />
+                                        <input
+                                            type='button'
+                                            className='n-mystreet__add-street-btn btn btn-sm'
+                                            onClick={this.onJoinClick}
+                                            disabled={!isAuthenticated}
+                                            title='You must sign in'
+                                            value={Strings.join}
+                                        />
                                         : null
                                 }
                             </div>

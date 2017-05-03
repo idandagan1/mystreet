@@ -15,4 +15,5 @@ export default {
     StreetsNearbyTitle: 'Streets Nearby',
     fillOutInput: 'Please type a street name',
     onlyStreetNameMsg: 'Please search by street name only, don\'t include numbers.',
+    joinStreetTxt: 'Be the first to join the street',
 };
