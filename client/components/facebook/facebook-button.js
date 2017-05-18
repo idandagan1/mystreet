@@ -23,7 +23,7 @@ export default class FacebookLogin extends React.Component {
 
     static defaultProps = {
         redirectUri: 'http://localhost:8001/user/login/facebook/callback',
-        scope: 'user_friends,public_profile,email',
+        scope: 'user_friends,public_profile,email,user_about_me',
         xfbml: false,
         cookie: false,
         reAuthenticate: false,
