@@ -28,18 +28,18 @@ router.get('/getStreetsNearPrimaryStreet', (req,res) => {
 
                 getStreetsNearPoint(radiusInMeters, limit, coords, streets =>{
 
-                    if(streets) {
+                    if (streets) {
                         return res.send({
-                            myLocation: myLocation,
+                            myLocation,
                             list: streets,
-                            status: "ok"
+                            status: 'ok',
                         });
                     }
 
                 });
 
             }
-        })
+        });
 
 });
 
@@ -191,15 +191,16 @@ router.post('/addStreet', (req, res) => {
                 return selectedStreet;
             }
         })
-        .then(selecte => {
+        .then(select => {
             User.findOneAndUpdate({ _id: user_id },
-                { $addToSet: { 'local.streets': selecte._id } },
+                { $addToSet: { 'local.streets': select._id } },
                 { new: true, passRawResult: true })
-            .then((error, user) => {
+            .populate('local.streets')
+            .then((user, err) => {
                 if (user) {
                     if (user.local.streets.length === 1) {
-                        user.local.primaryStreet = selecte._id;
-                        req.session.user.local.primaryStreet = selecte._id;
+                        user.local.primaryStreet = select._id;
+                        req.session.user.local.primaryStreet = select._id;
                         user.save();
                         console.log('Added street to members list');
                     }
@@ -286,7 +287,7 @@ router.put('/addAdmin', (req, res) => {
 
 router.put('/changeStreetPrivacy', (req,res) => {
 
-    const streetID = req.session.streetID;//TODO: Change to req.body.streetID;
+    const streetID = req.session.streetID;
     const userID = req.session.user._id;
     const newStatus = req.body.status;
 
@@ -298,27 +299,27 @@ router.put('/changeStreetPrivacy', (req,res) => {
         return res.send('newStatus', 400);
     }
 
-    Street.findOneAndUpdate({_id: streetID, admins: userID},
-        {'isPublic': newStatus},
-        {new: true}).exec()
+    Street.findOneAndUpdate({ _id: streetID, admins: userID },
+        { isPublic: newStatus },
+        { new: true }).exec()
         .then(
             street => {
                 if (street) {
-                    res.send({content: street, status: "ok", msg: 'Street has been changed'});
+                    res.send({ content: street, status: 'ok', msg: 'Street has been changed' });
                 }
-            })
+            });
 
 });
 
 function getStreetsNearPoint(radius, limit, coords, callback) {
 
-    if (!radius || !coords || coords.length !== 2 ) {
+    if (!radius || !coords || coords.length !== 2) {
         return;
     }
 
     Street.find(
         {
-            'location': {
+            location: {
                 $near: {
                     $geometry: { type: 'Point', coordinates: coords },
                     $maxDistance: radius,
@@ -332,10 +333,7 @@ function getStreetsNearPoint(radius, limit, coords, callback) {
         .limit(limit)
 
         .then(result => {
-
-            if (result) {
-                callback(result);
-            }
+            callback(result);
         });
 
 }

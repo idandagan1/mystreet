@@ -72,7 +72,7 @@ router.post('/login/facebook', (req, res) => {
     const { id, name, accessToken: token } = req.body;
 
     // find the user in the database based on their facebook id
-    User.findOne({ 'facebook.id': id }).populate('local.primaryStreet').then((user, err) => {
+    User.findOne({ 'facebook.id': id }).populate([{ path: 'local.primaryStreet', model: 'street' }, { path: 'local.streets', model: 'street' }]).then((user, err) => {
         let sessionUser;
 
         // if the user is found, then log them in

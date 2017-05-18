@@ -1,7 +1,18 @@
 .n-mystreet {
     margin-top: 20px;
     min-width: 730px;
-    padding: 0 40px;
+    &-street-item{
+        display: block;
+        padding: 3px 20px;
+        clear: both;
+        font-weight: 400;
+        line-height: 1.42857143;
+        color: #333;
+        white-space: nowrap;
+        &:hover{
+            background-color: #F8F8F8;
+        }
+    }
 
     &-members-panel{
         text-align: center;
@@ -13,6 +24,14 @@
         width: 130px;
         margin: auto;
         display: block;
+    }
+    &-street a{
+        &:active {
+            background-color: aquamarine;
+        }
+        &:visited {
+            background-color: bisque;
+        }
     }
 
     &-member-name{
@@ -104,10 +123,22 @@
         border-bottom: 1px solid #eed;
     }
 }
-
+.p5 {
+    padding: 5px;
+}
 .po {
     cursor: pointer;
 }
+
+.street-caret {
+    display: inline-block !important;
+    margin-left: 10px;
+}
+
+.n-street-item {
+    display: inline;
+}
+
 @media only screen and (max-width: 450px) {
     .n-mystreet,
     ol {

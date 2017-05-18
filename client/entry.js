@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import AppRouter from 'app-router';
 import configureStore from 'configure-store';
+import 'resources/images/favicon.ico';
 import $ from 'jquery';
 
 const store = configureStore();

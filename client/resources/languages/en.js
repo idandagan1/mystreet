@@ -12,8 +12,10 @@ export default {
     join: 'Join',
     login: 'Login',
     noStreetsNearBy: 'There\'s no streets nearby..',
-    StreetsNearbyTitle: 'Streets Nearby',
+    StreetsNearbyTitle: 'Nearby Streets',
     fillOutInput: 'Please type a street name',
     onlyStreetNameMsg: 'Please search by street name only, don\'t include numbers.',
     joinStreetTxt: 'Be the first to join the street',
+    myStreetsTitle: 'My Streets',
+    emptyStreetListTitle: 'You have no streets on list',
 };

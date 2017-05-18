@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { PostsFeed, Map } from 'components';
 import { Strings } from 'resources';
 import StreetNearby from './streetNearby';
+import Street from './street';
 import Member from './member';
 import './my-streets.scss';
 
@@ -46,13 +47,16 @@ export default class MyStreets extends React.Component {
     }
 
     createMembersList = (members) => {
-        const { activeUser: { userId } } = this.props;
-        if (!members) {
-            return <span>{Strings.joinStreetTxt}</span>;
+        const { activeUser: { userId, local: { streets } } } = this.props;
+        if (!members || members.length === 0) {
+            if (streets.length > 3) {
+                return <div className='p5'><span>Max streets is 3</span></div>;
+            }
+            return <div className='p5'><span>{Strings.joinStreetTxt}</span></div>;
         }
 
         return (
-            <ul style={{ padding: 20, listStyleType: 'none', textAlign: 'left' }}>
+            <ul style={{ padding: 10, listStyleType: 'none', textAlign: 'left' }}>
                 {members.map((member, i) =>
                     this.eachMember(member, i, userId))
                 }
@@ -68,19 +72,34 @@ export default class MyStreets extends React.Component {
         }
         return members.find(x => x._id === userId) !== undefined;
     }
-    onStreetNearbyClick = (street) => {
+
+    onStreetClick = (street) => {
         const { searchStreetSubmitted } = this.props;
         searchStreetSubmitted(street);
     }
 
+    getMyStreetsList = (mystreets) => {
+
+        if (!mystreets || mystreets.length === 0) {
+            return <div className='p5'><span>{Strings.emptyStreetListTitle}</span></div>;
+        }
+
+        return (
+            <ul style={{ padding: 10, listStyleType: 'none', textAlign: 'left' }}>
+                {mystreets.map((street, i) => <Street onStreetClick={() => this.onStreetClick(street)} streetName={street.streetName} key={i} />)
+                }
+            </ul>
+        );
+    }
+
     getStreetsNearby = (streets) => {
         if (!streets || streets.length === 0) {
-            return (<span>{Strings.noStreetsNearBy}</span>)
+            return (<span>{Strings.noStreetsNearBy}</span>);
         }
         return streets.map((street, i) => {
             const { streetName, location, place_id, members } = street;
             return (
-                <li key={i} onClick={() => this.onStreetNearbyClick(street)}>
+                <li key={i} onClick={() => this.onStreetClick(street)}>
                     <StreetNearby
                         streetName={streetName}
                         location={location}
@@ -92,8 +111,14 @@ export default class MyStreets extends React.Component {
         });
     }
 
+    canUserJoinStreet = () => {
+        const isMember = this.isMember();
+        const { selectedStreet, activeUser: { local: { streets } } } = this.props;
+        return !isMember && streets.length < 4 && selectedStreet.place_id;
+    }
+
     render() {
-        const { isAuthenticated, streetsNearby, selectedStreet, selectedStreet: { members, streetName, location } } = this.props;
+        const { isAuthenticated, activeUser: { local: { streets } }, streetsNearby, selectedStreet, selectedStreet: { members, streetName, location } } = this.props;
         const isMember = this.isMember();
 
         return (
@@ -129,7 +154,7 @@ export default class MyStreets extends React.Component {
                             {this.createMembersList(members)}
                             <div className='n-mystreet-footer'>
                                 {
-                                    isMember !== true ?
+                                    this.canUserJoinStreet() ?
                                         <input
                                             type='button'
                                             className='n-mystreet__add-street-btn btn btn-sm'
@@ -142,6 +167,16 @@ export default class MyStreets extends React.Component {
                                 }
                             </div>
                         </div>
+                        {
+                            streets ?
+                                <div className='panel' style={{ textAlign: 'center' }}>
+                                    <div className='n-mystreet-h1'>My Streets</div>
+                                    <div className='n-mystreet-footer'>
+                                        {this.getMyStreetsList(streets)}
+                                    </div>
+                                </div>
+                                : null
+                        }
                     </li>
                 </ol>
             </div>

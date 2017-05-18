@@ -18,6 +18,7 @@ export default {
             title: 'MyStreet',
             filename: 'index.html',
             template: './client/index.html',
+            favicon: './client/resources/images/favicon.ico',
         }),
     ],
 
@@ -55,7 +56,7 @@ export default {
                 test: /\.scss$/i,
             },
             {
-                test: /\.(?:png|svg|jpe?g)$/i,
+                test: /\.(?:png|svg|jpe?g|ico)$/i,
                 loader: 'file-loader',
                 query: { name: 'images/[name].[ext]' },
             },

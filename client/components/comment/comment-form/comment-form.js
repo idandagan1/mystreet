@@ -1,47 +1,56 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { Strings } from 'resources';
 import './comment-form.scss';
 
 class CommentForm extends React.Component {
 
+    static propTypes = {
+        displayWriter: PropTypes.func,
+        displayComment: PropTypes.func,
+    };
+
     constructor(props) {
         super(props);
         this.state = {
-            username: 'Idan'
-        }
-
-        this.onCommentClick = this.onCommentClick.bind(this);
-        this.onChange = this.onChange.bind(this);
+            username: '',
+        };
     }
 
-    onCommentClick() {
+    onCommentClick = () => {
+        const { username } = this.state;
+        const { displayComment } = this.props;
         const comment = {
-            username: this.state.username,
-            content: this.refs.comment.value
+            username,
+            content: this.comment.value,
         }
         if (comment) {
-            this.props.displayComment(comment);
-            this.refs.comment.value = '';
+            displayComment(comment);
+            this.comment.value = '';
         }
     }
 
-    onChange() {
-        this.props.displayWriter(this.state.username);
+    onChange = () => {
+        const { displayWriter } = this.props;
+        const { username } = this.state;
+        displayWriter(username);
     }
 
     render() {
 
         return (
 
-            <div className="panel-footer n-comment-footer">
-                <div className="">
-                    <textarea onChange={this.onChange} ref="comment"
-                              className="form-control input-lg n-comment-textarea"
-                              placeholder={Strings.writeComment}></textarea>
-                    <div onClick={this.onCommentClick} className="btn btn-sm n-btn-comment">{Strings.comment}</div>
+            <div className='panel-footer n-comment-footer'>
+                <div>
+                    <textarea
+                        onChange={this.onChange}
+                        ref={comment => { this.comment = comment; }}
+                        className='form-control input-lg n-comment-textarea'
+                        placeholder={Strings.writeComment}
+                    ></textarea>
+                    <div onClick={this.onCommentClick} className='btn btn-sm n-btn-comment'>{Strings.comment}</div>
                 </div>
             </div>
-        )
+        );
     }
 }
 
