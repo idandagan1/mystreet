@@ -18,9 +18,9 @@ export function searchStreetSubmitted(streetObject) {
                 response => dispatch(getPostsSucceeded(response)),
                 error => dispatch(getPostsFailed(error)),
             );
-        streetsApi.getStreetsNearby(streetObject)
+        streetsApi.getNearbyStreets(streetObject)
             .then(
-                response => dispatch(getStreetsNearbySucceeded(response, streetObject)),
+                response => dispatch(getNearbyStreetsSucceeded(response, streetObject)),
                 error => dispatch(searchStreetFailed(error)),
             );
     };
@@ -96,7 +96,7 @@ function getPostsFailed(error) {
     };
 }
 
-function getStreetsNearbySucceeded(streets, selectedStreet) {
+function getNearbyStreetsSucceeded(streets, selectedStreet) {
     return {
         type: myStreetsActionTypes.GET_STREETS_NEARBY_SUCCEEDED,
         data: {

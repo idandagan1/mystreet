@@ -31,9 +31,9 @@ export function searchSubmitted(query) {
                     response => dispatch(getPostsSucceeded(response)),
                     error => dispatch(getPostsFailed(error)),
                 );
-            streetsApi.getStreetsNearby(query)
+            streetsApi.getNearbyStreets(query)
                 .then(
-                    response => dispatch(getStreetsNearbySucceeded(response, query)),
+                    response => dispatch(getNearbyStreetsSucceeded(response, query)),
                     error => dispatch(searchStreetFailed(error)),
                 );
         }
@@ -59,7 +59,7 @@ export function searchStreetSucceeded(response, streetSelected) {
     };
 }
 
-export function getStreetsNearbySucceeded(streets, selectedStreet) {
+export function getNearbyStreetsSucceeded(streets, selectedStreet) {
     return {
         type: headerActionTypes.GET_STREETS_NEARBY_SUCCEEDED,
         data: {

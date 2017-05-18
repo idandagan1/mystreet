@@ -11,9 +11,9 @@ export function getStreetByPlaceId(placeId) {
     });
 }
 
-export function getStreetsNearby(street) {
+export function getNearbyStreets(street) {
     return new Promise((resolve, reject) => {
-        $.ajax(`${config.mystreets}/getStreetsNearby?location=${JSON.stringify(street.location)}`, {
+        $.ajax(`${config.mystreets}/getNearbyStreets?location=${JSON.stringify(street.location)}`, {
             method: 'GET',
             success: (res, status, xhr) => resolve(res),
             error: (xhr, status, error) => reject(xhr.responseJSON),

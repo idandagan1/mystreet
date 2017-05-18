@@ -18,9 +18,9 @@ export function dashboardSearchSubmitted(selectedStreet) {
                 response => dispatch(getPostsSucceeded(response)),
                 error => dispatch(getPostsFailed(error)),
             );
-        streetsApi.getStreetsNearby(selectedStreet)
+        streetsApi.getNearbyStreets(selectedStreet)
             .then(
-                response => dispatch(getStreetsNearbySucceeded(response, selectedStreet)),
+                response => dispatch(getNearbyStreetsSucceeded(response, selectedStreet)),
                 error => dispatch(searchStreetFailed(error)),
             );
     };
@@ -41,7 +41,7 @@ function dashboardSearchSucceeded(response, streetSelected) {
     };
 }
 
-function getStreetsNearbySucceeded(streets, selectedStreet) {
+function getNearbyStreetsSucceeded(streets, selectedStreet) {
     return {
         type: dashboardActionTypes.GET_STREETS_NEARBY_SUCCEEDED,
         data: {

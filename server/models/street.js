@@ -13,7 +13,7 @@ const streetSchema = new Schema({
     },
     location: {
         type: [Number],
-        index: '2d',
+        index: '2dsphere',
     },
     address: {
         type: String,

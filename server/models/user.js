@@ -8,37 +8,40 @@ const userSchema = new Schema({
 
     name: {
         type: String,
-        required: true
+        required: true,
     },
     local: {
 
         isPremium: {
             type: Boolean,
-            default: false
+            default: false,
         },
         lastLogged: {
             type: Date,
-            default: Date.now
+            default: Date.now,
         },
         primaryStreet: {
             type: ObjectId,
             default: null,
-            ref: 'street'
+            ref: 'street',
         },
         streets: [{
             type: ObjectId,
-            ref: 'street'
+            ref: 'street',
         }],
-        personalDetails:{
+        personalDetails: {
             type: ObjectId,
-            ref: 'personalDetails'
-        }
+            ref: 'personalDetails',
+        },
     },
     facebook: {
         id: String,
         token: String,
         email: String,
         name: String,
+        first_name: String,
+        last_name: String,
+        gender: String,
     },
 
 }, { collection: 'user' });
@@ -47,7 +50,7 @@ export const User = mongoose.model('user', userSchema);
 
 export function removeStreet(memberID, streetID) {
 
-    if (streetID == null || memberID == null) {
+    if (!streetID || !memberID) {
         return;
     }
 

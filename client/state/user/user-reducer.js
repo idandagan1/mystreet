@@ -9,6 +9,8 @@ const initialState = {
         id: '',
         name: '',
         token: '',
+        first_name: '',
+        last_name: '',
     },
     local: {
         isPremium: false,
@@ -20,12 +22,13 @@ const initialState = {
 
 export default createReducer(initialState, {
     [userActionTypes.LOGIN_SUCCEEDED](state, action) {
-        const { data: { local, name, _id } } = action;
+        const { data: { local, facebook, name, _id } } = action;
 
         return {
             ...state,
             name,
             local,
+            facebook,
             userId: _id,
         };
     },

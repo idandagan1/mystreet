@@ -69,7 +69,7 @@ router.get('/getFriends', (req, res) => {
 });
 
 router.post('/login/facebook', (req, res) => {
-    const { id, name, accessToken: token } = req.body;
+    const { id, name, first_name, last_name, gender, accessToken: token } = req.body;
 
     // find the user in the database based on their facebook id
     User.findOne({ 'facebook.id': id }).populate([{ path: 'local.primaryStreet', model: 'street' }, { path: 'local.streets', model: 'street' }]).then((user, err) => {
@@ -82,6 +82,9 @@ router.post('/login/facebook', (req, res) => {
                     id,
                     token,
                     name,
+                    first_name,
+                    last_name,
+                    gender,
                 },
                 name,
             });

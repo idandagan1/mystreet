@@ -43,9 +43,10 @@ router.get('/getStreetsNearPrimaryStreet', (req,res) => {
 
 });
 
-router.get('/getStreetsNearby', (req, res) => {
+router.get('/getNearbyStreets', (req, res) => {
 
-    const radiusInMeters = 500;
+    const maxDistance = 1000;
+    const minDistance = 5;
     const limit = 8;
     const coords = JSON.parse(req.query.location);
 
@@ -53,15 +54,31 @@ router.get('/getStreetsNearby', (req, res) => {
         return res.send('location is missing', 400);
     }
 
-    getStreetsNearPoint(radiusInMeters, limit, coords, streetsNearby => {
+    Street.find(
+        {
+            location: {
+                $near: {
+                    $geometry: {
+                        type: 'Point',
+                        coordinates: coords,
+                    },
+                    $maxDistance: maxDistance,
+                    $minDistance: minDistance,
+                },
+            },
+        })
+        .lean()
 
-        if (streetsNearby) {
-            return res.send({
+        .populate({ path: 'members', model: 'user' })
+
+        .limit(limit)
+
+        .then(streetsNearby =>
+            res.send({
                 streetsNearby,
                 status: 'ok',
-            });
-        }
-    });
+            })
+        );
 
 });
 
