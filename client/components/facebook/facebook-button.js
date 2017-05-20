@@ -34,7 +34,6 @@ export default class FacebookLogin extends React.Component {
     };
 
     state = {
-        isSdkLoaded: false,
         isProcessing: false,
     };
 
@@ -43,7 +42,6 @@ export default class FacebookLogin extends React.Component {
             this.sdkLoaded();
             return;
         }
-        this.setFbAsyncInit();
         this.loadSdkAsynchronously();
         let fbRoot = document.getElementById('fb-root');
         if (!fbRoot) {
@@ -51,10 +49,11 @@ export default class FacebookLogin extends React.Component {
             fbRoot.id = 'fb-root';
             document.body.appendChild(fbRoot);
         }
+        this.setFbAsyncInit();
     }
 
     onLoginClick = () => {
-        const { isSdkLoaded, isProcessing } = this.state;
+        const { isProcessing } = this.state;
         const {
             scope,
             appId,
@@ -64,7 +63,7 @@ export default class FacebookLogin extends React.Component {
             isLoggedIn,
         } = this.props;
 
-        if (!isSdkLoaded || isProcessing || isLoggedIn) {
+        if (isProcessing || isLoggedIn) {
             return;
         }
 
@@ -97,15 +96,10 @@ export default class FacebookLogin extends React.Component {
                 xfbml,
                 cookie,
             });
-            this.setState({ isSdkLoaded: true });
             if (autoLoad || window.location.search.includes('facebookdirect')) {
                 window.FB.getLoginStatus(this.checkLoginAfterRefresh);
             }
         };
-    }
-
-    sdkLoaded() {
-        this.setState({ isSdkLoaded: true });
     }
 
     loadSdkAsynchronously() {
@@ -136,7 +130,7 @@ export default class FacebookLogin extends React.Component {
     checkLoginState = (response) => {
         const { callback } = this.props;
 
-        this.setState({ isProcessing: false });
+        //this.setState({ isProcessing: false });
 
         if (response.authResponse) {
             this.responseApi(response.authResponse);

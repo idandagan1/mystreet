@@ -1,5 +1,4 @@
 import createReducer from 'util/create-reducer';
-import appActionTypes from 'actions/app-action-types';
 import userActionTypes from 'actions/user-action-types';
 
 const initialState = {

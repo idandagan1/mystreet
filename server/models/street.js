@@ -30,7 +30,7 @@ const streetSchema = new Schema({
         type: ObjectId,
         ref: 'user',
     }],
-    postList: [{
+    postsfeed: [{
         type: ObjectId,
         ref: 'post',
     }],

@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Router, Route, browserHistory, IndexRoute } from 'react-router';
-import { AppLayout, Dashboard, MyStreets } from 'views';
-import { Profile } from 'components';
+import { AppLayout, Dashboard, MyStreets, Profile, Business } from 'views';
 import { syncHistoryWithStore } from 'react-router-redux';
 import * as appActions from 'actions/app-action-creators';
 
@@ -27,6 +26,7 @@ export default class AppRouter extends Component {
                 <Route path='/' component={AppLayout}>
                     <IndexRoute component={Dashboard} />
                     <Route path='mystreets' component={MyStreets} />
+                    <Route path='business' component={Business} />
                     <Route path='user' component={Profile} />
                 </Route>
             </Router>

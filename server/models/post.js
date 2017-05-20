@@ -20,9 +20,9 @@ const commentSchema = new Schema({
 
 const postSchema = new Schema({
 
-    postList: {
+    postsFeed: {
         type: ObjectId,
-        ref: 'postList',
+        ref: 'postsFeed',
     },
     tags: [{
         type: ObjectId,

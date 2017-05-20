@@ -6,4 +6,5 @@ export default createActionTypes('USER', [
     'LOGIN_FAILED',
     'SEARCH_SUCCEEDED',
     'SEARCH_FAILED',
+    'USER_NOT_FOUND',
 ]);

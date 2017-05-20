@@ -106,6 +106,13 @@ router.post('/login/facebook', (req, res) => {
     });
 });
 
+router.get('/getUserLogin', (req, res) => {
+    const { user: activeUser } = req.session;
+    return activeUser ?
+        res.status(200).send({ activeUser }) :
+        res.status(200).send({ msg: 'user not fund' });
+})
+
 router.post('/updateBasicInfo', (req, res) => {
 
     const firstName = req.body.firstName;
@@ -128,7 +135,7 @@ router.post('/updateBasicInfo', (req, res) => {
 
 })
 
-router.post('/updateProfessionalInfo', (req,res) => {
+router.post('/updateProfessionalInfo', (req, res) => {
 
     const work = req.body.work;
     const college = req.body.college;

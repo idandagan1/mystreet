@@ -19,7 +19,7 @@ export default createReducer(initialState, {
 
         return {
             ...state,
-            selectedStreet,
+            selectedStreet: selectedStreet.place_id ? selectedStreet : initialState.selectedStreet,
         };
     },
 
@@ -34,7 +34,7 @@ export default createReducer(initialState, {
 
         return {
             ...state,
-            selectedStreet,
+            selectedStreet: selectedStreet.place_id ? selectedStreet : initialState.selectedStreet,
         };
     },
 
@@ -43,7 +43,7 @@ export default createReducer(initialState, {
 
         return {
             ...state,
-            selectedStreet,
+            selectedStreet: selectedStreet.place_id ? selectedStreet : initialState.selectedStreet,
         };
     },
 

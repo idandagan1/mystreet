@@ -33,11 +33,10 @@ function dashboardSearchFailed(error) {
     };
 }
 
-function dashboardSearchSucceeded(response, streetSelected) {
-    const { street } = response;
+function dashboardSearchSucceeded({ selectedStreet }, street) {
     return {
         type: dashboardActionTypes.SEARCH_SUCCEEDED,
-        data: { selectedStreet: street || streetSelected },
+        data: { selectedStreet: selectedStreet || street },
     };
 }
 

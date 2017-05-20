@@ -31,3 +31,13 @@ export function getPostsByPlaceId(place_id) {
         });
     });
 }
+
+export function getPostsFeed() {
+    return new Promise((resolve, reject) => {
+        $.ajax(`${config.posts}/getPostsFeed`, {
+            method: 'GET',
+            success: (res, status, xhr) => resolve(res),
+            error: (xhr, status, error) => reject(xhr.responseJSON),
+        });
+    });
+}

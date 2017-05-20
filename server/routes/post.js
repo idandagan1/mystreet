@@ -69,7 +69,7 @@ router.post('/addPost', (req, res) => {
             path: 'author',
         }, (error, post) => {
             Street.findByIdAndUpdate(streetId, {
-                $push: { postList: newPost },
+                $push: { postsfeed: newPost },
             }).exec()
                 .then(street => {
                     if (street) {
@@ -112,6 +112,8 @@ router.post('/addComment', (req, res) => {
     });
 });
 
+router.get('/getPostsFeed', (req, res) => res.status(200).send({ postsfeed: req.session.postsfeed }));
+
 router.get('/getPostsByPlaceId', (req, res) => {
 
     const { place_id } = req.query;
@@ -122,10 +124,10 @@ router.get('/getPostsByPlaceId', (req, res) => {
 
     Street.findOne({ place_id })
         .populate({
-            path: 'postList',
+            path: 'postsfeed',
             model: 'post',
             options: {
-                sort: { createDate: -1},
+                sort: { createDate: -1 },
             },
             populate: [{
                 path: 'author',
@@ -140,7 +142,7 @@ router.get('/getPostsByPlaceId', (req, res) => {
         .then(street => {
             if (street) {
                 console.log('getPosts executed successfully');
-                return res.send({ postsfeed: street.postList, status: 'ok' });
+                return res.send({ postsfeed: street.postsfeed, status: 'ok' });
             }
             return res.send({ postsfeed: [], remark: 'street not found' });
         });

@@ -7,7 +7,7 @@ const router = expressRouter();
 
 // GET
 
-router.get('/getStreetsNearPrimaryStreet', (req,res) => {
+router.get('/getStreetsNearPrimaryStreet', (req, res) => {
 
     const userID = req.session.user._id;
     const radiusInMeters = 2000;
@@ -82,20 +82,67 @@ router.get('/getNearbyStreets', (req, res) => {
 
 });
 
+router.get('/getSelectedStreet', (req, res) => {
+
+    const { selectedStreet } = req.session;
+
+    if (!selectedStreet || !selectedStreet.place_id) {
+        return res.status(200).send({ msg: 'no place_id' });
+    }
+
+    getStreetByPlaceId(selectedStreet.place_id)
+        .then(street => {
+            req.session.selectedStreet = street;
+            req.session.save();
+            return res.status(200).send({ selectedStreet: street });
+        });
+});
+
 router.get('/getStreetByPlaceId', (req, res) => {
 
-    // TODO: Change parameters
     const { place_id } = req.query;
 
     if (!place_id) {
-        return res.send('place_id', 400);
+        return res.status(200).send({ msg: 'no place_id' });
     }
 
-    Street.findOne({ place_id }).populate('members')
-        .then((street, err) => {
-            return res.status(200).send({ street });
-    });
+    getStreetByPlaceId(place_id)
+        .then(selectedStreet => {
+            req.session.selectedStreet = selectedStreet;
+            req.session.save();
+            return res.status(200).send({ selectedStreet });
+        });
 });
+
+function getStreetByPlaceId(place_id) {
+
+    return new Promise((resolve, reject) => {
+
+        if(!place_id){
+            reject(null);
+        }
+
+        Street.findOne({ place_id })
+            .populate([{
+                path: 'postsfeed',
+                model: 'post',
+                options: {
+                    sort: { createDate: -1 },
+                },
+                populate: [{
+                    path: 'author',
+                    model: 'user',
+                },
+                {
+                    path: 'likes',
+                    model: 'user',
+                    select: { name: 1 },
+                }],
+            },
+                { path: 'members', model: 'user' }])
+            .then((selectedStreet, err) => resolve(selectedStreet));
+    });
+}
 
 router.get('/getStreets', (req, res) => {
     // This method returns a list of streets from the user's street list.
@@ -152,7 +199,7 @@ router.get('/getStreetAdmins', (req, res) => {
 router.get('/getAdmins', (req, res) => {
     const streetID = req.session.streetID;
 
-    if (streetID == null) {
+    if (!streetID) {
         return res.send('streetID', 400);
     }
 
@@ -171,7 +218,6 @@ router.post('/addStreet', (req, res) => {
     const { streetName, place_id } = req.body;
     const location = req.body.location ? [req.body.location[0], req.body.location[1]] : null;
     const user_id = req.session.user._id;
-    let selectedStreet;
 
     req.check('streetName', 'Name is empty').notEmpty();
     req.check('place_id', 'place_id is empty').notEmpty();
@@ -183,48 +229,53 @@ router.post('/addStreet', (req, res) => {
         return res.status(500).send(`There have been validation errors: ${errors}`, 400);
     }
 
-    Street.findOneAndUpdate({ place_id },
-        { $addToSet: { members: user_id } },
-        { new: true })
-        .populate('members')
-        .then((err, street) => {
-            if (street) {
-                selectedStreet = street;
-                console.log('Street already exist');
-            } else {
-                selectedStreet = new Street({
-                    streetName,
-                    place_id,
-                    members: user_id,
-                    location,
-                    admins: user_id,
-                });
-                selectedStreet.save((error) => {
-                    if (err) {
-                        throw err;
-                    }
-                });
-                console.log('New street added');
-                return selectedStreet;
-            }
-        })
-        .then(select => {
-            User.findOneAndUpdate({ _id: user_id },
-                { $addToSet: { 'local.streets': select._id } },
-                { new: true, passRawResult: true })
+    createStreet(place_id, user_id, location, streetName)
+        .then(street => {
+            req.session.selectedStreet = street;
+            addStreetToUser(user_id, street, req, res);
+        });
+});
+
+function addStreetToUser(user_id, street, req, res) {
+
+    return new Promise((resolve, reject) => {
+
+        if (!user_id || !street) {
+            reject(null);
+        }
+
+        User.findOneAndUpdate({ _id: user_id },
+            { $addToSet: { 'local.streets': street._id } },
+            { new: true, passRawResult: true })
             .populate('local.streets')
             .then((user, err) => {
                 if (user) {
                     if (user.local.streets.length === 1) {
-                        user.local.primaryStreet = select._id;
-                        req.session.user.local.primaryStreet = select._id;
+                        user.local.primaryStreet = street._id;
+                        req.session.user.local.primaryStreet = street._id;
                         user.save();
                         console.log('Added street to members list');
                     }
                     req.session.user = user;
                     req.session.save();
                 }
-                Street.populate(selectedStreet, { path: 'members' })
+                Street.populate(street, [{
+                    path: 'postsfeed',
+                    model: 'post',
+                    options: {
+                        sort: { createDate: -1 },
+                    },
+                    populate: [{
+                        path: 'author',
+                        model: 'user',
+                    },
+                    {
+                        path: 'likes',
+                        model: 'user',
+                        select: { name: 1 },
+                    }],
+                },
+                    { path: 'members', model: 'user' }])
                     .then(populatedStreet => res.send({
                         content: {
                             selectedStreet: populatedStreet,
@@ -233,8 +284,39 @@ router.post('/addStreet', (req, res) => {
                         msg: 'AddStreet execute successfully',
                     }));
             });
-        });
-});
+    });
+}
+
+function createStreet(place_id, user_id, location, streetName) {
+
+    return new Promise((resolve, reject) => {
+
+        if (!place_id) {
+            reject(null);
+        }
+
+        Street.findOneAndUpdate({ place_id },
+            { $addToSet: { members: user_id } },
+            { new: true })
+            .populate('members')
+            .then((street, err) => {
+                if (street) {
+                    console.log('Street already exist');
+                    resolve(street);
+                }
+                const selectedStreet = new Street({
+                    streetName,
+                    place_id,
+                    members: user_id,
+                    location,
+                    admins: user_id,
+                });
+                selectedStreet.save();
+                console.log('New street added');
+                resolve(selectedStreet);
+            });
+    });
+}
 
 // DELETE
 router.delete('/removeStreet', (req, res) => {

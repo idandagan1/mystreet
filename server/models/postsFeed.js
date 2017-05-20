@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const Schema = mongoose.Schema;
 
-const postListSchema = new Schema({
+const postsFeedSchema = new Schema({
 
     bucket: {
         type: Number,
@@ -14,6 +14,6 @@ const postListSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'post',
     }],
-}, { collection: 'postList' });
+}, { collection: 'postsFeed' });
 
-export default mongoose.model('postList', postListSchema);
+export default mongoose.model('postsFeed', postsFeedSchema);

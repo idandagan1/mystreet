@@ -74,8 +74,8 @@ export default class MyStreets extends React.Component {
     }
 
     onStreetClick = (street) => {
-        const { searchStreetSubmitted } = this.props;
-        searchStreetSubmitted(street);
+        const { searchStreetSubmitted, selectedStreet: { place_id } } = this.props;
+        return place_id !== street.place_id ? searchStreetSubmitted(street) : null;
     }
 
     getMyStreetsList = (mystreets) => {

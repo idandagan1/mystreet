@@ -7,7 +7,7 @@ import './posts-feed.scss';
 
 
 function select(state) {
-    const { posts: { newPost, postsfeed } } = state;
+    const { posts: { newPost }, myStreets: { selectedStreet: { postsfeed } } } = state;
 
     if (newPost.author) {
         const post = Object.assign({}, newPost);
@@ -34,13 +34,19 @@ class PostsFeed extends Component {
         addPostSubmitted: PropTypes.func.isRequired,
     }
 
+    getPostsFeed = () => {
+        const { selectedStreet: { postsfeed } } = this.props;
+
+        return postsfeed ?
+            postsfeed.map((post, i) => <Post key={i} postContent={post} />) : null;
+    }
+
     addNewPost = (newPost) => {
         const { addPostSubmitted, selectedStreet: { _id } } = this.props;
-
         addPostSubmitted(newPost, _id);
     }
     render() {
-        const { isMember, postsfeed } = this.props;
+        const { isMember } = this.props;
 
         return (
             <div>
@@ -50,8 +56,7 @@ class PostsFeed extends Component {
                         null : <PostForm addNewPost={this.addNewPost} />
                 }
                 <div>
-                    {postsfeed ? postsfeed.map((post, i) => <Post key={i} postContent={post} />)
-                : null}
+                    {this.getPostsFeed()}
                 </div>
             </div>
         );

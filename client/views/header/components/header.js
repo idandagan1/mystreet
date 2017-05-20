@@ -11,7 +11,7 @@ import './header.scss';
 export default function Header(props) {
 
     const { isAuthenticated, loginSubmitted, searchSubmitted, user: { name } } = props;
-    const autoLoad = true;
+    const autoLoad = false;
 
     return (
         <nav className='navbar navbar-default n-header-theme'>
@@ -43,7 +43,7 @@ export default function Header(props) {
                                 null
                         }
 
-                        <li><Link to='/'>Apartments</Link></li>
+                        <li><Link to='/business'>Business</Link></li>
                         <li className='n-search-street-header'><SearchStreet searchStreet={searchSubmitted} /></li>
                     </ul>
 

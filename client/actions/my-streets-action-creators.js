@@ -1,5 +1,4 @@
 import * as streetsApi from 'api/streets-api';
-import * as postsApi from 'api/post-api';
 import myStreetsActionTypes from './my-streets-action-types';
 
 export function searchStreetSubmitted(streetObject) {
@@ -12,11 +11,6 @@ export function searchStreetSubmitted(streetObject) {
             .then(
                 response => dispatch(searchStreetSucceeded(response, streetObject)),
                 error => dispatch(searchStreetFailed(error)),
-            );
-        postsApi.getPostsByPlaceId(streetObject.place_id)
-            .then(
-                response => dispatch(getPostsSucceeded(response)),
-                error => dispatch(getPostsFailed(error)),
             );
         streetsApi.getNearbyStreets(streetObject)
             .then(
@@ -42,11 +36,17 @@ export function addStreetSubmitted(street) {
     };
 }
 
-function searchStreetSucceeded(response, streetSelected) {
-    const { street } = response;
+function getStreetSucceeded({ selectedStreet }) {
     return {
         type: myStreetsActionTypes.SEARCH_SUCCEEDED,
-        data: { selectedStreet: street || streetSelected },
+        data: { selectedStreet },
+    };
+}
+
+function searchStreetSucceeded({ selectedStreet }, street) {
+    return {
+        type: myStreetsActionTypes.SEARCH_SUCCEEDED,
+        data: { selectedStreet: selectedStreet || street },
     };
 }
 

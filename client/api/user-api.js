@@ -16,5 +16,14 @@ export function getFacebookLogin(user) {
         });
     });
 
+}
 
+export function getActiveUser() {
+    return new Promise((resolve, reject) => {
+        $.ajax(`${config.user}/getUserLogin`, {
+            method: 'GET',
+            success: (res, status, xhr) => resolve(res),
+            error: (xhr, status, error) => reject(xhr.responseJSON),
+        });
+    });
 }

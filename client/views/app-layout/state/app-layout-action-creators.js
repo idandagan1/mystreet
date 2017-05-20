@@ -6,7 +6,5 @@ export default function loginSubmitted(user) {
         dispatch({
             type: appLayoutActionTypes.LOGIN_SUBMITTED,
         });
-
-        dispatch(facebookLoginSubmitted(user));
     };
 }

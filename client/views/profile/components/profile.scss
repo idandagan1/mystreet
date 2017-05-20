@@ -1,26 +1,35 @@
-.n-profile-photo{
-    text-align: center;
-    width: 100px;
-    height: 100px;
-    border: black 1px solid;
-}
+.n-profile {
 
-.n-profile-user-details{
+    textarea {
+        resize: none;
+    }
 
-}
+    &-photo{
+        text-align: center;
+        width: 100px;
+        height: 100px;
+        min-width: 100px;
+        min-height: 100px;
+        margin: auto;
+        padding: 7px;
+    }
 
-.n-profile-wrapper {
-    margin: auto;
-    position: relative;
-    top: 50px;
-    width: 500px;
-}
+    &-user-details{
 
-.n-profile-text{
-    resize: none;
-}
+    }
 
-.n-profile-label{
-    font-size: 17px;
-    font-weight: bold;
+    &-wrapper {
+        padding: 15px;
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    &-text{
+        resize: none;
+    }
+
+    &-label{
+        font-size: 17px;
+        font-weight: bold;
+    }
 }

@@ -52,10 +52,10 @@ export function getMembersSucceeded(members) {
 }
 
 export function searchStreetSucceeded(response, streetSelected) {
-    const { street } = response;
+    const { selectedStreet } = response;
     return {
         type: headerActionTypes.SEARCH_SUCCEEDED,
-        data: { selectedStreet: street || streetSelected },
+        data: { selectedStreet: selectedStreet || streetSelected },
     };
 }
 

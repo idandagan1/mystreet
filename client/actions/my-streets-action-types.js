@@ -4,6 +4,7 @@ export default createActionTypes('MY_STREETS', [
     'SEARCH_SUBMITTED',
     'SEARCH_SUCCEEDED',
     'SEARCH_FAILED',
+    'STREET_NOT_FOUND',
 
     'ADD_STREET_SUBMITTED',
     'ADD_STREET_SUCCEEDED',
