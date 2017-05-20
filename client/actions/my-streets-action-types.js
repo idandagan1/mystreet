@@ -15,4 +15,5 @@ export default createActionTypes('MY_STREETS', [
     'GET_POSTS_SUCCEEDED',
     'GET_POSTS_FAILED',
     'GET_STREETS_NEARBY_SUCCEEDED',
+    'CHANGE_PRIMARY_STREET_SUCCEEDED',
 ]);

@@ -43,6 +43,15 @@ export default createReducer(initialState, {
         };
     },
 
+    [myStreetsActionTypes.CHANGE_PRIMARY_STREET_SUCCEEDED](state, action) {
+        const { data: { activeUser } } = action;
+
+        return {
+            ...state,
+            ...activeUser,
+        };
+    },
+
     [myStreetsActionTypes.ADD_STREET_SUCCEEDED](state, action) {
         const { data: { activeUser: { local } } } = action;
 

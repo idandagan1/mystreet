@@ -36,6 +36,23 @@ export function addStreetSubmitted(street) {
     };
 }
 
+export function changePrimaryStreet(street) {
+    return (dispatch) => {
+        streetsApi.changePrimaryStreet(street._id)
+            .then(
+                response => dispatch(changePrimaryStreetSucceeded(response)),
+                error => dispatch(addStreetFailed(error)),
+            );
+    };
+}
+
+function changePrimaryStreetSucceeded({ activeUser }) {
+    return {
+        type: myStreetsActionTypes.CHANGE_PRIMARY_STREET_SUCCEEDED,
+        data: { activeUser },
+    };
+}
+
 function getStreetSucceeded({ selectedStreet }) {
     return {
         type: myStreetsActionTypes.SEARCH_SUCCEEDED,

@@ -337,26 +337,27 @@ router.delete('/removeStreet', (req, res) => {
 });
 
 // PUT
-router.put('/changePrimaryStreet', (req, res) => {
+router.post('/changePrimaryStreet', (req, res) => {
 
-    const newPrimaryStreet = req.body.streetID;
-    const userID = req.session.user._id;
+    const { street_id } = req.query;
+    const { user: { _id: user_id } } = req.session;
 
-    req.check('streetID', 'streetID is empty').notEmpty();
-
-    const errors = req.validationErrors();
-
-    if (errors || userID == null || newPrimaryStreet == null) {
-        return res.send(`There have been validation errors: ${errors}`, 400);
+    if (!user_id || !street_id) {
+        return res.status(400).send({ msg: 'There have been validation errors' });
     }
 
-    User.findOneAndUpdate({ _id: userID }, { 'local.primaryStreet': newPrimaryStreet },
-        { upsert: true }).exec()
-        .then(user => {
-            if (user) {
+    User.findOneAndUpdate({ _id: user_id },
+        { 'local.primaryStreet': street_id },
+        { upsert: true, new: true })
+        .populate({ path: 'local.streets' })
+        .then(activeUser => {
+            if (activeUser) {
+                req.session.user = activeUser;
+                req.session.save();
                 console.log('Primary street has been changed');
-                res.status(200).send({ msg: 'Primary street has been changed' });
+                return res.status(200).send({ activeUser, msg: 'Primary street has been changed' });
             }
+            return res.status(200).send({ msg: 'Error while changing street' });
         }
     );
 });

@@ -29,6 +29,7 @@ export default class MyStreets extends React.Component {
         isAuthenticated: PropTypes.bool.isRequired,
         addStreetSubmitted: PropTypes.func.isRequired,
         searchStreetSubmitted: PropTypes.func.isRequired,
+        changePrimaryStreet: PropTypes.func.isRequired,
     };
 
     eachMember(member, i, userId) {
@@ -78,7 +79,14 @@ export default class MyStreets extends React.Component {
         return place_id !== street.place_id ? searchStreetSubmitted(street) : null;
     }
 
+    onChangePrimaryStreet = (street) => {
+        const { changePrimaryStreet } = this.props;
+        changePrimaryStreet(street);
+    }
+
     getMyStreetsList = (mystreets) => {
+
+        const { activeUser: { local: { primaryStreet } } } = this.props;
 
         if (!mystreets || mystreets.length === 0) {
             return <div className='p5'><span>{Strings.emptyStreetListTitle}</span></div>;
@@ -86,7 +94,18 @@ export default class MyStreets extends React.Component {
 
         return (
             <ul style={{ padding: 10, listStyleType: 'none', textAlign: 'left' }}>
-                {mystreets.map((street, i) => <Street onStreetClick={() => this.onStreetClick(street)} streetName={street.streetName} key={i} />)
+                {
+                    mystreets.map((street, i) => {
+                        const isPrimary = street._id === primaryStreet;
+                        return (
+                            <Street
+                                onStreetClick={() => this.onStreetClick(street)}
+                                onChangePrimaryStreet={() => this.onChangePrimaryStreet(street)}
+                                streetName={street.streetName}
+                                key={i}
+                                isPrimary={isPrimary}
+                            />);
+                    })
                 }
             </ul>
         );
