@@ -18,4 +18,8 @@ export default {
     joinStreetTxt: 'Be the first to join the street',
     myStreetsTitle: 'My Streets',
     emptyStreetListTitle: 'You have no streets on list',
+    gender: 'Gender',
+    firstName: 'First Name',
+    lastName: 'Last Name',
+    address: 'Address',
 };

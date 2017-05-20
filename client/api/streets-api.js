@@ -52,11 +52,12 @@ export function changePrimaryStreet(streetId) {
 }
 
 export function addStreet(street) {
-    const { place_id, streetName, location } = street;
+    const { place_id, streetName, location, address } = street;
     const data = {
         place_id,
         streetName,
         location,
+        address,
     };
 
     return new Promise((resolve, reject) => {

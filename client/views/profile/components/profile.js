@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Strings } from 'resources';
+import facebookicon from 'resources/images/facebook-icon.ico';
 import './profile.scss';
 
 export default class Profile extends React.Component {
@@ -16,7 +17,11 @@ export default class Profile extends React.Component {
         }),
     }
     render() {
-        const { activeUser: { facebook: { id, first_name, last_name }, name } } = this.props;
+        const {
+            activeUser: {
+                local: { primaryStreet: { address } },
+                facebook: { id, first_name, last_name, gender },
+            } } = this.props;
         const picturePath = `http://graph.facebook.com/${id}/picture?type=normal`;
         const linkToUserFacebook = `https://www.facebook.com/app_scoped_user_id/${id}`;
 
@@ -27,9 +32,17 @@ export default class Profile extends React.Component {
                         <div className='n-profile-photo'>
                             <img className='img-rounded img-responsive' alt='user-icon' src={picturePath} role='img' />
                         </div>
+                        <div>
+                            <a
+                                href={linkToUserFacebook}
+                                rel='noopener noreferrer'
+                                target='_blank'
+                            ><img className='n-profile-facebook-icon' alt='facebook' src={facebookicon} role='img' /></a>
+                        </div>
+                        <div style={{ height: 10 }} />
                         <form className='form-horizontal'>
                             <div className='form-group'>
-                                <label htmlFor='inputEmail3' className='col-sm-3 control-label'>First Name</label>
+                                <label htmlFor='inputEmail3' className='col-sm-3 control-label'>{Strings.firstName}</label>
                                 <div className='col-sm-6'>
                                     <textarea
                                         className='form-control'
@@ -40,13 +53,34 @@ export default class Profile extends React.Component {
                                 </div>
                             </div>
                             <div className='form-group'>
-                                <label htmlFor='inputPassword3' className='col-sm-3 control-label'>Last Name</label>
+                                <label htmlFor='inputPassword3' className='col-sm-3 control-label'>{Strings.lastName}</label>
                                 <div className='col-sm-6'>
                                     <textarea
                                         className='form-control'
                                         rows='1'
                                         defaultValue={last_name}
                                         required='true'
+                                    />
+                                </div>
+                            </div>
+                            <div className='form-group'>
+                                <label htmlFor='inputPassword3' className='col-sm-3 control-label'>{Strings.address}</label>
+                                <div className='col-sm-6'>
+                                    <textarea
+                                        className='form-control'
+                                        rows='1'
+                                        defaultValue={address}
+                                        required='true'
+                                    />
+                                </div>
+                            </div>
+                            <div className='form-group'>
+                                <label htmlFor='inputPassword3' className='col-sm-3 control-label'>{Strings.gender}</label>
+                                <div className='col-sm-6'>
+                                    <textarea
+                                        className='form-control'
+                                        rows='1'
+                                        defaultValue={gender}
                                     />
                                 </div>
                             </div>

@@ -96,7 +96,7 @@ export default class MyStreets extends React.Component {
             <ul style={{ padding: 10, listStyleType: 'none', textAlign: 'left' }}>
                 {
                     mystreets.map((street, i) => {
-                        const isPrimary = street._id === primaryStreet;
+                        const isPrimary = street._id === primaryStreet._id;
                         return (
                             <Street
                                 onStreetClick={() => this.onStreetClick(street)}

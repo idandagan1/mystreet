@@ -215,7 +215,7 @@ router.get('/getAdmins', (req, res) => {
 // POST
 router.post('/addStreet', (req, res) => {
 
-    const { streetName, place_id } = req.body;
+    const { streetName, place_id, address } = req.body;
     const location = req.body.location ? [req.body.location[0], req.body.location[1]] : null;
     const user_id = req.session.user._id;
 
@@ -229,7 +229,7 @@ router.post('/addStreet', (req, res) => {
         return res.status(500).send(`There have been validation errors: ${errors}`, 400);
     }
 
-    createStreet(place_id, user_id, location, streetName)
+    createStreet(place_id, user_id, location, streetName, address)
         .then(street => {
             req.session.selectedStreet = street;
             addStreetToUser(user_id, street, req, res);
@@ -247,7 +247,7 @@ function addStreetToUser(user_id, street, req, res) {
         User.findOneAndUpdate({ _id: user_id },
             { $addToSet: { 'local.streets': street._id } },
             { new: true, passRawResult: true })
-            .populate('local.streets')
+            .populate([{ path: 'local.streets' }, { path: 'local.primaryStreet' }])
             .then((user, err) => {
                 if (user) {
                     if (user.local.streets.length === 1) {
@@ -287,7 +287,7 @@ function addStreetToUser(user_id, street, req, res) {
     });
 }
 
-function createStreet(place_id, user_id, location, streetName) {
+function createStreet(place_id, user_id, location, streetName, address) {
 
     return new Promise((resolve, reject) => {
 
@@ -309,6 +309,7 @@ function createStreet(place_id, user_id, location, streetName) {
                     place_id,
                     members: user_id,
                     location,
+                    address,
                     admins: user_id,
                 });
                 selectedStreet.save();
@@ -349,7 +350,7 @@ router.post('/changePrimaryStreet', (req, res) => {
     User.findOneAndUpdate({ _id: user_id },
         { 'local.primaryStreet': street_id },
         { upsert: true, new: true })
-        .populate({ path: 'local.streets' })
+        .populate([{ path: 'local.streets' }, { path: 'local.primaryStreet' }])
         .then(activeUser => {
             if (activeUser) {
                 req.session.user = activeUser;
