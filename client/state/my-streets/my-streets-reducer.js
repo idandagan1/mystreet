@@ -8,6 +8,7 @@ const initialState = {
         streetName: 'Search for your street',
         place_id: '',
         members: [],
+        address: '',
         location: [34.7818, 32.0853],
     },
     members: [],

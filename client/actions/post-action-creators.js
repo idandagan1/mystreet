@@ -16,6 +16,16 @@ export function addPostSubmitted(post, streetId) {
     };
 }
 
+export function addCommentSubmitted(comment, postId) {
+    return dispatch => {
+        postApi.addComment(comment, postId)
+            .then(
+                response => dispatch(addCommentSucceeded(response)),
+                error => dispatch(addCommentFailed(error)),
+            );
+    };
+}
+
 function addPostSucceeded(post) {
     return {
         type: postActionTypes.ADD_POST_SUCCEEDED,
@@ -26,5 +36,18 @@ function addPostSucceeded(post) {
 function addPostFailed(error) {
     return {
         type: postActionTypes.ADD_POST_FAILED,
+    };
+}
+
+function addCommentSucceeded({ newComment }) {
+    return {
+        type: postActionTypes.ADD_COMMENT_SUCCEEDED,
+        data: { newComment },
+    };
+}
+
+function addCommentFailed(error) {
+    return {
+        type: postActionTypes.ADD_COMMENT_FAILED,
     };
 }

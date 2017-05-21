@@ -22,4 +22,5 @@ export default {
     firstName: 'First Name',
     lastName: 'Last Name',
     address: 'Address',
+    noAddress: 'No adress yet',
 };

@@ -137,13 +137,19 @@ export default class MyStreets extends React.Component {
     }
 
     render() {
-        const { isAuthenticated, activeUser: { local: { streets } }, streetsNearby, selectedStreet, selectedStreet: { members, streetName, location } } = this.props;
+        const {
+            isAuthenticated,
+            activeUser: { local: { streets } },
+            streetsNearby, selectedStreet,
+            selectedStreet: { members, streetName, location, address },
+        } = this.props;
         const isMember = this.isMember();
 
         return (
             <div className='n-mystreet'>
                 <div className='n-mystreet-page-header'>
-                    <span>{ streetName }</span>
+                    <div>{ streetName }</div>
+                    <div className='n-mystreet-address' title={address}>{address}</div>
                 </div>
                 <ol>
                     <li className='col-sm-3 sub-main-li hidden-sm  hidden-xs'>

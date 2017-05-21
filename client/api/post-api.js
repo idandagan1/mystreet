@@ -18,6 +18,22 @@ export function addPost(post, streetId) {
     });
 }
 
+export function addComment(comment, postId) {
+    const data = {
+        postId,
+        body: comment.body,
+    }
+
+    return new Promise((resolve, reject) => {
+        $.ajax(`${config.posts}/addComment`, {
+            method: 'POST',
+            data: JSON.stringify(data),
+            success: (res, status, xhr) => resolve(res),
+            error: (xhr, status, error) => reject(xhr.responseJSON),
+        });
+    });
+}
+
 export function getPostsByPlaceId(place_id) {
     if (!place_id) {
         return;

@@ -21,7 +21,7 @@ class CommentForm extends React.Component {
         const { displayComment } = this.props;
         const comment = {
             username,
-            content: this.comment.value,
+            body: this.comment.value,
         }
         if (comment) {
             displayComment(comment);

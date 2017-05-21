@@ -11,6 +11,16 @@ export function getStreetByPlaceId(placeId) {
     });
 }
 
+export function getPostsFeed(street) {
+    return new Promise((resolve, reject) => {
+        $.ajax(`${config.mystreets}/getNearbyStreets?location=${JSON.stringify(street.location)}`, {
+            method: 'GET',
+            success: (res, status, xhr) => resolve(res),
+            error: (xhr, status, error) => reject(xhr.responseJSON),
+        });
+    });
+}
+
 export function getNearbyStreets(street) {
     return new Promise((resolve, reject) => {
         $.ajax(`${config.mystreets}/getNearbyStreets?location=${JSON.stringify(street.location)}`, {

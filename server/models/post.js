@@ -16,7 +16,7 @@ const commentSchema = new Schema({
     body: {
         type: String,
     },
-});
+}, { collection: 'comment' });
 
 const postSchema = new Schema({
 
@@ -49,5 +49,5 @@ const postSchema = new Schema({
     }],
     comments: [commentSchema],
 }, { collection: 'post' });
-
+mongoose.model('comments', commentSchema);
 export const Post = mongoose.model('post', postSchema);

@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { addPostSubmitted } from 'actions/post-action-creators';
+import { addPostSubmitted, addCommentSubmitted } from 'actions/post-action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { PostForm, Post } from '../../posts';
@@ -7,7 +7,7 @@ import './posts-feed.scss';
 
 
 function select(state) {
-    const { posts: { newPost }, myStreets: { selectedStreet: { postsfeed } } } = state;
+    const { postsfeed: { newPost }, myStreets: { selectedStreet: { postsfeed } } } = state;
 
     if (newPost.author) {
         const post = Object.assign({}, newPost);
@@ -32,13 +32,14 @@ class PostsFeed extends Component {
         isMember: PropTypes.bool,
         postsfeed: PropTypes.array,
         addPostSubmitted: PropTypes.func.isRequired,
+        addCommentSubmitted: PropTypes.func.isRequired,
     }
 
     getPostsFeed = () => {
-        const { selectedStreet: { postsfeed } } = this.props;
+        const { addCommentSubmitted, selectedStreet: { postsfeed } } = this.props;
 
         return postsfeed ?
-            postsfeed.map((post, i) => <Post key={i} postContent={post} />) : null;
+            postsfeed.map((post, i) => <Post addCommentHandler={addCommentSubmitted} key={i} postContent={post} />) : null;
     }
 
     addNewPost = (newPost) => {
@@ -64,7 +65,7 @@ class PostsFeed extends Component {
 }
 
 function matchDispatchToProps(dispatch) {
-    return bindActionCreators({ addPostSubmitted }, dispatch);
+    return bindActionCreators({ addPostSubmitted, addCommentSubmitted }, dispatch);
 }
 
 export default connect(select, matchDispatchToProps)(PostsFeed);

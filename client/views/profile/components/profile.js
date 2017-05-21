@@ -19,9 +19,10 @@ export default class Profile extends React.Component {
     render() {
         const {
             activeUser: {
-                local: { primaryStreet: { address } },
+                local: { primaryStreet },
                 facebook: { id, first_name, last_name, gender },
             } } = this.props;
+        const address = primaryStreet ? primaryStreet.address : null;
         const picturePath = `http://graph.facebook.com/${id}/picture?type=normal`;
         const linkToUserFacebook = `https://www.facebook.com/app_scoped_user_id/${id}`;
 
@@ -69,6 +70,7 @@ export default class Profile extends React.Component {
                                     <textarea
                                         className='form-control'
                                         rows='1'
+                                        placeholder={Strings.noAddress}
                                         defaultValue={address}
                                         required='true'
                                     />

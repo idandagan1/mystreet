@@ -122,22 +122,14 @@ function getStreetByPlaceId(place_id) {
             reject(null);
         }
 
-        Street.findOne({ place_id })
+        Street.findOne({ place_id })//
             .populate([{
                 path: 'postsfeed',
                 model: 'post',
                 options: {
                     sort: { createDate: -1 },
                 },
-                populate: [{
-                    path: 'author',
-                    model: 'user',
-                },
-                {
-                    path: 'likes',
-                    model: 'user',
-                    select: { name: 1 },
-                }],
+                populate: ['author', 'comments.author'],
             },
                 { path: 'members', model: 'user' }])
             .then((selectedStreet, err) => resolve(selectedStreet));
@@ -232,6 +224,7 @@ router.post('/addStreet', (req, res) => {
     createStreet(place_id, user_id, location, streetName, address)
         .then(street => {
             req.session.selectedStreet = street;
+            req.session.save();
             addStreetToUser(user_id, street, req, res);
         });
 });
@@ -251,8 +244,7 @@ function addStreetToUser(user_id, street, req, res) {
             .then((user, err) => {
                 if (user) {
                     if (user.local.streets.length === 1) {
-                        user.local.primaryStreet = street._id;
-                        req.session.user.local.primaryStreet = street._id;
+                        user.local.primaryStreet = street;
                         user.save();
                         console.log('Added street to members list');
                     }
@@ -265,21 +257,12 @@ function addStreetToUser(user_id, street, req, res) {
                     options: {
                         sort: { createDate: -1 },
                     },
-                    populate: [{
-                        path: 'author',
-                        model: 'user',
-                    },
-                    {
-                        path: 'likes',
-                        model: 'user',
-                        select: { name: 1 },
-                    }],
-                },
-                    { path: 'members', model: 'user' }])
+                    populate: ['author', 'comments.author'],
+                }, { path: 'members', model: 'user' }])
                     .then(populatedStreet => res.send({
                         content: {
                             selectedStreet: populatedStreet,
-                            activeUser: req.session.user,
+                            activeUser: user,
                         },
                         msg: 'AddStreet execute successfully',
                     }));
@@ -302,7 +285,7 @@ function createStreet(place_id, user_id, location, streetName, address) {
             .then((street, err) => {
                 if (street) {
                     console.log('Street already exist');
-                    resolve(street);
+                    return resolve(street);
                 }
                 const selectedStreet = new Street({
                     streetName,
@@ -350,7 +333,7 @@ router.post('/changePrimaryStreet', (req, res) => {
     User.findOneAndUpdate({ _id: user_id },
         { 'local.primaryStreet': street_id },
         { upsert: true, new: true })
-        .populate([{ path: 'local.streets' }, { path: 'local.primaryStreet' }])
+        .populate(['local.streets', 'local.primaryStreet'])
         .then(activeUser => {
             if (activeUser) {
                 req.session.user = activeUser;

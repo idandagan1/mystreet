@@ -1,6 +1,13 @@
 .n-post-footer {
 
 }
+
+.n-comment-list {
+    max-height: 100px;
+    overflow-y: scroll;
+    list-style-type: none;
+    padding: 0px;
+}
 .n-footer-btn {
     color: #006bb3;
     margin: 0px 5px;

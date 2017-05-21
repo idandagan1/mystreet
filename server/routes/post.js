@@ -1,5 +1,6 @@
 /* eslint-disable no-underscore-dangle, consistent-return, no-param-reassign */
 import { Router as expressRouter } from 'express';
+import mongoose from 'mongoose';
 import { Street } from '../models/street';
 import { Post } from '../models/post';
 
@@ -41,7 +42,7 @@ router.delete('/unlikePost', (req, res) => {
             $pull: {likes: userID},
         }, err => {
             if (err) throw err;
-            else res.status(200).send({msg: 'unlike post'});
+            else res.status(200).send({ msg: 'unlike post' });
         }
     );
 });
@@ -74,41 +75,42 @@ router.post('/addPost', (req, res) => {
                 .then(street => {
                     if (street) {
                         console.log('Added post');
-                        res.send({ newPost: post, status: 'ok' });
+                        return res.status(200).send({ newPost: post, status: 'ok' });
                     }
                 });
-        })
+        });
     });
 
 });
 
 router.post('/addComment', (req, res) => {
-    // TODO: Change parameters
-    const userID = req.session.user._id;
-    const postID = req.session.postID;
-    const comment = req.body.comment;
 
-    req.check('comment', 'Comment is missing').notEmpty();
+    const userId = req.session.user._id;
+    const { body, postId } = req.body;
 
-    const errors = req.validationErrors();
-
-    if (errors || userID == null || postID == null) {
-        return res.send(`There have been validation errors: ${errors}`, 400);
+    if (!userId || !postId) {
+        return res.status(400).send({ msg: 'There have been validation errors' });
     }
 
-    Post.findByIdAndUpdate(postID, {
+    const newComment = {
+        createDate: Date.now(),
+        author: req.session.user,
+        body,
+    }
+
+    Post.findByIdAndUpdate(postId, {
         $push: {
             comments: {
                 createDate: Date.now(),
-                author: userID,
-                body: comment,
+                author: mongoose.Types.ObjectId(userId),
+                body,
             },
         },
-    }).then(post => {
-        if (post) {
-            console.log('Added comment');
-            res.send({ post, status: 'ok' });
-        }
+    },
+    { new: true })
+        .then(post => {
+            console.log('Added comment successfully');
+            return res.status(200).send({ newComment, status: 'ok' });
     });
 });
 
@@ -132,11 +134,6 @@ router.get('/getPostsByPlaceId', (req, res) => {
             populate: [{
                 path: 'author',
                 model: 'user',
-            },
-            {
-                path: 'likes',
-                model: 'user',
-                select: { name: 1 },
             }],
         }).exec()
         .then(street => {
@@ -150,17 +147,17 @@ router.get('/getPostsByPlaceId', (req, res) => {
 
 router.delete('/deletePost', (req, res) => {
 
-    const postID = req.session.postID;
+    const { postId } = req.body;
 
-    if (postID == null) {
+    if (!postId) {
         return res.send('postID', 400);
     }
 
-    Post.findByIdAndRemove(postID).exec()
+    Post.findByIdAndRemove(postId).exec()
         .then(post => {
                 if (post) {
                     console.log('Deleted post');
-                    res.status(200).send({msg: 'Deleted post'});
+                    res.status(200).send({ msg: 'Deleted post' });
                 }
             }
         );

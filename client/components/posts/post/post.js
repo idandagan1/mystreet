@@ -1,11 +1,26 @@
 import React, { PropTypes } from 'react';
 import { Comment, CommentForm } from 'components/comment';
 import { Strings } from 'resources';
+import { connect } from 'react-redux';
 import { replaceDateTime } from 'util/utils.js';
-import commenticon from 'resources/images/comment-icon.png';
-import likeicon from 'resources/images/like-icon.png';
 import moment from 'moment';
 import './post.scss';
+
+function select(state) {
+    const { post: { newComment } } = state;
+
+    const comments = [];
+    if (newComment.author) {
+        const comment = Object.assign({}, newComment);
+        comments.unshift(comment);
+        newComment.author = null;
+    }
+
+    return {
+        newComment,
+        comments,
+    };
+}
 
 class Post extends React.Component {
 
@@ -16,7 +31,9 @@ class Post extends React.Component {
             }),
             body: PropTypes.string,
             createDate: PropTypes.date,
+            comments: PropTypes.array,
         }),
+        addCommentHandler: PropTypes.func.isRequired,
     }
 
     constructor(props) {
@@ -51,8 +68,10 @@ class Post extends React.Component {
     }
 
     displayComment = (comment) => {
+        const { addCommentHandler, postContent: { _id } } = this.props;
         const comments = this.state.comments;
         comments.push(comment);
+        addCommentHandler(comment, _id);
         this.setState({ comments });
     }
 
@@ -66,53 +85,6 @@ class Post extends React.Component {
         return replaceDateTime(fDate);
     }
 
-    onLikeClick = () => {
-        const likes = this.state.likes;
-        likes.push(this.state.username);
-        this.setState({ likes });
-    }
-
-    getComments = () => {
-        const { comments } = this.state;
-        return comments.length !== 0 ?
-        (
-            <div>
-                <img src={commenticon} className='n-reactions-icon' />
-                <div className='n-post-reactions'>{this.state.comments.length}</div>
-            </div>
-        ) : null;
-
-    }
-
-    getLikes = () => {
-
-        const { likes } = this.state;
-        return likes.length !== 0 ?
-            (
-                <div>
-                    <img src={likeicon} className='n-reactions-icon' />
-                    <div className='n-post-reactions'>{this.state.likes.length}</div>
-                </div>
-            ) : null;
-    }
-
-    displayPostReactions = () => {
-
-        const comments = this.getComments();
-        const likes = this.getLikes();
-
-        return (!likes && !comments) ?
-            <div>{Strings.emptyLikes}</div>
-            :
-            <div>
-                <ol className='list-inline'>
-                    <li>{likes}</li>
-                    <li>{comments}</li>
-                </ol>
-                <hr />
-            </div>;
-    }
-
     displayWriter = (username) => {
         if (username && !this.state.isWritting) {
             const msg = username.concat(' is typing...');
@@ -124,7 +96,7 @@ class Post extends React.Component {
     }
 
     render() {
-        const { postContent: { body, createDate, author } } = this.props;
+        const { postContent: { body, createDate, author, comments } } = this.props;
         const { formattedDate } = this.state;
         const picturePath = `http://graph.facebook.com/${author.facebook.id}/picture?type=normal`;
         const linkToUserFacebook = `https://www.facebook.com/app_scoped_user_id/${author.facebook.id}`;
@@ -170,8 +142,11 @@ class Post extends React.Component {
                             </ol>
                         </div>
                         <div className='panel-footer n-post-footer'>
-                            <div className='n-text-12'>{this.displayPostReactions()}</div>
-                            <div> {this.state.comments.map((comment, i) => <Comment key={i} comment={comment} />)} </div>
+                            <div>
+                                <ul className='n-comment-list'>
+                                    {comments.map((comment, i) => <Comment key={i} comment={comment} />)}
+                                </ul>
+                            </div>
                         </div>
                         <div>{
                             this.state.showCommentForm ?
@@ -186,4 +161,4 @@ class Post extends React.Component {
     }
 }
 
-export default Post;
+export default connect(select, null)(Post);
