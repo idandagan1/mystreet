@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Strings } from 'resources';
+import moment from 'moment';
 import './post-form.scss';
 
 export default class PostForm extends React.Component {
@@ -12,48 +13,48 @@ export default class PostForm extends React.Component {
         super(props);
         this.state = {
             image: '',
-            filename: '',
-            text: Strings.postPlaceholder,
+            filepath: '',
+            body: Strings.postPlaceholder,
         };
 
     }
 
     onSubmitForm = (e) => {
         e.preventDefault();
-        const { text, imagepath } = this.refs;
         const { addNewPost } = this.props;
-        if (!text.value) {
-            return;
-        }
+
         const newPost = {
-            text: text.value,
-            imageurl: imagepath.value,
+            body: this.formfield.value,
+            createDate: moment(),
+            comment: [],
+            imageurl: this.imagepath.value,
         }
-        this.refs.text.value = '';
+        this.formfield.value = '';
         addNewPost(newPost);
 
     }
 
     render() {
-
+        const { filepath } = this.state;
         return (
             <div className='panel n-postform-panel'>
                 <div className='panel-content'>
                     <form onSubmit={this.onSubmitForm} className='form center-block'>
                         <input
                             type='hidden'
-                            ref='imagepath'
+                            ref={imagepath => { this.imagepath = imagepath; }}
                             value={this.state.imageurl}
                         />
                         <div className='panel-body'>
                             <div className='form-group'>
                                 <textarea
-                                    ref='text'
+                                    ref={formfield => { this.formfield = formfield; }}
                                     className='form-control input-lg n-postform-textarea'
                                     placeholder={Strings.postPlaceholder}
+                                    required='true'
                                 />
                             </div>
-                            <h3>{this.state.filename || ''}</h3>
+                            <h3>{filepath}</h3>
                         </div>
                         <div className='panel-footer n-postform-footer'>
 

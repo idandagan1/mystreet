@@ -7,7 +7,6 @@ const initialState = {
         body: '',
         createdDate: '',
     },
-    postsfeed: [],
 };
 
 export default createReducer(initialState, {

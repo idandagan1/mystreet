@@ -144,7 +144,7 @@ class Post extends React.Component {
                         <div className='panel-footer n-post-footer'>
                             <div>
                                 <ul className='n-comment-list'>
-                                    {comments.map((comment, i) => <Comment key={i} comment={comment} />)}
+                                    {comments ? comments.map((comment, i) => <Comment key={i} comment={comment} />) : null}
                                 </ul>
                             </div>
                         </div>

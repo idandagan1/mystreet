@@ -7,16 +7,9 @@ import './posts-feed.scss';
 
 
 function select(state) {
-    const { postsfeed: { newPost }, myStreets: { selectedStreet: { postsfeed } } } = state;
-
-    if (newPost.author) {
-        const post = Object.assign({}, newPost);
-        postsfeed.unshift(post);
-        newPost.author = null;
-    }
+    const { postsfeed: { postsfeed } } = state;
 
     return {
-        newPost,
         postsfeed,
     };
 }
@@ -36,7 +29,7 @@ class PostsFeed extends Component {
     }
 
     getPostsFeed = () => {
-        const { addCommentSubmitted, selectedStreet: { postsfeed } } = this.props;
+        const { addCommentSubmitted, postsfeed } = this.props;
 
         return postsfeed ?
             postsfeed.map((post, i) => <Post addCommentHandler={addCommentSubmitted} key={i} postContent={post} />) : null;
@@ -46,6 +39,7 @@ class PostsFeed extends Component {
         const { addPostSubmitted, selectedStreet: { _id } } = this.props;
         addPostSubmitted(newPost, _id);
     }
+
     render() {
         const { isMember } = this.props;
 

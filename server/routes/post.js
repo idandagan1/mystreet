@@ -50,20 +50,16 @@ router.delete('/unlikePost', (req, res) => {
 router.post('/addPost', (req, res) => {
 
     const userId = req.session.user._id;
-    const { post: { text }, streetId } = req.body;
+    const { post: { body }, streetId } = req.body;
 
-    req.check('post', 'post is empty').notEmpty();
-
-    const errors = req.validationErrors();
-
-    if (errors || !userId || !streetId) {
-        return res.send(`There have been validation errors: ${errors}`, 400);
+    if (!userId || !streetId) {
+        return res.status(400).send('There have been validation errors');
     }
 
     const newPost = new Post({
         createDate: Date.now(),
         author: userId,
-        body: text,
+        body,
     });
     newPost.save((err) => {
         Post.populate(newPost, {

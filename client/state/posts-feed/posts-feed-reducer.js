@@ -13,16 +13,29 @@ const initialState = {
 };
 
 export default createReducer(initialState, {
+
     [postActionTypes.ADD_POST_SUCCEEDED](state, action) {
         const { data: { post: { newPost } } } = action;
+        const { postsfeed } = state;
+        const newPostsfeed = postsfeed.slice();
+        newPostsfeed.unshift(newPost);
+
         return {
             ...state,
-            newPost,
+            postsfeed: newPostsfeed,
         };
     },
 
     [headerActionTypes.GET_POSTS_SUCCEEDED](state, action) {
         const { data: { postsfeed } } = action;
+        return {
+            ...state,
+            postsfeed,
+        };
+    },
+
+    [myStreetsActionTypes.SEARCH_SUCCEEDED](state, action) {
+        const { data: { selectedStreet: { postsfeed } } } = action;
         return {
             ...state,
             postsfeed,
