@@ -7,7 +7,7 @@ export default function Dashboard(props) {
     const { dashboardSearchSubmitted } = props;
 
     return (
-        <div>
+        <div className='n-dashboard'>
             <video
                 loop='true'
                 muted='true'
