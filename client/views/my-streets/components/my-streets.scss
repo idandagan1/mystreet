@@ -1,6 +1,5 @@
 .n-mystreet {
     margin-top: 20px;
-    min-width: 730px;
     &-street-item{
         display: block;
         padding: 3px 20px;
@@ -12,6 +11,16 @@
         &:hover{
             background-color: #F8F8F8;
         }
+    }
+
+    ul {
+        padding: 0px;
+        width:100%;
+        text-align:center;
+    }
+
+    &-details-btn{
+        display: none;
     }
 
     &-address{
@@ -88,7 +97,6 @@
     }
     & .sub-main-li {
         display: inline-block;
-
         vertical-align: top;
         margin: 10px 2%;
         padding: 0px;
@@ -128,6 +136,10 @@
         border-bottom: 1px solid #eed;
     }
 }
+.table {
+    display: table;
+    margin: 0 auto;
+}
 .p5 {
     padding: 5px;
 }
@@ -137,7 +149,7 @@
 
 .street-caret {
     display: inline-block !important;
-    margin-left: 10px;
+    margin-left: 4px;
 }
 
 .n-street {
@@ -149,19 +161,38 @@
         width: 20px;
         margin: 0px 4px;
     }
+    &-name{
+        text-overflow: ellipsis;
+        overflow: hidden;
+        max-width: 100px;
+    }
 }
 
-@media only screen and (max-width: 450px) {
+@media only screen and (max-width: 550px) {
     .n-mystreet,
     ol {
         padding: 0px;
     }
-    .n-mystreet-page-header {
-        text-align: left;
-    }
     .n-mystreet-page-header span {
         margin-left: 160px;
     }
+
+    .n-mystreet .sub-main-li {
+        display: block;
+        margin-right: auto;
+        margin-left: auto;
+    }
+
+    .globalContainer {
+        width: 90%;
+    }
+}
+
+.globalContainer {
+    margin: 0 auto;
+    position: relative;
+    zoom: 1;
+    float: none !important;
 }
 
 

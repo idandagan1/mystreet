@@ -26,6 +26,7 @@ class PostsFeed extends Component {
         postsfeed: PropTypes.array,
         addPostSubmitted: PropTypes.func.isRequired,
         addCommentSubmitted: PropTypes.func.isRequired,
+        username: PropTypes.string,
     }
 
     getPostsFeed = () => {
@@ -41,14 +42,14 @@ class PostsFeed extends Component {
     }
 
     render() {
-        const { isMember } = this.props;
+        const { isMember, username } = this.props;
 
         return (
             <div>
                 <div id='streetResult' className='container' />
                 {
                     isMember !== true ?
-                        null : <PostForm addNewPost={this.addNewPost} />
+                        null : <PostForm username={username} addNewPost={this.addNewPost} />
                 }
                 <div>
                     {this.getPostsFeed()}

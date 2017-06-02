@@ -1,6 +1,6 @@
 {
   "name": "MyStreet",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "scripts": {
     "build": "webpack --config webpack.production.config.js",
     "start": "nodemon servers.js --exec babel-node --presets es2015,stage-2",

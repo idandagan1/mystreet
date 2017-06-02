@@ -18,9 +18,7 @@ export default function ProfileButton(props) {
                 <span className='caret' />
             </a>
             <ul className='dropdown-menu'>
-                <li><Link to='/user'>Edit Profile</Link></li>
-                <li><Link to='/'>Settings</Link></li>
-                <li><Link to='/'>Help</Link></li>
+                <li><Link to='/user'>My Profile</Link></li>
                 <li role='separator' className='divider' />
                 <li><Link to='/'>Logout</Link></li>
             </ul>

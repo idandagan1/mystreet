@@ -53,13 +53,24 @@ export function getSelectedStreet() {
 
 export function changePrimaryStreet(streetId) {
     return new Promise((resolve, reject) => {
-        $.ajax(`${config.mystreets}/changePrimaryStreet?street_id=${streetId}`, {
+        $.ajax(`${config.mystreets}/changePrimaryStreet?streetId=${streetId}`, {
             method: 'POST',
             success: (res, status, xhr) => resolve(res),
             error: (xhr, status, error) => reject(xhr.responseJSON),
         });
     });
 }
+
+export function leaveStreet(streetId) {
+    return new Promise((resolve, reject) => {
+        $.ajax(`${config.mystreets}/leaveStreet?streetId=${streetId}`, {
+            method: 'DELETE',
+            success: (res, status, xhr) => resolve(res),
+            error: (xhr, status, error) => reject(xhr.responseJSON),
+        });
+    });
+}
+
 
 export function addStreet(street) {
     const { place_id, streetName, location, address } = street;

@@ -7,6 +7,7 @@ export default class PostForm extends React.Component {
 
     static propTypes = {
         addNewPost: PropTypes.func.isRequired,
+        username: PropTypes.string,
     }
 
     constructor(props) {
@@ -36,8 +37,9 @@ export default class PostForm extends React.Component {
 
     render() {
         const { filepath } = this.state;
+        const { username } = this.props;
         return (
-            <div className='panel n-postform-panel'>
+            <div className='panel'>
                 <div className='panel-content'>
                     <form onSubmit={this.onSubmitForm} className='form center-block'>
                         <input
@@ -50,7 +52,7 @@ export default class PostForm extends React.Component {
                                 <textarea
                                     ref={formfield => { this.formfield = formfield; }}
                                     className='form-control input-lg n-postform-textarea'
-                                    placeholder={Strings.postPlaceholder}
+                                    placeholder={Strings.postPlaceholder+username}
                                     required='true'
                                 />
                             </div>

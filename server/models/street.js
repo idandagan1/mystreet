@@ -51,21 +51,3 @@ export function addMember(newMemberID, streetID) {
             }
         });
 }
-
-export function removeMember(memberID, streetID) {
-
-    if (streetID == null || memberID == null) {
-        return;
-    }
-
-    Street.findByIdAndUpdate(streetID, { $pull: { members: memberID, admins: memberID } }, { new: true }).exec()
-        .then(street => {
-            if (street) {
-                console.log('Removed member');
-                if (street.members.length === 0) {
-                    street.remove();
-                    console.log('Removed street');
-                }
-            }
-        });
-}

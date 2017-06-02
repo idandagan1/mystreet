@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle, consistent-return, no-param-reassign */
 import { Router as expressRouter } from 'express';
-import { Street, addMember, removeMember } from '../models/street';
+import { Street } from '../models/street';
 import { User, removeStreet } from '../models/user';
 
 const router = expressRouter();
@@ -303,35 +303,59 @@ function createStreet(place_id, user_id, location, streetName, address) {
 }
 
 // DELETE
-router.delete('/removeStreet', (req, res) => {
-    // TO DO: Change parameters.
-    const streetID = req.session.streetID;
-    const userID = req.session.user._id;
+router.delete('/leaveStreet', (req, res) => {
 
-    if (userID == null || streetID == null) {
-        return res.send('userID', 400);
+    const { streetId } = req.query;
+    const userId = req.session.user._id;
+
+    if (!userId || !streetId) {
+        return res.status(404).send('There have been validation errors', 400);
     }
 
-    try {
-        removeMember(userID, streetID);
-        removeStreet(userID, streetID);
-    } catch (e) {
-        res.send({ title: 'Error while removing', msg: e }, 400);
-    }
+    Street.findByIdAndUpdate(streetId, { $pull: { members: userId, admins: userId } }, { new: true })
+        .then(street =>
+            new Promise((resolve, reject) => {
+                if (!street) {
+                    reject(street);
+                }
+                if (street.members.length === 0) {
+                    street.remove();
+                    console.log('Removed street');
+                }
+                resolve(street);
+            }))
+        .then(street => {
+            User.findByIdAndUpdate({ _id: userId }, { $pull: { 'local.streets': streetId } },
+                { new: true })
+                .populate(['local.streets', 'local.primaryStreet'])
+                .then(activeUser => {
+                    if (activeUser) {
+                        if (!activeUser.local.primaryStreet) {
+                            activeUser.local.primaryStreet = activeUser.local.streets[0];
+                        }
+                        activeUser.save();
+                        req.session.user = activeUser;
+                        req.session.save();
+                        console.log('Removed street from users list');
+                        return res.status(200).send({ activeUser, msg: 'Primary street has been changed' });
+                    }
+                });
+        }
+    );
 });
 
 // PUT
 router.post('/changePrimaryStreet', (req, res) => {
 
-    const { street_id } = req.query;
+    const { streetId } = req.query;
     const { user: { _id: user_id } } = req.session;
 
-    if (!user_id || !street_id) {
+    if (!user_id || !streetId) {
         return res.status(400).send({ msg: 'There have been validation errors' });
     }
 
     User.findOneAndUpdate({ _id: user_id },
-        { 'local.primaryStreet': street_id },
+        { 'local.primaryStreet': streetId },
         { upsert: true, new: true })
         .populate(['local.streets', 'local.primaryStreet'])
         .then(activeUser => {
@@ -348,18 +372,18 @@ router.post('/changePrimaryStreet', (req, res) => {
 
 router.put('/addAdmin', (req, res) => {
 
-    const newAdminID = req.body.newAdmin;
-    const streetID = req.session.streetID;
+    const newAdminId = req.body.newAdmin;
+    const streetId = req.session.streetId;
 
     req.check('newAdmin', 'newAdmin is empty').notEmpty();
 
     const errors = req.validationErrors();
 
-    if (errors || newAdminID == null) {
+    if (errors || !newAdminId) {
         return res.status(500).send(`There have been validation errors: ${errors}`, 400);
     }
 
-    Street.findByIdAndUpdate(streetID, { $addToSet: { admins: newAdminID } }).exec()
+    Street.findByIdAndUpdate(streetId, { $addToSet: { admins: newAdminId } }).exec()
         .then(street => {
             if (street) {
                 console.log('Added admin');
@@ -369,7 +393,7 @@ router.put('/addAdmin', (req, res) => {
     );
 });
 
-router.put('/changeStreetPrivacy', (req,res) => {
+router.put('/changeStreetPrivacy', (req, res) => {
 
     const streetID = req.session.streetID;
     const userID = req.session.user._id;

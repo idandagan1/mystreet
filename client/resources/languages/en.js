@@ -1,7 +1,7 @@
 export default {
     search: 'Search',
     post: 'Post',
-    postPlaceholder: 'What\'s on your mind?',
+    postPlaceholder: 'Share your thoughts ',
     findMyStreet: 'Find my street...',
     writeComment: 'Write a comment...',
     like: 'Like',
@@ -22,5 +22,7 @@ export default {
     firstName: 'First Name',
     lastName: 'Last Name',
     address: 'Address',
-    noAddress: 'No adress yet',
+    noAddress: 'No address yet',
+    moreBtn: 'More',
+    postsFeedBtn: 'Postsfeed',
 };

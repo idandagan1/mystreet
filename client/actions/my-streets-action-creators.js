@@ -36,6 +36,17 @@ export function addStreetSubmitted(street) {
     };
 }
 
+export function leaveStreetSubmitted(street) {
+    return (dispatch) => {
+
+        streetsApi.leaveStreet(street._id)
+            .then(
+                response => dispatch(leaveStreetSucceeded(response)),
+                error => dispatch(leaveStreetFailed(error)),
+            );
+    };
+}
+
 export function changePrimaryStreet(street) {
     return (dispatch) => {
         streetsApi.changePrimaryStreet(street._id)
@@ -94,6 +105,23 @@ function addStreetSucceeded(response, street) {
 function addStreetFailed(error) {
     return {
         type: myStreetsActionTypes.ADD_STREET_FAILED,
+        data: { error },
+    };
+}
+
+function leaveStreetSucceeded({ activeUser }) {
+
+    return dispatch => {
+        dispatch({
+            type: myStreetsActionTypes.LEAVE_STREET_SUCCEEDED,
+            data: { activeUser },
+        });
+    };
+}
+
+function leaveStreetFailed(error) {
+    return {
+        type: myStreetsActionTypes.LEAVE_STREET_FAILED,
         data: { error },
     };
 }

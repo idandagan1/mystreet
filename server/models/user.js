@@ -47,24 +47,3 @@ const userSchema = new Schema({
 }, { collection: 'user' });
 
 export const User = mongoose.model('user', userSchema);
-
-export function removeStreet(memberID, streetID) {
-
-    if (!streetID || !memberID) {
-        return;
-    }
-
-    User.findByIdAndUpdate({ _id: memberID }, { $pull: { 'local.streets': streetID } },
-        { new: true }).exec()
-        .then(user => {
-            if (user) {
-                if (user.local.streets.length === 0) {
-                    user.local.primaryStreet = null;
-                } else if (user.local.primaryStreet === streetID) {
-                    user.local.primaryStreet = user.local.streets[0];
-                }
-                user.save();
-                console.log('Removed street from users list');
-            }
-        });
-}
