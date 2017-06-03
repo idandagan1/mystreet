@@ -14,7 +14,7 @@ router.get('/getFriends', (req, res) => {
 
     const token = req.session.user.facebook.token;
     const userId = req.session.user._id;
-    const myLocation = 'ChIJSR926opLHRUR6QH6ANhmFe4'; // TODO: replace to the users primaryStreet!
+    const myLocation = 'ChIJSR926opLHRUR6QH6ANhmFe4';
 
     if (!token || !userId || !myLocation) {
         return res.send('There have been validation errors', 400);
@@ -71,6 +71,28 @@ router.get('/getFriends', (req, res) => {
 router.post('/login/facebook', (req, res) => {
     const { id, name, first_name, last_name, gender, accessToken: token } = req.body;
 
+    /*getFbData(token, '/me/friends', data => {
+
+        if (data) {
+            const parsedList = JSON.parse(data);
+            const friendsIDs = [];
+
+            parsedList.data.forEach(friend => {
+                friendsIDs.push(friend.id);
+            });
+
+            User.aggregate({ $match: { 'facebook.id': { $in: friendsIDs } } })
+                .then((friends, err) => {
+                    if (err) throw err;
+
+                    if (friends) {
+                        Street.populate(friends, { path: 'primaryStreet' }, (error, populatedStreets) => {
+                            if (error) throw error;
+                        });
+                    }
+                });
+        }
+    });*/
     // find the user in the database based on their facebook id
     User.findOne({ 'facebook.id': id }).populate(['local.primaryStreet', 'local.streets']).then((user, err) => {
         let sessionUser;

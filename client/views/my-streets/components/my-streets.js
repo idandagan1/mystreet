@@ -57,6 +57,11 @@ export default class MyStreets extends React.Component {
         window.removeEventListener('resize', this.updateDimensions);
     }
 
+    onStreetClick = (street) => {
+        const { searchStreetSubmitted, selectedStreet: { placeId } } = this.props;
+        return placeId !== street.placeId ? searchStreetSubmitted(street) : null;
+    }
+
     getStreetsNearby = (streets) => {
         if (!streets || streets.length === 0) {
             return (<span>{Strings.noStreetsNearBy}</span>);
@@ -140,15 +145,17 @@ export default class MyStreets extends React.Component {
                                     {
                                         isMember === true ?
                                             <PostsFeed username={first_name} isMember={isMember} selectedStreet={selectedStreet} /> :
-                                            <div className='panel'>
+                                            <div className='panel col-md-12'>
                                                 <div className='n-mystreet-h1'>
                                                     <span>
                                                         {Strings.StreetsNearbyTitle}
                                                     </span>
                                                 </div>
-                                                <ul className='n-mystreet-streets-nearby-list'>
-                                                    { this.getStreetsNearby(streetsNearby) }
-                                                </ul>
+                                                <div className='col-md-12 globalContainer'>
+                                                    <ul className='n-mystreet-streets-nearby-list'>
+                                                        { this.getStreetsNearby(streetsNearby) }
+                                                    </ul>
+                                                </div>
                                             </div>
                                     }
                                 </div>

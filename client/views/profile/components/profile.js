@@ -74,7 +74,7 @@ export default class Profile extends React.Component {
         const linkToUserFacebook = `https://www.facebook.com/app_scoped_user_id/${id}`;
 
         return (
-            <div className='globalContainer col-xs-8 col-md-8 col-lg-6'>
+            <div className='n-profile globalContainer col-xs-8 col-md-8 col-lg-6'>
                 <div className='col-md-12'>
                     <div className='panel n-profile-wrapper center-block'>
                         <div className='n-profile-photo'>

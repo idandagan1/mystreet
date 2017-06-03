@@ -13,6 +13,12 @@
     }
 }
 
+.n-profile .n-map__locate-btn {
+    position: absolute;
+    top: 1px;
+    right: 16px;
+}
+
 @media only screen and (max-width: 750px) {
     .n-map__locate-btn {
         right: 15px;
