@@ -40,14 +40,24 @@ class CommentForm extends React.Component {
         return (
 
             <div className='panel-footer n-comment-footer'>
-                <div>
-                    <textarea
-                        onChange={this.onChange}
-                        ref={comment => { this.comment = comment; }}
-                        className='form-control input-lg n-comment-textarea'
-                        placeholder={Strings.writeComment}
-                    ></textarea>
-                    <div onClick={this.onCommentClick} className='btn btn-sm n-btn-comment'>{Strings.comment}</div>
+                <div className='row'>
+                    <div className='col-lg-12'>
+                        <div className='input-group'>
+                            <input
+                                type='text'
+                                className='form-control'
+                                ref={comment => { this.comment = comment; }}
+                                placeholder={Strings.writeComment}
+                            />
+                            <span className='input-group-btn' >
+                                <button
+                                    onClick={this.onCommentClick}
+                                    className='btn btn-default'
+                                    type='button'
+                                >{Strings.comment}</button>
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
         );

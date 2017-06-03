@@ -16,6 +16,16 @@ export function addPostSubmitted(post, streetId) {
     };
 }
 
+export function getPostsByPlaceId(placeId) {
+    return dispatch => {
+        postApi.getPostsByPlaceId(placeId)
+            .then(
+                response => dispatch(getPostsSucceeded(response)),
+                error => dispatch(getPostsFailed(error)),
+            );
+    };
+}
+
 export function addCommentSubmitted(comment, postId) {
     return dispatch => {
         postApi.addComment(comment, postId)
@@ -36,6 +46,20 @@ function addPostSucceeded(post) {
 function addPostFailed(error) {
     return {
         type: postActionTypes.ADD_POST_FAILED,
+    };
+}
+
+function getPostsSucceeded({ postsfeed }) {
+    return {
+        type: postActionTypes.GET_POSTSFEED_SUCCEEDED,
+        data: { postsfeed },
+    };
+}
+
+function getPostsFailed(error) {
+    return {
+        type: postActionTypes.POSTSFEED_NOT_FOUND,
+        data: { error },
     };
 }
 

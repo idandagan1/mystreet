@@ -127,11 +127,8 @@ router.get('/getPostsByPlaceId', (req, res) => {
             options: {
                 sort: { createDate: -1 },
             },
-            populate: [{
-                path: 'author',
-                model: 'user',
-            }],
-        }).exec()
+            populate: ['author', 'comments.author'],
+        })
         .then(street => {
             if (street) {
                 console.log('getPosts executed successfully');

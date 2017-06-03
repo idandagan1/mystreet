@@ -42,7 +42,7 @@ export default createReducer(initialState, {
         };
     },
 
-    [myStreetsActionTypes.GET_POSTS_SUCCEEDED](state, action) {
+    [postActionTypes.GET_POSTSFEED_SUCCEEDED](state, action) {
         const { data: { postsfeed } } = action;
         return {
             ...state,

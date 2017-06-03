@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { addPostSubmitted, addCommentSubmitted } from 'actions/post-action-creators';
+import { addPostSubmitted, addCommentSubmitted, getPostsByPlaceId } from 'actions/post-action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { PostForm, Post } from '../../posts';
@@ -26,13 +26,27 @@ class PostsFeed extends Component {
         postsfeed: PropTypes.array,
         addPostSubmitted: PropTypes.func.isRequired,
         addCommentSubmitted: PropTypes.func.isRequired,
+        getPostsByPlaceId: PropTypes.func.isRequired,
         username: PropTypes.string,
     }
 
+    componentWillUnmount = () => {
+        clearInterval(this.interval);
+    }
+
+    componentDidMount = () => {
+        this.interval = setInterval(this.getPostsFeed, 10000);
+    }
+
     getPostsFeed = () => {
+        const { getPostsByPlaceId, selectedStreet: { place_id } } = this.props;
+        getPostsByPlaceId(place_id);
+    }
+
+    getPostsFeedList = () => {
         const { addCommentSubmitted, postsfeed } = this.props;
 
-        return postsfeed ?
+        return postsfeed && postsfeed.length > 0 ?
             postsfeed.map((post, i) => <Post addCommentHandler={addCommentSubmitted} key={i} postContent={post} />) : null;
     }
 
@@ -52,7 +66,7 @@ class PostsFeed extends Component {
                         null : <PostForm username={username} addNewPost={this.addNewPost} />
                 }
                 <div>
-                    {this.getPostsFeed()}
+                    {this.getPostsFeedList()}
                 </div>
             </div>
         );
@@ -60,7 +74,7 @@ class PostsFeed extends Component {
 }
 
 function matchDispatchToProps(dispatch) {
-    return bindActionCreators({ addPostSubmitted, addCommentSubmitted }, dispatch);
+    return bindActionCreators({ addPostSubmitted, addCommentSubmitted, getPostsByPlaceId }, dispatch);
 }
 
 export default connect(select, matchDispatchToProps)(PostsFeed);
