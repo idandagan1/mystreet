@@ -18,7 +18,7 @@ class PostsFeed extends Component {
     static propTypes = {
         selectedStreet: PropTypes.shape({
             streetName: PropTypes.string,
-            place_id: PropTypes.string,
+            placeId: PropTypes.string,
             location: PropTypes.array,
             members: PropTypes.array,
         }),
@@ -39,8 +39,8 @@ class PostsFeed extends Component {
     }
 
     getPostsFeed = () => {
-        const { getPostsByPlaceId, selectedStreet: { place_id } } = this.props;
-        getPostsByPlaceId(place_id);
+        const { getPostsByPlaceId, selectedStreet: { placeId } } = this.props;
+        getPostsByPlaceId(placeId);
     }
 
     getPostsFeedList = () => {

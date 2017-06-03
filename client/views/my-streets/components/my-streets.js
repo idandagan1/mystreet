@@ -10,7 +10,7 @@ export default class MyStreets extends React.Component {
     static propTypes = {
         selectedStreet: PropTypes.shape({
             streetName: PropTypes.string,
-            place_id: PropTypes.string,
+            placeId: PropTypes.string,
             location: PropTypes.array,
             members: PropTypes.array,
         }),
@@ -62,13 +62,13 @@ export default class MyStreets extends React.Component {
             return (<span>{Strings.noStreetsNearBy}</span>);
         }
         return streets.map((street, i) => {
-            const { streetName, location, place_id, members } = street;
+            const { streetName, location, placeId, members } = street;
             return (
                 <li key={i} onClick={() => this.onStreetClick(street)}>
                     <StreetNearby
                         streetName={streetName}
                         location={location}
-                        place_id={place_id}
+                        placeId={placeId}
                         members={members.length}
                     />
                 </li>
@@ -97,7 +97,7 @@ export default class MyStreets extends React.Component {
     render() {
         const {
             streetsNearby, selectedStreet,
-            selectedStreet: { streetName, location, address },
+            selectedStreet: { streetName, location, placeId, address },
             activeUser: { facebook: { first_name } },
         } = this.props;
         const isMember = this.isMember();
@@ -126,7 +126,7 @@ export default class MyStreets extends React.Component {
                                 <StreetDetails props={this.props} />
                             </div>
                             <div className='visible-xs col-xs-12'>
-                                <Map lat={location[1]} lng={location[0]} />
+                                <Map lat={location[1]} lng={location[0]} placeId={placeId} />
                             </div>
                         </div> :
                         <div className='globalContainer col-xs-7 col-md-9 col-sm-9'>
@@ -154,7 +154,7 @@ export default class MyStreets extends React.Component {
                                 </div>
                             </div>
                             <div className='col-sm-3 sub-main-li hidden-sm hidden-xs'>
-                                <Map lat={location[1]} lng={location[0]} />
+                                <Map lat={location[1]} lng={location[0]} placeId={placeId}/>
                             </div>
                         </div>
                 }

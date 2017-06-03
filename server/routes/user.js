@@ -51,7 +51,7 @@ router.get('/getFriends', (req, res) => {
                     if (streets) {
                         Street.populate(streets, {
                             path: 'details',
-                            select: { place_id: 1, _id: 0, name: 1 },
+                            select: { placeId: 1, _id: 0, name: 1 },
                         }, (error, populatedStreets) => {
                             if (error) throw error;
 

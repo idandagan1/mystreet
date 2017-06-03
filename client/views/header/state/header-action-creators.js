@@ -20,13 +20,13 @@ export function searchSubmitted(query) {
             data: { query },
         });
 
-        if (query.place_id) {
-            streetsApi.getStreetByPlaceId(query.place_id)
+        if (query.placeId) {
+            streetsApi.getStreetByPlaceId(query.placeId)
                 .then(
                     response => dispatch(searchStreetSucceeded(response, query)),
                     error => dispatch(searchStreetFailed(error)),
                 );
-            postsApi.getPostsByPlaceId(query.place_id)
+            postsApi.getPostsByPlaceId(query.placeId)
                 .then(
                     response => dispatch(getPostsSucceeded(response)),
                     error => dispatch(getPostsFailed(error)),

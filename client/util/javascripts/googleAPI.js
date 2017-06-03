@@ -17,7 +17,7 @@ function setFriendsOnMap(listOfStreets) {
     listOfStreets.list.forEach(function(street) {
 
         service.getDetails({
-            placeId: street.details.place_id
+            placeId: street.details.placeId
         }, function (place, status) {
             if (status === google.maps.places.PlacesServiceStatus.OK) {
                 var marker = new google.maps.Marker({
@@ -121,7 +121,7 @@ function initialize() {
     google.maps.event.addListener(autocomplete, 'place_changed', function() {
         infowindow.close();
         place = autocomplete.getPlace();
-        placeID = place.place_id;
+        placeID = place.placeId;
         short_name = place.address_components[0].short_name;
         markers.push(place);
         if (!place.geometry) {
@@ -140,7 +140,7 @@ function initialize() {
 
         // Set the position of the marker using the place ID and location.
         marker.setPlace(({
-            placeId: place.place_id,
+            placeId: place.placeId,
             location: place.geometry.location
         }));
 

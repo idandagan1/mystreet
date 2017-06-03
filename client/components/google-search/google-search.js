@@ -6,7 +6,7 @@ import './google-search.scss';
 
 const initialState = {
     streetName: '',
-    place_id: '',
+    placeId: '',
     address: '',
     location: [34.7818, 32.0853],
 }
@@ -32,7 +32,7 @@ export default class GoogleSearch extends Component {
             this.setState({
                 streetName: place.address_components[0].long_name,
                 address: place.formatted_address,
-                place_id: place.place_id,
+                placeId: place.place_id,
                 location: [place.geometry.location.lng(), place.geometry.location.lat()],
             });
         });
@@ -41,9 +41,9 @@ export default class GoogleSearch extends Component {
     handleSearchClicked = e => {
         e.preventDefault();
         const { onSubmit } = this.props;
-        const { streetName, location, place_id, address } = this.state;
+        const { streetName, location, placeId, address } = this.state;
 
-        if (!streetName || !place_id) {
+        if (!streetName || !placeId) {
             return;
         }
 
@@ -51,7 +51,7 @@ export default class GoogleSearch extends Component {
             address,
             streetName,
             location,
-            place_id,
+            placeId,
         };
         this.search.value = '';
         this.setState(initialState);

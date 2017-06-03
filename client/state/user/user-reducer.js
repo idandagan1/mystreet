@@ -15,7 +15,11 @@ const initialState = {
     local: {
         isPremium: false,
         lastLogged: '',
-        primaryStreet: null,
+        primaryStreet: {
+            location: [34.7818, 32.0853],
+            placeId: '',
+            address: '',
+        },
         streets: [],
     },
 };

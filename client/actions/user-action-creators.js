@@ -29,12 +29,12 @@ function loginSucceded({ user }) {
         });
 
         if (user.local.primaryStreet) {
-            streetsApi.getStreetByPlaceId(user.local.primaryStreet.place_id)
+            streetsApi.getStreetByPlaceId(user.local.primaryStreet.placeId)
                 .then(
                     response => dispatch(searchStreetSucceeded(response, user.local.primaryStreet)),
                     error => dispatch(searchStreetFailed(error)),
             );
-            postsApi.getPostsByPlaceId(user.local.primaryStreet.place_id)
+            postsApi.getPostsByPlaceId(user.local.primaryStreet.placeId)
                 .then(
                     response => dispatch(getPostsSucceeded(response)),
                     error => dispatch(getPostsFailed(error)),

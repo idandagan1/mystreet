@@ -4,7 +4,7 @@ import dashboardActionTypes from 'actions/dashboard-action-types';
 const initialState = {
     selectedStreet: {
         streetName: 'Search for your street',
-        place_id: '',
+        placeId: 'a',
         location: [34.7818, 32.0853],
     },
 };

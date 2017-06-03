@@ -6,7 +6,7 @@ import dashboardActionTypes from 'actions/dashboard-action-types';
 const initialState = {
     selectedStreet: {
         streetName: 'Search for your street',
-        place_id: '',
+        placeId: '',
         members: [],
         address: '',
         location: [34.7818, 32.0853],
@@ -20,7 +20,7 @@ export default createReducer(initialState, {
 
         return {
             ...state,
-            selectedStreet: selectedStreet.place_id ? selectedStreet : initialState.selectedStreet,
+            selectedStreet: selectedStreet.placeId ? selectedStreet : initialState.selectedStreet,
         };
     },
 
@@ -35,7 +35,7 @@ export default createReducer(initialState, {
 
         return {
             ...state,
-            selectedStreet: selectedStreet.place_id ? selectedStreet : initialState.selectedStreet,
+            selectedStreet: selectedStreet.placeId ? selectedStreet : initialState.selectedStreet,
         };
     },
 
@@ -44,7 +44,7 @@ export default createReducer(initialState, {
 
         return {
             ...state,
-            selectedStreet: selectedStreet.place_id ? selectedStreet : initialState.selectedStreet,
+            selectedStreet: selectedStreet.placeId ? selectedStreet : initialState.selectedStreet,
         };
     },
 

@@ -7,7 +7,7 @@ export function searchStreetSubmitted(streetObject) {
             type: myStreetsActionTypes.SEARCH_SUBMITTED,
             data: { streetObject },
         });
-        streetsApi.getStreetByPlaceId(streetObject.place_id)
+        streetsApi.getStreetByPlaceId(streetObject.placeId)
             .then(
                 response => dispatch(searchStreetSucceeded(response, streetObject)),
                 error => dispatch(searchStreetFailed(error)),

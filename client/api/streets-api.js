@@ -3,7 +3,7 @@ import config from 'util/config';
 
 export function getStreetByPlaceId(placeId) {
     return new Promise((resolve, reject) => {
-        $.ajax(`${config.mystreets}/getStreetByPlaceId?place_id=${placeId}`, {
+        $.ajax(`${config.mystreets}/getStreetByPlaceId?placeId=${placeId}`, {
             method: 'GET',
             success: (res, status, xhr) => resolve(res),
             error: (xhr, status, error) => reject(xhr.responseJSON),
@@ -33,7 +33,7 @@ export function getNearbyStreets(street) {
 
 export function getMembers(placeId) {
     return new Promise((resolve, reject) => {
-        $.ajax(`${config.mystreets}/getMembers?place_id=${placeId}`, {
+        $.ajax(`${config.mystreets}/getMembers?placeId=${placeId}`, {
             method: 'GET',
             success: (res, status, xhr) => resolve(res),
             error: (xhr, status, error) => reject(xhr.responseJSON),
@@ -73,9 +73,9 @@ export function leaveStreet(streetId) {
 
 
 export function addStreet(street) {
-    const { place_id, streetName, location, address } = street;
+    const { placeId, streetName, location, address } = street;
     const data = {
-        place_id,
+        placeId,
         streetName,
         location,
         address,

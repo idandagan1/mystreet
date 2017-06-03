@@ -8,7 +8,7 @@ const streetSchema = new Schema({
     streetName: {
         type: String,
     },
-    place_id: {
+    placeId: {
         type: String,
     },
     location: {

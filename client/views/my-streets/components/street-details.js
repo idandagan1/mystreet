@@ -63,14 +63,14 @@ export default function StreetDetails({ props }) {
     }
 
     function onStreetClick(street) {
-        const { searchStreetSubmitted, selectedStreet: { place_id } } = props;
-        return place_id !== street.place_id ? searchStreetSubmitted(street) : null;
+        const { searchStreetSubmitted, selectedStreet: { placeId } } = props;
+        return placeId !== street.placeId ? searchStreetSubmitted(street) : null;
     }
 
     function canUserJoinStreet() {
         const ismember = isMember();
         const { selectedStreet } = props;
-        return !ismember && streets.length < 4 && selectedStreet.place_id;
+        return !ismember && streets.length < 4 && selectedStreet.placeId;
     }
 
     function getMyStreetsList(mystreets) {
@@ -139,7 +139,7 @@ StreetDetails.propTypes = {
     props: PropTypes.shape({
         selectedStreet: PropTypes.shape({
             streetName: PropTypes.string,
-            place_id: PropTypes.string,
+            placeId: PropTypes.string,
             location: PropTypes.array,
             members: PropTypes.array,
         }),

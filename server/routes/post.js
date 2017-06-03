@@ -114,13 +114,13 @@ router.get('/getPostsFeed', (req, res) => res.status(200).send({ postsfeed: req.
 
 router.get('/getPostsByPlaceId', (req, res) => {
 
-    const { place_id } = req.query;
+    const { placeId } = req.query;
 
-    if (!place_id) {
-        return res.send('place_id', 400);
+    if (!placeId) {
+        return res.send('placeId', 400);
     }
 
-    Street.findOne({ place_id })
+    Street.findOne({ placeId })
         .populate({
             path: 'postsfeed',
             model: 'post',

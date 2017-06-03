@@ -8,12 +8,12 @@ export function dashboardSearchSubmitted(selectedStreet) {
             type: dashboardActionTypes.SEARCH_SUBMITTED,
             data: { selectedStreet },
         });
-        streetsApi.getStreetByPlaceId(selectedStreet.place_id)
+        streetsApi.getStreetByPlaceId(selectedStreet.placeId)
             .then(
                 response => dispatch(dashboardSearchSucceeded(response, selectedStreet)),
                 error => dispatch(dashboardSearchFailed(error)),
             );
-        postsApi.getPostsByPlaceId(selectedStreet.place_id)
+        postsApi.getPostsByPlaceId(selectedStreet.placeId)
             .then(
                 response => dispatch(getPostsSucceeded(response)),
                 error => dispatch(getPostsFailed(error)),

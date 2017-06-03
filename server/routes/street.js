@@ -22,7 +22,7 @@ router.get('/getStreetsNearPrimaryStreet', (req, res) => {
         .then(user => {
             if (user) {
                 const coords = [];
-                myLocation = user.local.primaryStreet.place_id;
+                myLocation = user.local.primaryStreet.placeId;
                 coords[0] = user.local.primaryStreet.location[0];
                 coords[1] = user.local.primaryStreet.location[1];
 
@@ -86,11 +86,11 @@ router.get('/getSelectedStreet', (req, res) => {
 
     const { selectedStreet } = req.session;
 
-    if (!selectedStreet || !selectedStreet.place_id) {
-        return res.status(200).send({ msg: 'no place_id' });
+    if (!selectedStreet || !selectedStreet.placeId) {
+        return res.status(200).send({ msg: 'no placeId' });
     }
 
-    getStreetByPlaceId(selectedStreet.place_id)
+    getStreetByPlaceId(selectedStreet.placeId)
         .then(street => {
             req.session.selectedStreet = street;
             req.session.save();
@@ -100,13 +100,13 @@ router.get('/getSelectedStreet', (req, res) => {
 
 router.get('/getStreetByPlaceId', (req, res) => {
 
-    const { place_id } = req.query;
+    const { placeId } = req.query;
 
-    if (!place_id) {
-        return res.status(200).send({ msg: 'no place_id' });
+    if (!placeId) {
+        return res.status(200).send({ msg: 'no placeId' });
     }
 
-    getStreetByPlaceId(place_id)
+    getStreetByPlaceId(placeId)
         .then(selectedStreet => {
             req.session.selectedStreet = selectedStreet;
             req.session.save();
@@ -114,15 +114,15 @@ router.get('/getStreetByPlaceId', (req, res) => {
         });
 });
 
-function getStreetByPlaceId(place_id) {
+function getStreetByPlaceId(placeId) {
 
     return new Promise((resolve, reject) => {
 
-        if(!place_id){
+        if(!placeId){
             reject(null);
         }
 
-        Street.findOne({ place_id })//
+        Street.findOne({ placeId })//
             .populate([{
                 path: 'postsfeed',
                 model: 'post',
@@ -156,13 +156,13 @@ router.get('/getStreets', (req, res) => {
 
 router.get('/getMembers', (req, res) => {
 
-    const { place_id } = req.query;
+    const { placeId } = req.query;
 
-    if (!place_id) {
+    if (!placeId) {
         return res.send('StreetID', 400);
     }
 
-    Street.findOne({ place_id }).populate('members')
+    Street.findOne({ placeId }).populate('members')
         .then(street => {
             console.log('getMembers executed successfully');
             return res.send({ content: street ? street.members : null, status: 'ok' });
@@ -207,12 +207,12 @@ router.get('/getAdmins', (req, res) => {
 // POST
 router.post('/addStreet', (req, res) => {
 
-    const { streetName, place_id, address } = req.body;
+    const { streetName, placeId, address } = req.body;
     const location = req.body.location ? [req.body.location[0], req.body.location[1]] : null;
     const user_id = req.session.user._id;
 
     req.check('streetName', 'Name is empty').notEmpty();
-    req.check('place_id', 'place_id is empty').notEmpty();
+    req.check('placeId', 'placeId is empty').notEmpty();
     req.check('location', 'location is empty').notEmpty();
 
     const errors = req.validationErrors();
@@ -221,7 +221,7 @@ router.post('/addStreet', (req, res) => {
         return res.status(500).send(`There have been validation errors: ${errors}`, 400);
     }
 
-    createStreet(place_id, user_id, location, streetName, address)
+    createStreet(placeId, user_id, location, streetName, address)
         .then(street => {
             req.session.selectedStreet = street;
             req.session.save();
@@ -270,15 +270,15 @@ function addStreetToUser(user_id, street, req, res) {
     });
 }
 
-function createStreet(place_id, user_id, location, streetName, address) {
+function createStreet(placeId, user_id, location, streetName, address) {
 
     return new Promise((resolve, reject) => {
 
-        if (!place_id) {
+        if (!placeId) {
             reject(null);
         }
 
-        Street.findOneAndUpdate({ place_id },
+        Street.findOneAndUpdate({ placeId },
             { $addToSet: { members: user_id } },
             { new: true })
             .populate('members')
@@ -289,7 +289,7 @@ function createStreet(place_id, user_id, location, streetName, address) {
                 }
                 const selectedStreet = new Street({
                     streetName,
-                    place_id,
+                    placeId,
                     members: user_id,
                     location,
                     address,

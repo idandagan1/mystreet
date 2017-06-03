@@ -34,13 +34,13 @@ export function addComment(comment, postId) {
     });
 }
 
-export function getPostsByPlaceId(place_id) {
-    if (!place_id) {
+export function getPostsByPlaceId(placeId) {
+    if (!placeId) {
         return;
     }
 
     return new Promise((resolve, reject) => {
-        $.ajax(`${config.posts}/getPostsByPlaceId?place_id=${place_id}`, {
+        $.ajax(`${config.posts}/getPostsByPlaceId?placeId=${placeId}`, {
             method: 'GET',
             success: (res, status, xhr) => resolve(res),
             error: (xhr, status, error) => reject(xhr.responseJSON),
