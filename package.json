@@ -2,11 +2,19 @@
   "name": "MyStreet",
   "version": "1.0.1",
   "scripts": {
-    "build": "webpack --config webpack.production.config.js",
+    "build": "webpack --config webpack.config.babel.js",
     "start": "nodemon servers.js --exec babel-node --presets es2015,stage-2",
     "start-client": "nodemon ./client/dev-server.js --exec babel-node --presets es2015,stage-2",
     "start-server": "nodemon ./server/server.js --exec babel-node --presets es2015,stage-2",
     "lint": ""
+  },
+  "babel": {
+    "presets": [
+      "es2015",
+      "react",
+      "stage-2",
+      "stage-0"
+    ]
   },
   "repository": {
     "type": "git",
@@ -45,6 +53,7 @@
     "eslint-plugin-jsx-a11y": "^2.0.1",
     "eslint-plugin-react": "^6.0.0",
     "file-loader": "^0.9.0",
+    "html-loader": "^0.4.5",
     "html-webpack-plugin": "^2.22.0",
     "jquery": "^3.1.1",
     "node-sass": "^3.8.0",
@@ -58,6 +67,7 @@
     "sass-loader": "^4.0.0",
     "style-loader": "^0.13.1",
     "underscore": "^1.8.3",
+    "url-loader": "^0.5.8",
     "webpack-dev-server": "^1.14.1"
   }
 }
