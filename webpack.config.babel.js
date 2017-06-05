@@ -1,6 +1,7 @@
 import path from 'path';
 import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import CleanWebpackPlugin from 'clean-webpack-plugin';
 
 export default {
     entry: './client/entry.js',
@@ -12,10 +13,14 @@ export default {
     },
 
     plugins: [
+        new CleanWebpackPlugin(['dist']),
         new HtmlWebpackPlugin({
             title: 'MyStreet',
             filename: 'index.html',
             template: './client/index.html',
+        }),
+        new webpack.optimize.CommonsChunkPlugin({
+            name: 'vendor',
         }),
         new webpack.DefinePlugin({
             'process.env': {

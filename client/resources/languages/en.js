@@ -25,4 +25,5 @@ export default {
     noAddress: 'No address yet',
     moreBtn: 'More',
     postsFeedBtn: 'Postsfeed',
+    maxStreetMsg: 'You can join up to 4 streets',
 };

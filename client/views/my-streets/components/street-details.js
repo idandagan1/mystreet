@@ -38,7 +38,7 @@ export default function StreetDetails({ props }) {
         const { activeUser: { userId } } = props;
         if (!members || members.length === 0) {
             if (streets.length > 3) {
-                return <div className='p5'><span>Max streets is 3</span></div>;
+                return <div className='p5'><span>{Strings.maxStreetMsg}</span></div>;
             }
             return <div className='p5'><span>{Strings.joinStreetTxt}</span></div>;
         }

@@ -91,8 +91,11 @@ export default class MyStreets extends React.Component {
         return showStreetDetails ? Strings.postsFeedBtn : Strings.moreBtn;
     }
     isMember = () => {
-        const { activeUser: { local: { streets } } } = this.props;
-        const { selectedStreet: { _id } } = this.props;
+        const {
+            activeUser: { local: { streets } },
+            selectedStreet: { _id },
+        } = this.props;
+
         if (!streets) {
             return false;
         }

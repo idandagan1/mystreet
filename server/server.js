@@ -11,8 +11,13 @@ const MongoStore = connectMongo(session);
 const SERVER_DEV_PORT = 8001;
 const port = process.env.PORT || SERVER_DEV_PORT;
 const app = express();
+const env = process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
-mongoose.connect('mongodb://localhost/mystreet');
+if (env === 'development') {
+    mongoose.connect('mongodb://localhost/mystreet');
+} else {
+    mongoose.connect('mongodb://emma:Aa123123@ds127949.mlab.com:27949/mystreetdb');
+}
 
 app.use(session({
     secret: 'keyboard cat',
