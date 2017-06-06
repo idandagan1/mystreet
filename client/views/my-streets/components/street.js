@@ -11,7 +11,7 @@ export default function Street(props) {
             <div role='button' className='n-street-item' onClick={onStreetClick}>
                 <img className='n-comment-user-icon' alt='street-icon' src={streeticon} role='img' />
                 <div style={{ height: 8 }} />
-                <span className='n-street-name'>{streetName}</span>
+                <div className='n-street-name col-xs-12'>{streetName}</div>
             </div>
             <div className='dropdown show street-caret'>
                 <a className='n-post-user' id='dropdownMenuLink' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>

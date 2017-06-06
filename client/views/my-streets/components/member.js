@@ -12,7 +12,7 @@ export default function Member(props) {
                 <a className='n-post-user' id='dropdownMenuLink' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
                     <img className='n-comment-user-icon' alt='user-icon' src={picturePath} role='img' />
                     <div style={{ height: 8 }} />
-                    {member.name}
+                    <div className='n-street-name col-xs-12'>{member.name}</div>
                     <span className='caret' />
                 </a>
 

@@ -17,7 +17,6 @@
         padding: 0px;
         margin: 0px;
         width:100%;
-        text-align:center;
     }
 
     &-details-btn{
@@ -137,6 +136,15 @@
         border-bottom: 1px solid #eed;
     }
 }
+
+#mystreets-memberslist {
+    padding: 0px;
+    margin: 0px;
+    width:100%;
+    overflow: scroll;
+    max-height: 207px;
+}
+
 .table {
     display: table;
     margin: 0 auto;
@@ -165,6 +173,8 @@
     &-name{
         text-overflow: ellipsis;
         overflow: hidden;
+        padding: 0px;
+        white-space: nowrap;
         max-width: 100px;
     }
 }

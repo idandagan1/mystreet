@@ -44,7 +44,7 @@ export default function StreetDetails({ props }) {
         }
 
         return (
-            <ul style={{ padding: 10, listStyleType: 'none', textAlign: 'left' }}>
+            <ul id='mystreets-memberslist' style={{ padding: 10, listStyleType: 'none', textAlign: 'left' }}>
                 {members.map((member, i) =>
                     eachMember(member, i, userId))
                 }
@@ -82,7 +82,7 @@ export default function StreetDetails({ props }) {
         }
 
         return (
-            <ul style={{ padding: 10, listStyleType: 'none', textAlign: 'left' }}>
+            <ul style={{ padding: 7, listStyleType: 'none', textAlign: 'left' }}>
                 {
                     mystreets.map((street, i) => {
                         const isPrimary = street._id === primaryStreet._id;
