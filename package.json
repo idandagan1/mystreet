@@ -2,8 +2,10 @@
   "name": "MyStreet",
   "version": "1.0.1",
   "scripts": {
-    "build": "webpack --config webpack.config.babel.js",
-    "start": "nodemon servers.js --exec babel-node --presets es2015,stage-2",
+    "build":        "webpack --config webpack.config.babel.js",
+    "start-dev":    "nodemon servers.js --exec babel-node --presets es2015,stage-2",
+    "start":        "node servers.js",
+    "postinstall":  "webpack --config webpack.config.babel.js",
     "start-client": "nodemon ./client/dev-server.js --exec babel-node --presets es2015,stage-2",
     "start-server": "nodemon ./server/server.js --exec babel-node --presets es2015,stage-2",
     "lint": ""
