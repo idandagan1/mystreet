@@ -1,7 +1,7 @@
 import path from 'path';
 import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-// import CleanWebpackPlugin from 'clean-webpack-plugin';
+import CleanWebpackPlugin from 'clean-webpack-plugin';
 
 export default {
     entry: './client/entry.js',
@@ -13,7 +13,7 @@ export default {
     },
 
     plugins: [
-        // new CleanWebpackPlugin(['dist']),
+        new CleanWebpackPlugin(['dist']),
         new HtmlWebpackPlugin({
             title: 'MyStreet',
             filename: 'index.html',
