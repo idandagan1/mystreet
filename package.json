@@ -24,6 +24,9 @@
   },
   "author": "Idan Dagan and Stephen Lenrow",
   "license": "ISC",
+  "engines": {
+      "node": "v6.9.2"
+  },
   "dependencies": {
     "body-parser": "^1.15.2",
     "connect-mongo": "^1.3.2",
