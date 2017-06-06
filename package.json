@@ -70,6 +70,6 @@
     "sass-loader": "^4.0.0",
     "style-loader": "^0.13.1",
     "underscore": "^1.8.3",
-    "url-loader": "^0.5.8",
+    "url-loader": "^0.5.8"
   }
 }
