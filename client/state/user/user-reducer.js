@@ -11,6 +11,8 @@ const initialState = {
         token: '',
         first_name: '',
         last_name: '',
+        gender: '',
+        friends: [],
     },
     local: {
         isPremium: false,

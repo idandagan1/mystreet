@@ -26,4 +26,6 @@ export default {
     moreBtn: 'More',
     postsFeedBtn: 'Postsfeed',
     maxStreetMsg: 'You can join up to 4 streets',
+    jobTitle: 'Job',
+    collegeTitle: 'College',
 };

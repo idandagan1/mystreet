@@ -4,15 +4,21 @@ import facebookicon from 'resources/images/facebook-icon.ico';
 import { Map } from 'components';
 import './profile.scss';
 
-
 const initialState = {
-    firstName: '',
-    lastName: '',
-    address: '',
-    gender: '',
-    location: [34.7818, 32.0853],
-    placeId: '',
-    id: '',
+    activeUser: {
+        facebook: {
+            first_name: '',
+            last_name: '',
+        },
+        gender: '',
+        friends: [],
+        id: '',
+        primaryStreet: {
+            address: '',
+            location: [34.7818, 32.0853],
+            placeId: '',
+        },
+    },
 }
 
 export default class Profile extends React.Component {
@@ -31,37 +37,25 @@ export default class Profile extends React.Component {
 
     constructor(props) {
         super(props);
+        const { activeUser } = props;
+        activeUser.job = '';
+        activeUser.college = '';
         this.state = {
-            ...initialState,
+            activeUser,
         };
     }
 
-    changeState = (state) => {
-        const {
-            activeUser: {
-                local: { primaryStreet },
-                facebook: { id, first_name: firstName, last_name: lastName, gender },
-            },
-        } = state;
-        const { location, address, placeId } = primaryStreet || initialState;
-
-        this.setState({
-            location,
-            address,
-            id,
-            firstName,
-            lastName,
-            gender,
-            placeId,
-        });
+    updateState = (state) => {
+        const { activeUser } = state;
+        this.setState({ activeUser });
     }
 
     componentDidMount() {
-        this.changeState(this.props);
+        this.updateState(this.props);
     }
 
     componentWillReceiveProps(nextProps) {
-        this.changeState(nextProps);
+        this.updateState(nextProps);
     }
 
     handleChange = (e, name) => {
@@ -69,12 +63,17 @@ export default class Profile extends React.Component {
     }
 
     render() {
-        const { id, firstName, lastName, gender, address, location, placeId } = this.state;
+        const { activeUser } = this.state;
+        const {
+            local: { primaryStreet },
+            facebook: { first_name, last_name, gender, id, friends },
+        } = activeUser;
+        const { address, location, placeId } = primaryStreet || initialState.activeUser.primaryStreet;
         const picturePath = `http://graph.facebook.com/${id}/picture?type=normal`;
         const linkToUserFacebook = `https://www.facebook.com/app_scoped_user_id/${id}`;
 
         return (
-            <div className='n-profile globalContainer col-xs-8 col-md-8 col-lg-6'>
+            <div className='n-profile globalContainer col-xs-10 col-md-10 col-lg-10'>
                 <div className='col-md-12'>
                     <div className='panel n-profile-wrapper center-block'>
                         <div className='n-profile-photo'>
@@ -87,7 +86,9 @@ export default class Profile extends React.Component {
                                 target='_blank'
                             ><img className='n-profile-facebook-icon' alt='facebook' src={facebookicon} role='img' /></a>
                         </div>
-                        <div style={{ height: 10 }} />
+                        <div className='page-header'>
+                            <h2>About</h2>
+                        </div>
                         <form className='form-horizontal'>
                             <div className='form-group'>
                                 <label
@@ -99,7 +100,7 @@ export default class Profile extends React.Component {
                                         className='form-control'
                                         rows='1'
                                         onChange={(e) => this.handleChange(e, 'firstName')}
-                                        value={firstName}
+                                        value={first_name}
                                         required='true'
                                     />
                                 </div>
@@ -114,7 +115,7 @@ export default class Profile extends React.Component {
                                         className='form-control'
                                         rows='1'
                                         onChange={(e) => this.handleChange(e, 'lastName')}
-                                        value={lastName}
+                                        value={last_name}
                                         required='true'
                                     />
                                 </div>
@@ -167,6 +168,41 @@ export default class Profile extends React.Component {
                                     </label>
                                 </div>
                             </div>
+                            <div className='page-header'>
+                                <h2>Work and Education</h2>
+                            </div>
+                            <div className='form-group'>
+                                <label
+                                    htmlFor='inputPassword3'
+                                    className='col-sm-3 control-label'
+                                >{Strings.jobTitle}</label>
+                                <div className='col-sm-6'>
+                                <textarea
+                                    className='form-control'
+                                    rows='1'
+                                    placeholder={Strings.noAddress}
+                                    onChange={(e) => this.handleChange(e, 'job')}
+                                    value='Web Developer'
+                                    required='true'
+                                />
+                                </div>
+                            </div>
+                            <div className='form-group'>
+                                <label
+                                    htmlFor='inputPassword3'
+                                    className='col-sm-3 control-label'
+                                >{Strings.collegeTitle}</label>
+                                <div className='col-sm-6'>
+                                <textarea
+                                    className='form-control'
+                                    rows='1'
+                                    placeholder={Strings.noAddress}
+                                    onChange={(e) => this.handleChange(e, 'college')}
+                                    value='Academic College of Tel-Aviv Yaffo'
+                                    required='true'
+                                />
+                                </div>
+                            </div>
                             <div className='form-group'>
                                 <div className='col-sm-12'>
                                     <button type='submit' className='n-mystreet__add-street-btn btn btn-default'>Save
@@ -176,8 +212,11 @@ export default class Profile extends React.Component {
                         </form>
                     </div>
                 </div>
+                <div className='page-header'>
+                    <h2>Your Friends</h2>
+                </div>
                 <div className='col-md-12'>
-                    <Map lat={location[1]} lng={location[0]} placeId={placeId} />
+                    <Map activeUser={activeUser} lat={location[1]} lng={location[0]} placeId={placeId} friends={friends} />
                 </div>
             </div>
         );

@@ -16,19 +16,31 @@ export function appLoaded() {
                 response => dispatch(getActiveUserSuccededed(response)),
                 error => dispatch(getActiveUserFailed(error)),
             );
-        streetApi.getSelectedStreet()
-            .then(
-                response => dispatch(getStreetSuccededed(response)),
-                error => dispatch(getStreetFailed(error)),
-            );
     };
 }
 
 function getActiveUserSuccededed({ activeUser }) {
-    return activeUser ? {
-        type: userActionTypes.LOGIN_SUCCEEDED,
-        data: { ...activeUser },
-    } : { type: userActionTypes.USER_NOT_FOUND };
+
+    return dispatch => {
+
+        if (!activeUser) {
+            return dispatch({ type: userActionTypes.USER_NOT_FOUND });
+        }
+
+        dispatch({
+            type: userActionTypes.LOGIN_SUCCEEDED,
+            data: { ...activeUser },
+        });
+
+        if (activeUser.local.primaryStreet) {
+            streetApi.getStreetByPlaceId(activeUser.local.primaryStreet.placeId)
+                .then(
+                    response => dispatch(getStreetSuccededed(response)),
+                    error => dispatch(getStreetFailed(error)),
+                );
+        }
+
+    };
 }
 
 function getActiveUserFailed(response) {

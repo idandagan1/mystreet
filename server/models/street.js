@@ -36,11 +36,12 @@ const streetSchema = new Schema({
     }],
 }, { collection: 'street' });
 
+mongoose.model('primaryStreet', streetSchema);
 export const Street = mongoose.model('street', streetSchema);
 
 export function addMember(newMemberID, streetID) {
 
-    if (streetID == null || newMemberID == null) {
+    if (!streetID || !newMemberID) {
         return;
     }
 

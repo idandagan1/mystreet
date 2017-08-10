@@ -8,6 +8,24 @@ import PersonalDetails from '../models/personalDetails';
 
 const router = expressRouter();
 
+function getFacebookFriends(token) {
+    return new Promise((resolve, reject) => {
+        getFbData(token, '/me/friends', facebookResult => {
+
+            if (facebookResult) {
+                const { data } = JSON.parse(facebookResult);
+                const friendsIds = data.map(friend => friend.id);
+
+                User.aggregate(
+                    { $match: { 'facebook.id': { $in: friendsIds } } })
+                    .then((friends, err) => {
+                        err ? reject(err) : resolve(friends.map(user => user._id));
+                    });
+            }
+        });
+    });
+}
+
 // GET
 router.get('/getFriends', (req, res) => {
     // This method returns list of friends from facebook group by streets.
@@ -71,68 +89,76 @@ router.get('/getFriends', (req, res) => {
 router.post('/login/facebook', (req, res) => {
     const { id, name, first_name, last_name, gender, accessToken: token } = req.body;
 
-    /*getFbData(token, '/me/friends', data => {
-
-        if (data) {
-            const parsedList = JSON.parse(data);
-            const friendsIDs = [];
-
-            parsedList.data.forEach(friend => {
-                friendsIDs.push(friend.id);
-            });
-
-            User.aggregate({ $match: { 'facebook.id': { $in: friendsIDs } } })
-                .then((friends, err) => {
-                    if (err) throw err;
-
-                    if (friends) {
-                        Street.populate(friends, { path: 'primaryStreet' }, (error, populatedStreets) => {
-                            if (error) throw error;
-                        });
-                    }
-                });
-        }
-    });*/
     // find the user in the database based on their facebook id
-    User.findOne({ 'facebook.id': id }).populate(['local.primaryStreet', 'local.streets']).then((user, err) => {
-        let sessionUser;
+    User.findOne({ 'facebook.id': id })
+        .populate(['local.primaryStreet', 'local.streets', 'facebook.friends'])
+        .then((user, err) => {
+            let sessionUser;
 
-        // if the user is found, then log them in
-        if (!user) {
-            const newUser = new User({
-                facebook: {
-                    id,
-                    token,
-                    name,
-                    first_name,
-                    last_name,
-                    gender,
-                },
-                name,
+            return new Promise((resolve, reject) => {
+                // if the user is found, then log them in
+                if (!user) {
+                    const newUser = new User({
+                        facebook: {
+                            id,
+                            token,
+                            name,
+                            first_name,
+                            last_name,
+                            gender,
+                        },
+                        name,
+                    });
+
+                    newUser.save(error => {
+                        if (error) throw error;
+                    });
+
+                    sessionUser = newUser;
+                } else {
+                    user.local.lastLogged = Date.now();
+                    user.save();
+                    sessionUser = user;
+                }
+
+                resolve(sessionUser);
             });
-
-            newUser.save(error => {
-                if (error) throw error;
-            });
-
-            sessionUser = newUser;
-        } else {
-            user.local.lastLogged = Date.now();
-            user.save();
-            sessionUser = user;
-        }
-
-        req.session.user = sessionUser;
-        req.session.save();
-        res.status(200).send({ user: sessionUser });
-    });
+        })
+        .then((user, errors) =>
+            new Promise((resolve, reject) => {
+                getFacebookFriends(token)
+                    .then((friends, error) => {
+                        User.findOneAndUpdate({ 'facebook.id': id },
+                            { $addToSet: { 'facebook.friends': { $each: friends } } },
+                            { new: true })
+                            .populate([{
+                                path: 'facebook.friends',
+                                populate: ['local.primaryStreet'],
+                            }, { path: 'local.primaryStreet' }, { path: 'local.streets' }])
+                            .then(populateuser => {
+                                resolve(populateuser);
+                            });
+                    });
+            }))
+        .then((user) => {
+            req.session.user = user;
+            req.session.save();
+            res.status(200).send({ user });
+        });
 });
 
 router.get('/getUserLogin', (req, res) => {
     const { user: activeUser } = req.session;
-    return activeUser ?
-        res.status(200).send({ activeUser }) :
-        res.status(200).send({ msg: 'user not fund' });
+    activeUser ?
+        User.findOne({ 'facebook.id': activeUser.facebook.id })
+            .populate([{
+                path: 'facebook.friends',
+                populate: ['local.primaryStreet'],
+            }, { path: 'local.primaryStreet' }, { path: 'local.streets' }])
+            .then(populateuser => {
+                res.status(200).send({ activeUser: populateuser });
+            }) : res.status(200).send({ msg: 'user not fund' });
+
 })
 
 router.post('/updateBasicInfo', (req, res) => {
@@ -144,51 +170,48 @@ router.post('/updateBasicInfo', (req, res) => {
     const personalDetailsID = req.session.user.local.personalDetails;
 
     if (!personalDetailsID) {
-        return res.send({msg:"personalDetailsId is missing", status: 400});
+        return res.send({ msg: 'personalDetailsId is missing', status: 400 });
     }
 
-    const newUpdates = new PersonalDetails({_id: personalDetailsID, firstName, familyName, dateOfBirth, gender});
+    const newUpdates = new PersonalDetails({ _id: personalDetailsID, firstName, familyName, dateOfBirth, gender });
 
-    updateUserDetails(personalDetailsID, newUpdates, (newUserDetails)=> {
+    updateUserDetails(personalDetailsID, newUpdates, (newUserDetails) => {
         if (newUserDetails) {
-            return res.send({content: newUserDetails, status: "ok"});
+            return res.send({ content: newUserDetails, status: 'ok' });
         }
-    })
+    });
 
 })
 
 router.post('/updateProfessionalInfo', (req, res) => {
 
-    const work = req.body.work;
-    const college = req.body.college;
-    const skills = req.body.skills;
+    const { work, college, skills } = req.body;
     const personalDetailsID = req.session.user.local.personalDetails;
 
     if (!personalDetailsID) {
-        return res.send({msg:"personalDetailsId is missing", status: 400});
+        return res.send({ msg: 'personalDetailsId is missing', status: 400 });
     }
 
-    const newUpdates = new PersonalDetails({_id: personalDetailsID, work, skills, college});
+    const newUpdates = new PersonalDetails({ _id: personalDetailsID, work, skills, college });
 
-    updateUserDetails(personalDetailsID, newUpdates, (newUserDetails)=> {
+    updateUserDetails(personalDetailsID, newUpdates, (newUserDetails => {
         if (newUserDetails) {
-            return res.send({content: newUserDetails, status: "ok"});
+            return res.send({ content: newUserDetails, status: 'ok' });
         }
-    })
+    }));
 
-})
+});
 
 function updateUserDetails(personalDetailsID, updates) {
 
-    PersonalDetails.findOneAndUpdate({'_id': personalDetailsID}, updates,{new:true}).exec()
+    PersonalDetails.findOneAndUpdate({ _id: personalDetailsID }, updates, { new: true })
         .then(details => {
             if (details) {
                 console.log('User details have been updated.');
                 return details;
-            } else {
-                console.log('Error while updating user details');
             }
-        })
+            console.log('Error while updating user details');
+        });
 }
 
 function isLoggedIn(req, res, next) {

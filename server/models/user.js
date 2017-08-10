@@ -42,8 +42,12 @@ const userSchema = new Schema({
         first_name: String,
         last_name: String,
         gender: String,
+        friends: [{
+            type: ObjectId,
+            ref: 'user',
+        }],
     },
 
 }, { collection: 'user' });
-
+mongoose.model('friends', userSchema);
 export const User = mongoose.model('user', userSchema);

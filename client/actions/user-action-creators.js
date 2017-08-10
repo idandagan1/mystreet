@@ -1,6 +1,5 @@
 import * as userApi from 'api/user-api';
-import * as streetsApi from 'api/streets-api';
-import * as postsApi from 'api/post-api';
+import * as streetApi from 'api/streets-api';
 import { push } from 'react-router-redux';
 import headerActionTypes from 'views/header/state/header-action-types';
 import userActionTypes from './user-action-types';
@@ -29,16 +28,11 @@ function loginSucceded({ user }) {
         });
 
         if (user.local.primaryStreet) {
-            streetsApi.getStreetByPlaceId(user.local.primaryStreet.placeId)
+            streetApi.getStreetByPlaceId(user.local.primaryStreet.placeId)
                 .then(
                     response => dispatch(searchStreetSucceeded(response, user.local.primaryStreet)),
                     error => dispatch(searchStreetFailed(error)),
             );
-            postsApi.getPostsByPlaceId(user.local.primaryStreet.placeId)
-                .then(
-                    response => dispatch(getPostsSucceeded(response)),
-                    error => dispatch(getPostsFailed(error)),
-                );
         }
 
         dispatch(push('/mystreets'));
@@ -46,10 +40,10 @@ function loginSucceded({ user }) {
 }
 
 function searchStreetSucceeded(response, primaryStreet) {
-    const { street } = response;
+    const { selectedStreet } = response;
     return {
         type: myStreetsActionTypes.SEARCH_SUCCEEDED,
-        data: { selectedStreet: street || primaryStreet },
+        data: { selectedStreet: selectedStreet || primaryStreet },
     };
 }
 

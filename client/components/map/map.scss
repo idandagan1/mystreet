@@ -19,8 +19,42 @@
     right: 16px;
 }
 
+.n-info-window {
+    img {
+        width: 30px;
+        height: 30px;
+    }
+
+    &-members-list {
+        max-height: 100px;
+        overflow: scroll;
+    }
+
+    &-member{
+        height: 40px;
+        a {
+            display: inline-block;
+        }
+    }
+
+    &-user {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        padding: 0px;
+        white-space: nowrap;
+        max-width: 100px;
+        margin-top: 10px;
+    }
+
+    text-align: center;
+}
+
 @media only screen and (max-width: 750px) {
     .n-map__locate-btn {
         right: 15px;
     }
+}
+
+ul {
+    list-style-type: none;
 }
