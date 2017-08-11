@@ -1,16 +1,16 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as postActions from 'actions/post-action-creators';
+import * as userActions from 'actions/user-action-creators';
 import * as myStreetsActions from 'actions/my-streets-action-creators';
 import MyStreets from './components/my-streets';
 
 function select(state) {
-    const { app, user, myStreets } = state;
+    const { app, user: { activeUser }, myStreets } = state;
     return {
         ...myStreets,
         isAuthenticated: app.isAuthenticated,
-        activeUser: user,
+        activeUser,
     };
 }
 
@@ -20,7 +20,7 @@ function MyStreetsConnector(props) {
     return (
         <MyStreets
             {...props}
-            {...bindActionCreators(postActions, dispatch)}
+            {...bindActionCreators(userActions, dispatch)}
             {...bindActionCreators(myStreetsActions, dispatch)}
         />
     );

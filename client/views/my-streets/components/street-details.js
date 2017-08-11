@@ -17,25 +17,22 @@ export default function StreetDetails({ props }) {
     }
 
     function isMember() {
-        const { activeUser: { userId } } = props;
+        const { activeUser: { _id } } = props;
         if (!members) {
             return false;
         }
-        return members.find(x => x._id === userId) !== undefined;
+        return members.find(x => x._id === _id) !== undefined;
     }
 
     function eachMember(member, i, userId) {
-
-        if (member._id === userId) {
-            const { activeUser } = props;
-            return <Member member={activeUser} key={i} />;
-        }
-
-        return <Member member={member} key={i} />;
+        const { activeUser, userSelected } = props;
+        return member._id === userId ?
+            <Member member={activeUser} userSelected={userSelected} key={i} /> :
+            <Member member={member} key={i} userSelected={userSelected} />;
     }
 
     function createMembersList() {
-        const { activeUser: { userId } } = props;
+        const { activeUser: { _id } } = props;
         if (!members || members.length === 0) {
             if (streets.length > 3) {
                 return <div className='p5'><span>{Strings.maxStreetMsg}</span></div>;
@@ -46,7 +43,7 @@ export default function StreetDetails({ props }) {
         return (
             <ul id='mystreets-memberslist' style={{ padding: 10, listStyleType: 'none', textAlign: 'left' }}>
                 {members.map((member, i) =>
-                    eachMember(member, i, userId))
+                    eachMember(member, i, _id))
                 }
             </ul>
         );
@@ -145,7 +142,7 @@ StreetDetails.propTypes = {
         }),
         members: PropTypes.array,
         activeUser: PropTypes.shape({
-            userId: PropTypes.string,
+            _id: PropTypes.string,
             name: PropTypes.string,
             local: PropTypes.shape({
                 isPremium: PropTypes.bool,
@@ -158,5 +155,6 @@ StreetDetails.propTypes = {
         searchStreetSubmitted: PropTypes.func.isRequired,
         changePrimaryStreet: PropTypes.func.isRequired,
         leaveStreetSubmitted: PropTypes.func.isRequired,
+        userSelected: PropTypes.func.isRequired,
     }),
 }

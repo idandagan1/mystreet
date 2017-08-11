@@ -11,7 +11,6 @@ const userSchema = new Schema({
         required: true,
     },
     local: {
-
         isPremium: {
             type: Boolean,
             default: false,
@@ -29,6 +28,12 @@ const userSchema = new Schema({
             type: ObjectId,
             ref: 'street',
         }],
+        job: {
+            type: String,
+        },
+        college: {
+            type: String,
+        },
         personalDetails: {
             type: ObjectId,
             ref: 'personalDetails',

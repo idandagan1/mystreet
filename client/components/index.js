@@ -4,3 +4,4 @@ export Map from './map/map';
 export PostsFeed from './posts/posts-feed/posts-feed';
 export Profile from '../views/profile/components/profile';
 export SearchStreet from './search-street/search-street';
+export Footer from './footer/footer';

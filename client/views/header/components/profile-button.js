@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 
 export default function ProfileButton(props) {
-    const { name } = props;
+    const { name, id } = props;
 
     return (
         <li className='dropdown'>
@@ -18,7 +18,7 @@ export default function ProfileButton(props) {
                 <span className='caret' />
             </a>
             <ul className='dropdown-menu'>
-                <li><Link to='/user'>My Profile</Link></li>
+                <li><Link to={`/user/${id}`}>My Profile</Link></li>
                 <li role='separator' className='divider' />
                 <li><Link to='/'>Logout</Link></li>
             </ul>
@@ -28,4 +28,5 @@ export default function ProfileButton(props) {
 
 ProfileButton.propTypes = {
     name: PropTypes.string,
+    id: PropTypes.string,
 };

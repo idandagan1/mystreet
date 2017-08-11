@@ -1,16 +1,26 @@
 /* eslint-disable no-undef */
 import React, { Component, PropTypes } from 'react';
+import * as mapActions from 'actions/map-action-creators';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import './map.scss';
 
+function select(state) {
+    const { app: { mapSettings } } = state;
 
-export default class Map extends Component {
+    return {
+        mapSettings,
+    };
+}
+
+class Map extends Component {
     static propTypes = {
         lat: PropTypes.number,
         lng: PropTypes.number,
         placeId: PropTypes.string,
         friends: PropTypes.array,
-        activeUser: PropTypes.shape({
-            userId: PropTypes.string,
+        selectedUser: PropTypes.shape({
+            _id: PropTypes.string,
             name: PropTypes.string,
             local: PropTypes.shape({
                 isPremium: PropTypes.bool,
@@ -18,29 +28,65 @@ export default class Map extends Component {
                 streets: PropTypes.array,
             }),
         }),
+        mapSettings: PropTypes.shape({
+            placeId: PropTypes.strings,
+            location: PropTypes.shape({
+                lat: PropTypes.number,
+                lng: PropTypes.number,
+            }),
+            isMapInitialized: PropTypes.bool,
+        }),
+        mapInitialized: PropTypes.func.isRequired,
     };
 
-    componentDidMount() {
-        const { lat, lng, friends, activeUser } = this.props;
-        const users = activeUser ? [activeUser, ...friends] : friends;
-
-        this.mapOptions = {
-            center: { lat, lng },
-            zoom: 15,
-            scrollwheel: false,
+    constructor(props) {
+        super(props);
+        this.state = {
+            markers: [],
+            showDefaultLocation: true,
         };
-        this.infowindow = new google.maps.InfoWindow();
-        this.infowindow.isOpen = false;
-        this.map = new google.maps.Map(this.mainMap, this.mapOptions);
-        this.marker = new google.maps.Marker({ map: this.map });
-        this.service = new google.maps.places.PlacesService(this.map);
+    }
 
-        this.setUsersMarkerOnMap(users);
-        google.maps.event.addListener(this.map, 'click', () => {
-            this.infowindow.isOpen = false;
-            this.infowindow.close();
-        });
+    setMap(lat, lng, placeId) {
+        const location = new google.maps.LatLng(lat, lng);
+        this.map.setCenter(location);
+        this.marker.setPlace(({
+            placeId,
+            location,
+        }));
+    }
 
+    initializeMap() {
+        // Try W3C Geolocation (Preferred)
+        const { mapInitialized } = this.props;
+
+        let location;
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                location = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                this.geocoder.geocode({ location }, (results, status) => {
+                    if (status === google.maps.GeocoderStatus.OK) {
+                        if (results[1]) {
+                            mapInitialized({
+                                placeId: results[1].place_id,
+                                location: { lat: location.lat(), lng: location.lng() },
+                                isMapInitialized: true,
+                            });
+                            const { showDefaultLocation } = this.state;
+                            if (showDefaultLocation) {
+                                this.setMap(location.lat(), location.lng(), results[1].place_id);
+                            }
+                        }
+                    }
+                });
+            });
+        }
+    }
+
+    deleteMarkers() {
+        const { markers } = this.state;
+        markers.forEach(marker => marker.setMap(null));
+        this.setState({ markers: [] });
     }
 
     setUsersMarkerOnMap = (users) => {
@@ -48,6 +94,7 @@ export default class Map extends Component {
         if (!users) {
             return;
         }
+        this.deleteMarkers();
         const groupedUsers = this.groupBy(users, 'primaryStreet');
 
         for (const placeId in groupedUsers) {
@@ -56,12 +103,15 @@ export default class Map extends Component {
             this.service.getDetails({ placeId }, (place, status) => {
                 if (status === google.maps.places.PlacesServiceStatus.OK) {
                     let lastmarker;
+                    const { markers } = this.state;
                     const marker = new google.maps.Marker({
-                        map: this.map,
                         position: place.geometry.location,
+                        map: this.map,
                     })
+                    markers.push(marker);
+                    this.setState({ markers });
+
                     const mwindow = this.createStreetInfoWindow(groupedUsers[placeId]);
-                    marker.setVisible(true);
                     google.maps.event.addListener(marker, 'click', () => {
 
                         if ((marker === lastmarker) && this.infowindow.isOpen) {
@@ -74,6 +124,7 @@ export default class Map extends Component {
                         this.infowindow.open(this.map, marker);
                         this.infowindow.isOpen = true;
                     });
+
                 }
             });
         }
@@ -81,7 +132,7 @@ export default class Map extends Component {
 
     groupBy(xs, key) {
         return xs.reduce((rv, x) => {
-            (rv[x.local[key].placeId] = rv[x.local[key].placeId] || []).push(x);
+            x.local[key] ? (rv[x.local[key].placeId] = rv[x.local[key].placeId] || []).push(x) : void 0;
             return rv;
         }, {});
     }
@@ -122,27 +173,55 @@ export default class Map extends Component {
 
     shouldComponentUpdate(nextProps, nextState) {
         const { lat, lng, placeId } = this.props;
-        const { lat: nextLat, lng: nextLng, placeId: nextPlace, friends: newFriends } = nextProps;
+        const { lat: nextLat, lng: nextLng, placeId: nextPlace } = nextProps;
 
         return lat !== nextLat || lng !== nextLng || placeId !== nextPlace;
     }
 
     componentDidUpdate(prevProps, prevState) {
-        const { lat, lng, placeId, friends, activeUser } = this.props;
-        const users = activeUser ? [activeUser, ...friends] : friends;
+        const { lat, lng, friends, selectedUser, placeId } = this.props;
+        const users = selectedUser ? [selectedUser, ...friends] : friends;
+
+        this.setMap(lat, lng, placeId);
+        this.setUsersMarkerOnMap(users);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        const { placeId } = nextProps;
+        if (placeId) {
+            this.setState({ showDefaultLocation: false });
+        }
+    }
+
+    componentDidMount() {
+        const { lat, lng, placeId, mapSettings } = this.props;
 
         this.mapOptions = {
             center: { lat, lng },
             zoom: 15,
             scrollwheel: false,
         };
+        this.infowindow = new google.maps.InfoWindow();
+        this.infowindow.isOpen = false;
+        this.geocoder = new google.maps.Geocoder();
+        this.map = new google.maps.Map(this.mainMap, this.mapOptions);
+        this.marker = new google.maps.Marker({ map: this.map });
+        this.service = new google.maps.places.PlacesService(this.map);
 
-        this.setUsersMarkerOnMap(users);
-        this.map.setCenter(this.mapOptions.center);
-        this.marker.setPlace(({
-            placeId,
-            location: { lat, lng },
-        }));
+        if (!placeId) {
+            mapSettings.isMapInitialized ?
+                this.setMap(mapSettings.location.lat, mapSettings.location.lng, mapSettings.placeId)
+                : this.initializeMap();
+        } else {
+            this.forceUpdate();//this.setMap(lat, lng, placeId);
+        }
+
+        google.maps.event.addListener(this.map, 'click', () => {
+            this.infowindow.isOpen = false;
+            this.infowindow.close();
+        });
+
+        //this.forceUpdate();
 
     }
 
@@ -169,3 +248,9 @@ export default class Map extends Component {
     }
 
 }
+
+function matchDispatchToProps(dispatch) {
+    return bindActionCreators({ ...mapActions }, dispatch);
+}
+
+export default connect(select, matchDispatchToProps)(Map);

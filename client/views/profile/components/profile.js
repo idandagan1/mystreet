@@ -25,7 +25,7 @@ export default class Profile extends React.Component {
 
     static propTypes = {
         activeUser: PropTypes.shape({
-            userId: PropTypes.string,
+            _id: PropTypes.string,
             name: PropTypes.string,
             local: PropTypes.shape({
                 isPremium: PropTypes.bool,
@@ -33,25 +33,47 @@ export default class Profile extends React.Component {
                 streets: PropTypes.array,
             }),
         }),
+        selectedUser: PropTypes.shape({
+            _id: PropTypes.string,
+            name: PropTypes.string,
+            local: PropTypes.shape({
+                isPremium: PropTypes.bool,
+                lastLogged: PropTypes.string,
+                streets: PropTypes.array,
+            }),
+        }),
+        editable: PropTypes.bool,
+        params: PropTypes.shape({
+            id: PropTypes.string,
+        }),
     }
 
     constructor(props) {
         super(props);
         const { activeUser } = props;
-        activeUser.job = '';
-        activeUser.college = '';
         this.state = {
-            activeUser,
+            user: activeUser,
+            editable: false,
+            first_name: '',
+            last_name: '',
+            gender: '',
+            job: '',
+            college: '',
+            id: '',
+            friends: [],
+            ...initialState.activeUser.primaryStreet,
         };
     }
 
-    updateState = (state) => {
-        const { activeUser } = state;
-        this.setState({ activeUser });
+    updateState = () => {
+        const { activeUser, selectedUser, params: { id: selectedId } } = this.props;
+        const editable = activeUser.facebook.id === selectedId;
+        const { facebook: { first_name, last_name, gender, id, friends }, job, college, local: { primaryStreet: { address, location, placeId } } } = editable ? activeUser : selectedUser;
+        this.setState({ editable, first_name, last_name, gender, friends, id, job, college, location, address, placeId });
     }
 
     componentDidMount() {
-        this.updateState(this.props);
+        this.updateState();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -63,12 +85,8 @@ export default class Profile extends React.Component {
     }
 
     render() {
-        const { activeUser } = this.state;
-        const {
-            local: { primaryStreet },
-            facebook: { first_name, last_name, gender, id, friends },
-        } = activeUser;
-        const { address, location, placeId } = primaryStreet || initialState.activeUser.primaryStreet;
+        const { user, first_name, last_name, friends, gender, id, job, college, address, location, placeId, editable } = this.state;
+
         const picturePath = `http://graph.facebook.com/${id}/picture?type=normal`;
         const linkToUserFacebook = `https://www.facebook.com/app_scoped_user_id/${id}`;
 
@@ -96,13 +114,19 @@ export default class Profile extends React.Component {
                                     className='col-sm-3 control-label'
                                 >{Strings.firstName}</label>
                                 <div className='col-sm-6'>
-                                    <textarea
-                                        className='form-control'
-                                        rows='1'
-                                        onChange={(e) => this.handleChange(e, 'firstName')}
-                                        value={first_name}
-                                        required='true'
-                                    />
+                                    {
+                                        editable ?
+                                            <textarea
+                                                className='form-control'
+                                                rows='1'
+                                                onChange={(e) => this.handleChange(e, 'first_name')}
+                                                value={first_name}
+                                                required='true'
+                                            /> :
+                                            <label className='col-sm-3 control-label slabel'>
+                                                {first_name}
+                                            </label>
+                                    }
                                 </div>
                             </div>
                             <div className='form-group'>
@@ -111,13 +135,19 @@ export default class Profile extends React.Component {
                                     className='col-sm-3 control-label'
                                 >{Strings.lastName}</label>
                                 <div className='col-sm-6'>
-                                    <textarea
-                                        className='form-control'
-                                        rows='1'
-                                        onChange={(e) => this.handleChange(e, 'lastName')}
-                                        value={last_name}
-                                        required='true'
-                                    />
+                                    {
+                                        editable ?
+                                            <textarea
+                                                className='form-control'
+                                                rows='1'
+                                                onChange={(e) => this.handleChange(e, 'last_name')}
+                                                value={last_name}
+                                                required='true'
+                                            /> :
+                                            <label className='col-sm-3 control-label slabel'>
+                                                {last_name}
+                                            </label>
+                                    }
                                 </div>
                             </div>
                             <div className='form-group'>
@@ -126,14 +156,20 @@ export default class Profile extends React.Component {
                                     className='col-sm-3 control-label'
                                 >{Strings.address}</label>
                                 <div className='col-sm-6'>
-                                    <textarea
-                                        className='form-control'
-                                        rows='1'
-                                        placeholder={Strings.noAddress}
-                                        onChange={(e) => this.handleChange(e, 'address')}
-                                        value={address}
-                                        required='true'
-                                    />
+                                    {
+                                        editable ?
+                                            <textarea
+                                                className='form-control'
+                                                rows='1'
+                                                placeholder={Strings.noAddress}
+                                                onChange={(e) => this.handleChange(e, 'address')}
+                                                value={address}
+                                                required='true'
+                                            /> :
+                                            <label className='col-sm-3 control-label slabel'>
+                                                {address}
+                                            </label>
+                                    }
                                 </div>
                             </div>
                             <div className='form-group'>
@@ -141,32 +177,40 @@ export default class Profile extends React.Component {
                                     htmlFor='inputPassword3'
                                     className='col-sm-3 control-label'
                                 >{Strings.gender}</label>
-                                <div className='col-sm-6'>
-                                    <label
-                                        htmlFor='inputPassword3'
-                                        className='radio-inline'
-                                    ><input
-                                        type='radio'
-                                        name='gender'
-                                        value='male'
-                                        checked={gender === 'male'}
-                                        onChange={(e) => this.handleChange(e, 'gender')}
-                                    />
-                                        Male
-                                    </label>
-                                    <label
-                                        htmlFor='inputPassword3'
-                                        className='radio-inline'
-                                        onClick={(e) => this.handleChange(e, 'gender')}
-                                    ><input
-                                        type='radio'
-                                        name='gender'
-                                        value='female'
-                                        checked={gender === 'female'}
-                                    />
-                                        Female
-                                    </label>
-                                </div>
+                                {
+                                    editable ?
+                                    <div className='col-sm-6'>
+                                        <label
+                                            htmlFor='inputPassword3'
+                                            className='radio-inline'
+                                        ><input
+                                            type='radio'
+                                            name='gender'
+                                            value='male'
+                                            checked={gender === 'male'}
+                                            onChange={(e) => this.handleChange(e, 'gender')}
+                                        />
+                                            Male
+                                        </label>
+                                        <label
+                                            htmlFor='inputPassword3'
+                                            className='radio-inline'
+                                        ><input
+                                            type='radio'
+                                            name='gender'
+                                            value='female'
+                                            checked={gender === 'female'}
+                                            onChange={(e) => this.handleChange(e, 'gender')}
+                                        />
+                                            Female
+                                        </label>
+                                    </div> :
+                                    <div className='col-sm-6'>
+                                        <label className='col-sm-3 control-label slabel'>
+                                            {gender}
+                                        </label>
+                                    </div>
+                                }
                             </div>
                             <div className='page-header'>
                                 <h2>Work and Education</h2>
@@ -177,14 +221,20 @@ export default class Profile extends React.Component {
                                     className='col-sm-3 control-label'
                                 >{Strings.jobTitle}</label>
                                 <div className='col-sm-6'>
-                                <textarea
-                                    className='form-control'
-                                    rows='1'
-                                    placeholder={Strings.noAddress}
-                                    onChange={(e) => this.handleChange(e, 'job')}
-                                    value='Web Developer'
-                                    required='true'
-                                />
+                                    {
+                                        editable ?
+                                            <textarea
+                                                className='form-control'
+                                                rows='1'
+                                                placeholder={Strings.jobPlaceHolder}
+                                                onChange={(e) => this.handleChange(e, 'job')}
+                                                value={job}
+                                                required='true'
+                                            /> :
+                                            <label className='col-sm-3 control-label slabel'>
+                                                {job}
+                                            </label>
+                                    }
                                 </div>
                             </div>
                             <div className='form-group'>
@@ -193,30 +243,45 @@ export default class Profile extends React.Component {
                                     className='col-sm-3 control-label'
                                 >{Strings.collegeTitle}</label>
                                 <div className='col-sm-6'>
-                                <textarea
-                                    className='form-control'
-                                    rows='1'
-                                    placeholder={Strings.noAddress}
-                                    onChange={(e) => this.handleChange(e, 'college')}
-                                    value='Academic College of Tel-Aviv Yaffo'
-                                    required='true'
-                                />
+                                    {
+                                        editable ?
+                                            <textarea
+                                                className='form-control'
+                                                rows='1'
+                                                placeholder={Strings.collegePlaceHolder}
+                                                onChange={(e) => this.handleChange(e, 'college')}
+                                                value={college}
+                                                required='true'
+                                            /> :
+                                            <label className='col-sm-3 control-label slabel'>
+                                                {college}
+                                            </label>
+                                    }
                                 </div>
                             </div>
                             <div className='form-group'>
-                                <div className='col-sm-12'>
-                                    <button type='submit' className='n-mystreet__add-street-btn btn btn-default'>Save
-                                    </button>
-                                </div>
+                                {
+                                    editable ?
+                                        <div className='col-sm-12'>
+                                            <button
+                                                type='submit'
+                                                className='n-mystreet__add-street-btn btn btn-default'
+                                            >
+                                                Save
+                                            </button>
+                                        </div> : null
+                                }
                             </div>
                         </form>
                     </div>
                 </div>
                 <div className='page-header'>
-                    <h2>Your Friends</h2>
+                    {
+                        editable ? <h2>Your Friends</h2> : <h2>{first_name+"'s"} Friends</h2>
+                    }
                 </div>
                 <div className='col-md-12'>
-                    <Map activeUser={activeUser} lat={location[1]} lng={location[0]} placeId={placeId} friends={friends} />
+                    <Map selectedUser={user} lat={location[1]} lng={location[0]} placeId={placeId} friends={friends} />
                 </div>
             </div>
         );

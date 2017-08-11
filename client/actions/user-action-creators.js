@@ -20,6 +20,34 @@ export function facebookLoginSubmitted(user) {
     };
 }
 
+export function userSelected(userId) {
+    return dispatch => {
+        userApi.getUserById(userId)
+            .then(
+                response => dispatch(getUserSucceeded(response)),
+                error => dispatch(getUserFailed(error)),
+            );
+    };
+}
+
+function getUserSucceeded({ selectedUser }) {
+    return dispatch => {
+
+        dispatch({
+            type: userActionTypes.GET_USER_SUCCEEDED,
+            data: { selectedUser },
+        })
+
+        dispatch(push(`/user/${selectedUser.facebook.id}`));
+    };
+}
+
+function getUserFailed(error) {
+    return {
+        type: userActionTypes.GET_USER_FAILED,
+    };
+}
+
 function loginSucceded({ user }) {
     return dispatch => {
         dispatch({

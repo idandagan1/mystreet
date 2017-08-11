@@ -3,26 +3,28 @@ import userActionTypes from 'actions/user-action-types';
 import myStreetsActionTypes from 'actions/my-streets-action-types';
 
 const initialState = {
-    userId: '',
-    name: '',
-    facebook: {
-        id: '',
+    activeUser: {
+        _id: '',
         name: '',
-        token: '',
-        first_name: '',
-        last_name: '',
-        gender: '',
-        friends: [],
-    },
-    local: {
-        isPremium: false,
-        lastLogged: '',
-        primaryStreet: {
-            location: [34.7818, 32.0853],
-            placeId: '',
-            address: '',
+        facebook: {
+            id: '',
+            name: '',
+            token: '',
+            first_name: '',
+            last_name: '',
+            gender: '',
+            friends: [],
         },
-        streets: [],
+        local: {
+            isPremium: false,
+            lastLogged: '',
+            primaryStreet: {
+                location: [34.7818, 32.0853],
+                placeId: '',
+                address: '',
+            },
+            streets: [],
+        },
     },
 };
 
@@ -32,10 +34,12 @@ export default createReducer(initialState, {
 
         return {
             ...state,
-            name,
-            local,
-            facebook,
-            userId: _id,
+            activeUser: {
+                name,
+                local,
+                facebook,
+                _id,
+            },
         };
     },
 
@@ -49,12 +53,21 @@ export default createReducer(initialState, {
         };
     },
 
+    [userActionTypes.GET_USER_SUCCEEDED](state, action) {
+        const { data: { selectedUser } } = action;
+
+        return {
+            ...state,
+            selectedUser,
+        };
+    },
+
     [myStreetsActionTypes.CHANGE_PRIMARY_STREET_SUCCEEDED](state, action) {
         const { data: { activeUser } } = action;
 
         return {
             ...state,
-            ...activeUser,
+            activeUser,
         };
     },
 
@@ -63,16 +76,16 @@ export default createReducer(initialState, {
 
         return {
             ...state,
-            ...activeUser,
+            activeUser,
         };
     },
 
     [myStreetsActionTypes.ADD_STREET_SUCCEEDED](state, action) {
-        const { data: { activeUser: { local } } } = action;
+        const { data: { activeUser } } = action;
 
         return {
             ...state,
-            local,
+            activeUser,
         };
     },
 

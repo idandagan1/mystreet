@@ -86,6 +86,18 @@ router.get('/getFriends', (req, res) => {
     });
 });
 
+router.get('/getUserById', (req, res) => {
+    const { userId } = req.query;
+    User.findOne({ 'facebook.id': userId })
+        .populate([{
+            path: 'facebook.friends',
+            populate: ['local.primaryStreet'],
+        }, { path: 'local.primaryStreet' }, { path: 'local.streets' }])
+        .then(populateuser => {
+            res.status(200).send({ selectedUser: populateuser });
+        });
+})
+
 router.post('/login/facebook', (req, res) => {
     const { id, name, first_name, last_name, gender, accessToken: token } = req.body;
 
@@ -143,7 +155,7 @@ router.post('/login/facebook', (req, res) => {
         .then((user) => {
             req.session.user = user;
             req.session.save();
-            res.status(200).send({ user });
+            res.status(200).send({ user: user.toJSON() });
         });
 });
 

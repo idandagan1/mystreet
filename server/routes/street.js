@@ -365,7 +365,10 @@ function addStreetToUser(user_id, street, req, res) {
         User.findOneAndUpdate({ _id: user_id },
             { $addToSet: { 'local.streets': street._id } },
             { new: true, passRawResult: true })
-            .populate([{ path: 'local.streets' }, { path: 'local.primaryStreet' }])
+            .populate(['local.streets', 'local.primaryStreet', {
+                path: 'facebook.friends',
+                populate: ['local.primaryStreet'],
+            }])
             .then((user, err) => {
                 if (user) {
                     if (user.local.streets.length === 1) {

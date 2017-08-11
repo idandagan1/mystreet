@@ -4,43 +4,43 @@ const ObjectId = Schema.Types.ObjectId;
 
 const detailsSchema = new Schema({
 
-    userID:{
+    userId: {
         type: ObjectId,
         ref: 'user',
     },
-    //Basic info
-    firstName:{
-        type: String
+    // Basic info
+    firstName: {
+        type: String,
     },
-    familyName:{
-        type: String
+    familyName: {
+        type: String,
     },
-    dateOfBirth:{
-        type: Date
+    dateOfBirth: {
+        type: Date,
     },
-    gender:{
-        type: String
+    gender: {
+        type: String,
     },
-    //About
-    email:{
-        type: String
+    // About
+    email: {
+        type: String,
     },
-    relationship:{
-        type: String
+    relationship: {
+        type: String,
     },
-    about:{
-        type: String
+    about: {
+        type: String,
     },
-    //Professional
-    work:{
-        type: String
+    // Professional
+    work: {
+        type: String,
     },
-    skills:[{
-       type: String
+    skills: [{
+        type: String,
     }],
-    college:{
-        type: String
-    }
+    college: {
+        type: String,
+    },
 
 }, { collection: 'personalDetails' });
 

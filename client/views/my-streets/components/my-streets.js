@@ -16,7 +16,7 @@ export default class MyStreets extends React.Component {
         }),
         members: PropTypes.array,
         activeUser: PropTypes.shape({
-            userId: PropTypes.string,
+            _id: PropTypes.string,
             name: PropTypes.string,
             local: PropTypes.shape({
                 isPremium: PropTypes.bool,
@@ -30,6 +30,7 @@ export default class MyStreets extends React.Component {
         leaveStreetSubmitted: PropTypes.func.isRequired,
         searchStreetSubmitted: PropTypes.func.isRequired,
         changePrimaryStreet: PropTypes.func.isRequired,
+        userSelected: PropTypes.func.isRequired,
     };
 
     constructor(props) {
@@ -90,6 +91,7 @@ export default class MyStreets extends React.Component {
         const { showStreetDetails } = this.state;
         return showStreetDetails ? Strings.postsFeedBtn : Strings.moreBtn;
     }
+
     isMember = () => {
         const {
             activeUser: { local: { streets } },
@@ -164,7 +166,7 @@ export default class MyStreets extends React.Component {
                                 </div>
                             </div>
                             <div className='col-sm-3 sub-main-li hidden-sm hidden-xs'>
-                                <Map lat={location[1]} lng={location[0]} placeId={placeId}/>
+                                <Map lat={location[1]} lng={location[0]} placeId={placeId} />
                             </div>
                         </div>
                 }

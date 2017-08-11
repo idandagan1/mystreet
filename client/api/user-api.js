@@ -27,3 +27,13 @@ export function getActiveUser() {
         });
     });
 }
+
+export function getUserById(userId) {
+    return new Promise((resolve, reject) => {
+        $.ajax(`${config.user}/getUserById?userId=${userId}`, {
+            method: 'GET',
+            success: (res, status, xhr) => resolve(res),
+            error: (xhr, status, error) => reject(xhr.responseJSON),
+        });
+    });
+}

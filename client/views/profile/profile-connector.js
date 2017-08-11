@@ -4,11 +4,12 @@ import { connect } from 'react-redux';
 import Profile from './components/profile';
 
 function select(state) {
-    const { app, user, myStreets } = state;
+    const { app, user: { activeUser, selectedUser }, myStreets } = state;
     return {
         ...myStreets,
         isAuthenticated: app.isAuthenticated,
-        activeUser: user,
+        activeUser,
+        selectedUser,
     };
 }
 

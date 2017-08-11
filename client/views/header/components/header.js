@@ -10,7 +10,7 @@ import './header.scss';
 
 export default function Header(props) {
 
-    const { isAuthenticated, loginSubmitted, searchSubmitted, user: { name } } = props;
+    const { isAuthenticated, loginSubmitted, searchSubmitted, user: { name, facebook: { id } } } = props;
     const autoLoad = false;
 
     return (
@@ -50,7 +50,7 @@ export default function Header(props) {
                     <ul className='nav navbar-nav navbar-right'>
                         {
                             isAuthenticated ?
-                                <ProfileButton name={name} /> :
+                                <ProfileButton name={name} id={id} /> :
                                 <FacebookLogin
                                     appId='678252172335402'
                                     isLoggedIn={isAuthenticated}

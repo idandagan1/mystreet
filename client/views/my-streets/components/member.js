@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react';
 
+
 export default function Member(props) {
 
-    const { member, i } = props;
+    const { member, i, userSelected } = props;
     const picturePath = `http://graph.facebook.com/${member.facebook.id}/picture?type=normal`;
-    const linkToUserFacebook = `https://www.facebook.com/app_scoped_user_id/${member.facebook.id}`;
 
     return (
         <li style={{ height: 42 }} key={i}>
@@ -17,7 +17,9 @@ export default function Member(props) {
                 </a>
 
                 <ul className='dropdown-menu' aria-labelledby='dropdownMenuLink'>
-                    <li><a rel='noopener noreferrer' target='_blank' className='dropdown-item' href={linkToUserFacebook}>Go to profile</a></li>
+                    <li>
+                        <a onClick={() => { userSelected(member.facebook.id); }}>Go To Profile</a>
+                    </li>
                     <li><a className='dropdown-item' href=''>Report</a></li>
                 </ul>
             </div>
@@ -33,4 +35,5 @@ Member.propTypes = {
         name: PropTypes.string,
     }),
     i: PropTypes.number,
+    userSelected: PropTypes.func.isRequired,
 }

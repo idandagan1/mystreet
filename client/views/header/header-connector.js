@@ -5,7 +5,7 @@ import * as headerActions from './state/header-action-creators';
 import Header from './components/header';
 
 const select = state => ({
-    user: state.user,
+    user: state.user.activeUser,
     isAuthenticated: state.app.isAuthenticated,
     street: state.myStreets,
 });
