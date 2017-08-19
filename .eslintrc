@@ -5,6 +5,7 @@
     "padded-blocks": 0,
     "indent": [2, 4, {"SwitchCase": 1}],
     "eol-last": 2,
+      "camelcase": 0,
     "space-before-function-paren": [2, {"anonymous": "always", "named": "never"}],
     "jsx-quotes": [2, "prefer-single"],
     "no-use-before-define": 0,

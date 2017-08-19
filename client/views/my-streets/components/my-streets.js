@@ -3,6 +3,7 @@ import { PostsFeed, Map } from 'components';
 import { Strings } from 'resources';
 import StreetNearby from './streetNearby';
 import StreetDetails from './street-details';
+import Report from './report-form';
 import './my-streets.scss';
 
 export default class MyStreets extends React.Component {
@@ -145,6 +146,7 @@ export default class MyStreets extends React.Component {
                                     <StreetDetails props={this.props} />
                                 </div>
                             </div>
+                            <Report />
                             <div className='col-md-4 col-xs-12 col-sm-6 sub-main-li'>
                                 <div>
                                     {

@@ -20,7 +20,7 @@ export default function Member(props) {
                     <li>
                         <a onClick={() => { userSelected(member.facebook.id); }}>Go To Profile</a>
                     </li>
-                    <li><a className='dropdown-item' href=''>Report</a></li>
+                    <li><a className='dropdown-item' href='' data-toggle='modal' data-target='#myModal'>Report</a></li>
                 </ul>
             </div>
         </li>
