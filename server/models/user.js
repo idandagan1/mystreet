@@ -38,6 +38,9 @@ const userSchema = new Schema({
             type: ObjectId,
             ref: 'personalDetails',
         },
+        dateOfBirth: {
+            type: Date,
+        },
     },
     facebook: {
         id: String,

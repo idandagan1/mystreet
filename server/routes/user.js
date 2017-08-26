@@ -1,12 +1,14 @@
 /* eslint-disable no-underscore-dangle, consistent-return, no-param-reassign */
 import { Router as expressRouter } from 'express';
-import passport from 'passport';
+import mongoose from 'mongoose';
 import { Street } from '../models/street';
 import { User } from '../models/user';
 import getFbData from '../models/facebook';
 import PersonalDetails from '../models/personalDetails';
 
 const router = expressRouter();
+const Schema = mongoose.Schema;
+const ObjectId = Schema.Types.ObjectId;
 
 function getFacebookFriends(token) {
     return new Promise((resolve, reject) => {
@@ -155,7 +157,7 @@ router.post('/login/facebook', (req, res) => {
         .then((user) => {
             req.session.user = user;
             req.session.save();
-            res.status(200).send({ user: user.toJSON() });
+            res.status(200).send({ user });
         });
 });
 
@@ -173,25 +175,40 @@ router.get('/getUserLogin', (req, res) => {
 
 })
 
-router.post('/updateBasicInfo', (req, res) => {
+router.post('/updateUserInfo', (req, res) => {
 
-    const firstName = req.body.firstName;
-    const familyName = req.body.familyName;
-    const dateOfBirth = req.body.dateOfBirth;
-    const gender = req.body.gender;
-    const personalDetailsID = req.session.user.local.personalDetails;
+    const { first_name, last_name, gender, job, newAddress, _id: userId, college } = req.body;
+    const { user: { _id } } = req.session;
 
-    if (!personalDetailsID) {
-        return res.send({ msg: 'personalDetailsId is missing', status: 400 });
+    if (_id !== userId) {
+        res.status(400).send({ msg: 'id does not match' });
     }
 
-    const newUpdates = new PersonalDetails({ _id: personalDetailsID, firstName, familyName, dateOfBirth, gender });
-
-    updateUserDetails(personalDetailsID, newUpdates, (newUserDetails) => {
-        if (newUserDetails) {
-            return res.send({ content: newUserDetails, status: 'ok' });
-        }
-    });
+    User.findOneAndUpdate({ _id },
+        {
+            'facebook.first_name': first_name,
+            'facebook.last_name': last_name,
+            'facebook.gender': gender,
+            'local.job': job,
+            'local.college': college,
+            //'local.primaryStreet': newAddress,
+        },
+        { upsert: true, new: true })
+        .populate([{
+            path: 'facebook.friends',
+            populate: ['local.primaryStreet'],
+        }, { path: 'local.primaryStreet' }, { path: 'local.streets' }])
+        .then(updatedUser => {
+            if (updatedUser) {
+                console.log('User details have been updated.');
+                req.session.user = updatedUser;
+                req.session.save();
+                res.status(200).send({ activeUser: updatedUser });
+            } else {
+                console.log('Error while updating user details');
+                res.status(200).send({ msg: 'Error while updating user details' });
+            }
+        });
 
 })
 
@@ -214,17 +231,10 @@ router.post('/updateProfessionalInfo', (req, res) => {
 
 });
 
-function updateUserDetails(personalDetailsID, updates) {
-
-    PersonalDetails.findOneAndUpdate({ _id: personalDetailsID }, updates, { new: true })
-        .then(details => {
-            if (details) {
-                console.log('User details have been updated.');
-                return details;
-            }
-            console.log('Error while updating user details');
-        });
-}
+router.get('/logoutUser', (req, res) => {
+    req.session.destroy();
+    res.status(200).send({ msg: 'user logged out successfully' });
+})
 
 function isLoggedIn(req, res, next) {
     if (req.isAuthenticated()) {

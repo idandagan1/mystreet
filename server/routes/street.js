@@ -253,13 +253,13 @@ router.delete('/leaveStreet', (req, res) => {
 router.post('/changePrimaryStreet', (req, res) => {
 
     const { streetId } = req.query;
-    const { user: { _id: user_id } } = req.session;
+    const { user: { _id } } = req.session;
 
-    if (!user_id || !streetId) {
+    if (!_id || !streetId) {
         return res.status(400).send({ msg: 'There have been validation errors' });
     }
 
-    User.findOneAndUpdate({ _id: user_id },
+    User.findOneAndUpdate({ _id },
         { 'local.primaryStreet': streetId },
         { upsert: true, new: true })
         .populate([{

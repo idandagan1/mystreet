@@ -1,9 +1,11 @@
 import * as userApi from 'api/user-api';
 import * as streetApi from 'api/streets-api';
+import { browserHistory } from 'react-router'
 import { push } from 'react-router-redux';
 import headerActionTypes from 'views/header/state/header-action-types';
 import userActionTypes from './user-action-types';
 import myStreetsActionTypes from './my-streets-action-types';
+
 
 export function facebookLoginSubmitted(user) {
     return dispatch => {
@@ -14,9 +16,63 @@ export function facebookLoginSubmitted(user) {
 
         userApi.getFacebookLogin(user)
             .then(
-                response => dispatch(loginSucceded(response)),
+                response => dispatch(loginSucceeded(response)),
                 error => dispatch(loginFailed(error)),
             );
+    };
+}
+
+export function updatedProfileSubmitted(user) {
+    return dispatch => {
+
+        userApi.updateUserInfo(user)
+            .then(
+                response => dispatch(updateUserSucceeded(response)),
+                error => dispatch(updateUserFailed(error)),
+            );
+    };
+}
+
+export function logoutUser(user) {
+    return dispatch => {
+
+        userApi.logoutUser(user)
+            .then(
+                response => dispatch(logoutSucceeded(response)),
+                error => dispatch(logoutFailed(error)),
+            );
+
+        browserHistory.push('/');
+    };
+}
+
+function updateUserSucceeded({ activeUser }) {
+    return dispatch => {
+        dispatch({
+            type: userActionTypes.UPDATE_USER_SUCCEEDED,
+            data: { activeUser },
+        });
+    };
+}
+
+function updateUserFailed() {
+    return {
+        type: userActionTypes.UPDATE_USER_FAILED,
+    };
+}
+
+function logoutSucceeded(response) {
+    return dispatch => {
+        dispatch({
+            type: userActionTypes.LOGOUT_SUCCEEDED,
+            data: { response },
+        });
+    };
+}
+
+function logoutFailed() {
+    return {
+        type: userActionTypes.LOGOUT_FAILED,
     };
 }
 
@@ -48,7 +104,7 @@ function getUserFailed(error) {
     };
 }
 
-function loginSucceded({ user }) {
+function loginSucceeded({ user }) {
     return dispatch => {
         dispatch({
             type: userActionTypes.LOGIN_SUCCEEDED,

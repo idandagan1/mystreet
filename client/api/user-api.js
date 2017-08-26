@@ -18,6 +18,18 @@ export function getFacebookLogin(user) {
 
 }
 
+export function updateUserInfo(user) {
+
+    return new Promise((resolve, reject) => {
+        $.ajax(`${config.user}/updateUserInfo`, {
+            method: 'POST',
+            data: JSON.stringify(user),
+            success: (res, status, xhr) => resolve(res),
+            error: (xhr, status, error) => reject(xhr.responseJSON),
+        });
+    });
+}
+
 export function getActiveUser() {
     return new Promise((resolve, reject) => {
         $.ajax(`${config.user}/getUserLogin`, {
@@ -31,6 +43,16 @@ export function getActiveUser() {
 export function getUserById(userId) {
     return new Promise((resolve, reject) => {
         $.ajax(`${config.user}/getUserById?userId=${userId}`, {
+            method: 'GET',
+            success: (res, status, xhr) => resolve(res),
+            error: (xhr, status, error) => reject(xhr.responseJSON),
+        });
+    });
+}
+
+export function logoutUser() {
+    return new Promise((resolve, reject) => {
+        $.ajax(`${config.user}/logoutUser`, {
             method: 'GET',
             success: (res, status, xhr) => resolve(res),
             error: (xhr, status, error) => reject(xhr.responseJSON),
