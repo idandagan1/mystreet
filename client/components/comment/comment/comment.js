@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import { Strings } from 'resources';
 import moment from 'moment';
 import './comment.scss';
 

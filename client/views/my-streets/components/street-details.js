@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import { Strings } from 'resources';
 import Street from './street';
 import Member from './member';
 
@@ -9,6 +8,7 @@ export default function StreetDetails({ props }) {
         isAuthenticated,
         activeUser: { local: { streets } },
         selectedStreet: { members },
+        Strings,
     } = props;
 
     function onJoinClick() {
@@ -149,6 +149,9 @@ StreetDetails.propTypes = {
                 lastLogged: PropTypes.string,
                 streets: PropTypes.array,
             }),
+        }),
+        Strings: PropTypes.shape({
+            search: PropTypes.string,
         }),
         isAuthenticated: PropTypes.bool.isRequired,
         addStreetSubmitted: PropTypes.func.isRequired,

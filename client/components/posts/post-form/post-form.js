@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import { Strings } from 'resources';
 import moment from 'moment';
 import './post-form.scss';
 
@@ -8,10 +7,14 @@ export default class PostForm extends React.Component {
     static propTypes = {
         addNewPost: PropTypes.func.isRequired,
         username: PropTypes.string,
+        Strings: PropTypes.shape({
+            search: PropTypes.string,
+        }),
     }
 
     constructor(props) {
         super(props);
+        const { Strings } = props;
         this.state = {
             image: '',
             filepath: '',
@@ -37,7 +40,7 @@ export default class PostForm extends React.Component {
 
     render() {
         const { filepath } = this.state;
-        const { username } = this.props;
+        const { username, Strings } = this.props;
         return (
             <div className='panel'>
                 <div className='panel-content'>

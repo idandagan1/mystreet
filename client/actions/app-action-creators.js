@@ -3,6 +3,8 @@ import userActionTypes from './user-action-types';
 import myStreetsActionTypes from './my-streets-action-types';
 import * as streetApi from '../api/streets-api';
 import * as userApi from '../api/user-api';
+import * as appApi from '../api/app-api';
+import * as utils from '../util/utils';
 
 export function appLoaded() {
     return (dispatch, getState) => {
@@ -11,12 +13,61 @@ export function appLoaded() {
             type: appActionTypes.LOADED,
         });
 
+        dispatch(changeLanguange(utils.getCookie('language') || navigator.language));
+
+        appApi.getUserLocation()
+            .then(
+                response => dispatch(getLocationSucceeded(response)),
+                error => dispatch(getLocationFailed(error)),
+            );
+
         userApi.getActiveUser()
             .then(
                 response => dispatch(getActiveUserSuccededed(response)),
                 error => dispatch(getActiveUserFailed(error)),
             );
     };
+}
+
+export function setLanguage(lang) {
+    return (dispatch) => {
+        dispatch(changeLanguange(lang));
+    };
+}
+
+function getLocationSucceeded(res) {
+    return {
+        type: appActionTypes.GET_USER_LOCATION_SUCCEEDED,
+        data: res,
+    };
+}
+
+function getLocationFailed(err){
+    throw err;
+}
+
+function changeLanguange(lang) {
+    return {
+        type: appActionTypes.SET_LANGUAGE,
+        data: { ...getStrings(lang) },
+    };
+}
+
+function getStrings(lang) {
+
+    if (!lang) {
+        return require('../resources/languages/en');
+    }
+
+    if (lang.includes('en')) {
+        return require('../resources/languages/en');
+    }
+
+    if (lang.includes('he')) {
+        return require('../resources/languages/he');
+    }
+
+    return null;
 }
 
 function getActiveUserSuccededed({ activeUser }) {

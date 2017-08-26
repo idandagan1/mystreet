@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import { Strings } from 'resources';
 import './comment-form.scss';
 
 class CommentForm extends React.Component {

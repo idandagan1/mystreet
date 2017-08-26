@@ -1,13 +1,12 @@
 import React, { PropTypes } from 'react';
 import { Comment, CommentForm } from 'components/comment';
-import { Strings } from 'resources';
 import { connect } from 'react-redux';
 import { replaceDateTime } from 'util/utils.js';
 import moment from 'moment';
 import './post.scss';
 
 function select(state) {
-    const { post: { newComment } } = state;
+    const { post: { newComment }, user: { Strings } } = state;
 
     const comments = [];
     if (newComment.author) {
@@ -19,6 +18,7 @@ function select(state) {
     return {
         newComment,
         comments,
+        Strings,
     };
 }
 
@@ -96,7 +96,7 @@ class Post extends React.Component {
     }
 
     render() {
-        const { postContent: { body, createDate, author, comments } } = this.props;
+        const { Strings, postContent: { body, createDate, author, comments } } = this.props;
         const { formattedDate } = this.state;
         const picturePath = `http://graph.facebook.com/${author.facebook.id}/picture?type=normal`;
         const linkToUserFacebook = `https://www.facebook.com/app_scoped_user_id/${author.facebook.id}`;

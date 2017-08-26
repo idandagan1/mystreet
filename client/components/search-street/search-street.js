@@ -1,10 +1,12 @@
-import React, { PropTypes, Component } from 'react';
+import React, { PropTypes } from 'react';
 import { browserHistory } from 'react-router';
 import { GoogleSearch } from 'components';
 import tipsIcon from 'resources/images/tip-icon.png';
 import './search-street.scss';
 
 export default function SearchStreet(props) {
+
+    const { Strings } = props;
 
     function handleSubmit(street) {
         const { searchStreet } = props;
@@ -14,7 +16,7 @@ export default function SearchStreet(props) {
 
     return (
         <div >
-            <GoogleSearch onSubmit={handleSubmit} />
+            <GoogleSearch Strings={Strings} onSubmit={handleSubmit} />
             <div className='n-search-tips-container dropdown'>
                 <img
                     src={tipsIcon}
@@ -37,4 +39,7 @@ export default function SearchStreet(props) {
 
 SearchStreet.propTypes = {
     searchStreet: PropTypes.func.isRequired,
+    Strings: PropTypes.shape({
+        search: PropTypes.string,
+    }),
 };

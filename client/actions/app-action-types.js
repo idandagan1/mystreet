@@ -6,4 +6,6 @@ export default createActionTypes('APP', [
     'GET_ACTIVE_USER_FAILED',
     'GET_STREET_SUCCEEDED',
     'GET_STREET_FAILED',
+    'SET_LANGUAGE',
+    'GET_USER_LOCATION_SUCCEEDED',
 ]);

@@ -1,5 +1,6 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
+import * as userActions from 'actions/user-action-creators';
 import { connect } from 'react-redux';
 import Profile from './components/profile';
 
@@ -19,6 +20,7 @@ function ProfileConnector(props) {
     return (
         <Profile
             {...props}
+            {...bindActionCreators(userActions, dispatch)}
         />
     );
 }

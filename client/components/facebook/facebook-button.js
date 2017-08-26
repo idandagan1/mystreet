@@ -2,6 +2,7 @@
 import React, { PropTypes } from 'react';
 import './facebook-button.scss';
 
+
 export default class FacebookLogin extends React.Component {
 
     static propTypes = {
@@ -38,10 +39,6 @@ export default class FacebookLogin extends React.Component {
     };
 
     componentDidMount() {
-        if (document.getElementById('facebook-jssdk')) {
-            this.sdkLoaded();
-            return;
-        }
         this.loadSdkAsynchronously();
         let fbRoot = document.getElementById('fb-root');
         if (!fbRoot) {
@@ -54,6 +51,7 @@ export default class FacebookLogin extends React.Component {
 
     onLoginClick = () => {
         const { isProcessing } = this.state;
+        document.body.classList.add('loading');
         const {
             scope,
             appId,
@@ -123,6 +121,7 @@ export default class FacebookLogin extends React.Component {
 
         window.FB.api('/me', { fields }, (me) => {
             Object.assign(me, authResponse);
+            document.body.classList.remove('loading');
             callback(me);
         });
     };
@@ -130,11 +129,10 @@ export default class FacebookLogin extends React.Component {
     checkLoginState = (response) => {
         const { callback } = this.props;
 
-        //this.setState({ isProcessing: false });
-
         if (response.authResponse) {
             this.responseApi(response.authResponse);
         } else if (callback) {
+            document.body.classList.remove('loading');
             callback({ status: response.status });
         }
     };

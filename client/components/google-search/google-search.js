@@ -1,6 +1,5 @@
 /* eslint-disable no-undef */
 import React, { Component, PropTypes } from 'react';
-import { Strings } from 'resources';
 import './google-search.scss';
 
 
@@ -15,6 +14,9 @@ export default class GoogleSearch extends Component {
 
     static propTypes = {
         onSubmit: PropTypes.func.isRequired,
+        Strings: PropTypes.shape({
+            search: PropTypes.string,
+        }),
     };
 
     constructor(props) {
@@ -59,6 +61,8 @@ export default class GoogleSearch extends Component {
     };
 
     render() {
+        const { Strings } = this.props;
+
         return (
             <div className='n-google-search-form'>
                 <form onSubmit={this.handleSearchClicked} className='form-horizontal'>

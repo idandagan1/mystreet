@@ -1,5 +1,6 @@
 import createReducer from 'util/create-reducer';
 import postActionTypes from 'actions/post-action-types';
+import appActionTypes from 'actions/app-action-types';
 
 const initialState = {
     newComment: {
@@ -7,6 +8,7 @@ const initialState = {
         body: '',
         createdDate: '',
     },
+    Strings: {},
 };
 
 export default createReducer(initialState, {
@@ -15,6 +17,15 @@ export default createReducer(initialState, {
         return {
             ...state,
             newComment,
+        };
+    },
+
+    [appActionTypes.SET_LANGUAGE](state, action) {
+        const { data: Strings } = action;
+
+        return {
+            ...state,
+            Strings,
         };
     },
 });

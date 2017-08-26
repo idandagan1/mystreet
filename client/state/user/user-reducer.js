@@ -1,6 +1,7 @@
 import createReducer from 'util/create-reducer';
 import userActionTypes from 'actions/user-action-types';
 import myStreetsActionTypes from 'actions/my-streets-action-types';
+import appActionTypes from 'actions/app-action-types';
 
 const initialState = {
     activeUser: {
@@ -26,6 +27,8 @@ const initialState = {
             streets: [],
         },
     },
+    Strings: {},
+    country: '',
 };
 
 export default createReducer(initialState, {
@@ -43,6 +46,24 @@ export default createReducer(initialState, {
         };
     },
 
+    [appActionTypes.SET_LANGUAGE](state, action) {
+        const { data: Strings } = action;
+
+        return {
+            ...state,
+            Strings,
+        };
+    },
+
+    [appActionTypes.GET_USER_LOCATION_SUCCEEDED](state, action) {
+        const { data: { country } } = action;
+
+        return {
+            ...state,
+            country,
+        };
+    },
+
     [userActionTypes.FACEBOOK_LOGIN_SUBMITTED](state, action) {
         const { data: { user: { accessToken: token, id, name } } } = action;
         const facebook = { id, name, token };
@@ -53,12 +74,28 @@ export default createReducer(initialState, {
         };
     },
 
+    [userActionTypes.UPDATE_USER_SUCCEEDED](state, action) {
+        const { data: { activeUser } } = action;
+
+        return {
+            ...state,
+            activeUser,
+        };
+    },
+
     [userActionTypes.GET_USER_SUCCEEDED](state, action) {
         const { data: { selectedUser } } = action;
 
         return {
             ...state,
             selectedUser,
+        };
+    },
+
+    [userActionTypes.LOGOUT_SUCCEEDED](state, action) {
+        return {
+            ...state,
+            ...initialState,
         };
     },
 

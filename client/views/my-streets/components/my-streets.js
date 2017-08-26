@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import { PostsFeed, Map } from 'components';
-import { Strings } from 'resources';
 import StreetNearby from './streetNearby';
 import StreetDetails from './street-details';
 import Report from './report-form';
@@ -14,6 +13,9 @@ export default class MyStreets extends React.Component {
             placeId: PropTypes.string,
             location: PropTypes.array,
             members: PropTypes.array,
+        }),
+        Strings: PropTypes.shape({
+            search: PropTypes.string,
         }),
         members: PropTypes.array,
         activeUser: PropTypes.shape({
@@ -65,6 +67,7 @@ export default class MyStreets extends React.Component {
     }
 
     getStreetsNearby = (streets) => {
+        const { Strings } = this.props;
         if (!streets || streets.length === 0) {
             return (<span>{Strings.noStreetsNearBy}</span>);
         }
@@ -90,6 +93,7 @@ export default class MyStreets extends React.Component {
 
     getDetailsBtnValue = () => {
         const { showStreetDetails } = this.state;
+        const { Strings } = this.props;
         return showStreetDetails ? Strings.postsFeedBtn : Strings.moreBtn;
     }
 
@@ -107,6 +111,7 @@ export default class MyStreets extends React.Component {
 
     render() {
         const {
+            Strings,
             streetsNearby, selectedStreet,
             selectedStreet: { streetName, location, placeId, address },
             activeUser: { facebook: { first_name } },
@@ -134,7 +139,10 @@ export default class MyStreets extends React.Component {
 
                         <div className='globalContainer col-xs-7'>
                             <div className='visible-xs col-xs-12'>
-                                <StreetDetails props={this.props} />
+                                <StreetDetails
+                                    Strings={Strings}
+                                    props={this.props}
+                                />
                             </div>
                             <div className='visible-xs col-xs-12'>
                                 <Map lat={location[1]} lng={location[0]} placeId={placeId} />

@@ -4,7 +4,7 @@ import streetVideo from 'resources/videos/1.mp4';
 import './dashboard.scss';
 
 export default function Dashboard(props) {
-    const { dashboardSearchSubmitted } = props;
+    const { dashboardSearchSubmitted, Strings } = props;
 
     return (
         <div className='n-dashboard'>
@@ -18,7 +18,10 @@ export default function Dashboard(props) {
             <div className='n-dashboard-search'>
                 <div className='n-street-search'>
                     <div className='navbar-form'>
-                        <SearchStreet searchStreet={dashboardSearchSubmitted} />
+                        <SearchStreet
+                            Strings={Strings}
+                            searchStreet={dashboardSearchSubmitted}
+                        />
                     </div>
                 </div>
             </div>
@@ -28,4 +31,7 @@ export default function Dashboard(props) {
 
 Dashboard.propTypes = {
     dashboardSearchSubmitted: PropTypes.func.isRequired,
+    Strings: PropTypes.shape({
+        search: PropTypes.string,
+    }),
 };

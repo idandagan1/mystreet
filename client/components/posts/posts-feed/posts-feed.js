@@ -7,10 +7,11 @@ import './posts-feed.scss';
 
 
 function select(state) {
-    const { postsfeed: { postsfeed } } = state;
+    const { postsfeed: { postsfeed }, user: { Strings } } = state;
 
     return {
         postsfeed,
+        Strings,
     };
 }
 
@@ -21,6 +22,9 @@ class PostsFeed extends Component {
             placeId: PropTypes.string,
             location: PropTypes.array,
             members: PropTypes.array,
+        }),
+        Strings: PropTypes.shape({
+            search: PropTypes.string,
         }),
         isMember: PropTypes.bool,
         postsfeed: PropTypes.array,
@@ -44,7 +48,7 @@ class PostsFeed extends Component {
     }
 
     getPostsFeedList = () => {
-        const { addCommentSubmitted, postsfeed } = this.props;
+        const { addCommentSubmitted, postsfeed, Strings } = this.props;
 
         return postsfeed && postsfeed.length > 0 ?
             postsfeed.map((post, i) => <Post addCommentHandler={addCommentSubmitted} key={i} postContent={post} />) : null;
@@ -56,14 +60,14 @@ class PostsFeed extends Component {
     }
 
     render() {
-        const { isMember, username } = this.props;
+        const { isMember, username, Strings } = this.props;
 
         return (
             <div>
                 <div id='streetResult' className='container' />
                 {
                     isMember !== true ?
-                        null : <PostForm username={username} addNewPost={this.addNewPost} />
+                        null : <PostForm Strings={Strings} username={username} addNewPost={this.addNewPost} />
                 }
                 <div>
                     {this.getPostsFeedList()}

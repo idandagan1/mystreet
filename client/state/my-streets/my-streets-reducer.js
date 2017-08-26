@@ -2,6 +2,7 @@ import createReducer from 'util/create-reducer';
 import myStreetsActionTypes from 'actions/my-streets-action-types';
 import headerActionTypes from 'views/header/state/header-action-types';
 import dashboardActionTypes from 'actions/dashboard-action-types';
+import appActionTypes from 'actions/app-action-types';
 
 const initialState = {
     selectedStreet: {
@@ -12,6 +13,7 @@ const initialState = {
         location: [34.7818, 32.0853],
     },
     members: [],
+    Strings: {},
 };
 
 export default createReducer(initialState, {
@@ -27,6 +29,15 @@ export default createReducer(initialState, {
     [myStreetsActionTypes.FAILED]() {
         return {
             ...initialState,
+        };
+    },
+
+    [appActionTypes.SET_LANGUAGE](state, action) {
+        const { data: Strings } = action;
+
+        return {
+            ...state,
+            Strings,
         };
     },
 

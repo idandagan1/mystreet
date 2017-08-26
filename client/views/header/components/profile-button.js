@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 
 export default function ProfileButton(props) {
-    const { name, id } = props;
+    const { name, id, logoutSubmitted, Strings } = props;
 
     return (
         <li className='dropdown'>
@@ -14,19 +14,20 @@ export default function ProfileButton(props) {
                 aria-haspopup='true'
                 aria-expanded='false'
             >
-                {name ? `Hello ${name}` : 'Login'}
+                {name ? `${Strings.hello} ${name}` : 'Login'}
                 <span className='caret' />
             </a>
             <ul className='dropdown-menu'>
-                <li><Link to={`/user/${id}`}>My Profile</Link></li>
+                <li><Link to={`/user/${id}`}>{Strings.myProfileTitle}</Link></li>
                 <li role='separator' className='divider' />
-                <li><Link to='/'>Logout</Link></li>
+                <li><a onClick={logoutSubmitted}>{Strings.logout}</a></li>
             </ul>
         </li>
     );
 }
 
 ProfileButton.propTypes = {
+    logoutSubmitted: PropTypes.func.isRequired,
     name: PropTypes.string,
     id: PropTypes.string,
 };

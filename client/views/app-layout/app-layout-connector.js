@@ -15,6 +15,7 @@ function AppConnector(props) {
     return (
         <div className='wrapper'>
             <Header />
+            <div className='loadingImg' />
             {children}
         </div>
     );

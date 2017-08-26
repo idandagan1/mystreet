@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
-import { Strings } from 'resources';
 import facebookicon from 'resources/images/facebook-icon.ico';
-import { Map } from 'components';
+import { Map, Datepicker } from 'components';
 import './profile.scss';
 
 const initialState = {
@@ -33,6 +32,9 @@ export default class Profile extends React.Component {
                 streets: PropTypes.array,
             }),
         }),
+        Strings: PropTypes.shape({
+            search: PropTypes.string,
+        }),
         selectedUser: PropTypes.shape({
             _id: PropTypes.string,
             name: PropTypes.string,
@@ -46,6 +48,7 @@ export default class Profile extends React.Component {
         params: PropTypes.shape({
             id: PropTypes.string,
         }),
+        updatedProfileSubmitted: PropTypes.func.isRequired,
     }
 
     constructor(props) {
@@ -56,24 +59,45 @@ export default class Profile extends React.Component {
             editable: false,
             first_name: '',
             last_name: '',
+            address: '',
+            newAddress: '',
+            dateOfBirth: '',
             gender: '',
             job: '',
             college: '',
             id: '',
+            empty: '',
             friends: [],
             ...initialState.activeUser.primaryStreet,
         };
     }
 
-    updateState = () => {
-        const { activeUser, selectedUser, params: { id: selectedId } } = this.props;
+    updateState = (props) => {
+        const { activeUser, selectedUser, params: { id: selectedId } } = props;
         const editable = activeUser.facebook.id === selectedId;
-        const { facebook: { first_name, last_name, gender, id, friends }, job, college, local: { primaryStreet: { address, location, placeId } } } = editable ? activeUser : selectedUser;
-        this.setState({ editable, first_name, last_name, gender, friends, id, job, college, location, address, placeId });
+        const { facebook: { first_name, last_name, gender, id, friends }, local: { primaryStreet, job, college } } = editable ? activeUser : selectedUser;
+        const { address, location, placeId } = primaryStreet || initialState.activeUser.primaryStreet;
+        this.setState({ editable, first_name, last_name, gender, friends, id, job, college, location, address, placeId, newAddress: address });
     }
 
     componentDidMount() {
-        this.updateState();
+        this.updateState(this.props);
+    }
+
+    createUsersStreet() {
+        const { activeUser: { local: { primaryStreet, streets } } } = this.props;
+        const placeId = primaryStreet ? primaryStreet.placeId : '';
+        return (
+            <select defaultValue={placeId} className='col-sm-12 custom-select' onChange={(e) => this.handleChange(e, 'newAddress')}>
+                {
+                    streets.map((street, i) => <option key={i} value={street.placeId}>{street.address}</option>)
+                }
+            </select>
+        );
+    }
+
+    onDateChange = (date) => {
+        this.setState({ dateOfBirth: date });
     }
 
     componentWillReceiveProps(nextProps) {
@@ -84,8 +108,16 @@ export default class Profile extends React.Component {
         this.setState({ [name]: e.target.value });
     }
 
+    onSaveClick = (e) => {
+        e.preventDefault();
+        const { updatedProfileSubmitted, activeUser: { _id } } = this.props;
+        const { first_name, last_name, gender, job, college, newAddress, dateOfBirth } = this.state;
+        updatedProfileSubmitted({ first_name, dateOfBirth, last_name, gender, job, college, newAddress, _id });
+    }
+
     render() {
-        const { user, first_name, last_name, friends, gender, id, job, college, address, location, placeId, editable } = this.state;
+        const { user, dateOfBirth, first_name, last_name, friends, gender, id, job, college, address, location, placeId, editable, empty } = this.state;
+        const { Strings } = this.props;
 
         const picturePath = `http://graph.facebook.com/${id}/picture?type=normal`;
         const linkToUserFacebook = `https://www.facebook.com/app_scoped_user_id/${id}`;
@@ -105,7 +137,7 @@ export default class Profile extends React.Component {
                             ><img className='n-profile-facebook-icon' alt='facebook' src={facebookicon} role='img' /></a>
                         </div>
                         <div className='page-header'>
-                            <h2>About</h2>
+                            <h2>{String.aboutTitle}</h2>
                         </div>
                         <form className='form-horizontal'>
                             <div className='form-group'>
@@ -158,16 +190,24 @@ export default class Profile extends React.Component {
                                 <div className='col-sm-6'>
                                     {
                                         editable ?
-                                            <textarea
-                                                className='form-control'
-                                                rows='1'
-                                                placeholder={Strings.noAddress}
-                                                onChange={(e) => this.handleChange(e, 'address')}
-                                                value={address}
-                                                required='true'
-                                            /> :
+                                            this.createUsersStreet() :
                                             <label className='col-sm-3 control-label slabel'>
                                                 {address}
+                                            </label>
+                                    }
+                                </div>
+                            </div>
+                            <div className='form-group'>
+                                <label
+                                    htmlFor='inputPassword3'
+                                    className='col-sm-3 control-label'
+                                >{Strings.dateOfBirthTitle}</label>
+                                <div className='col-sm-6'>
+                                    {
+                                        editable ?
+                                            <Datepicker onDateChange={this.onDateChange} /> :
+                                            <label className='col-sm-3 control-label slabel'>
+                                                {dateOfBirth}
                                             </label>
                                     }
                                 </div>
@@ -179,41 +219,43 @@ export default class Profile extends React.Component {
                                 >{Strings.gender}</label>
                                 {
                                     editable ?
-                                    <div className='col-sm-6'>
-                                        <label
-                                            htmlFor='inputPassword3'
-                                            className='radio-inline'
-                                        ><input
-                                            type='radio'
-                                            name='gender'
-                                            value='male'
-                                            checked={gender === 'male'}
-                                            onChange={(e) => this.handleChange(e, 'gender')}
-                                        />
-                                            Male
-                                        </label>
-                                        <label
-                                            htmlFor='inputPassword3'
-                                            className='radio-inline'
-                                        ><input
-                                            type='radio'
-                                            name='gender'
-                                            value='female'
-                                            checked={gender === 'female'}
-                                            onChange={(e) => this.handleChange(e, 'gender')}
-                                        />
-                                            Female
-                                        </label>
-                                    </div> :
-                                    <div className='col-sm-6'>
-                                        <label className='col-sm-3 control-label slabel'>
-                                            {gender}
-                                        </label>
-                                    </div>
+                                        <div className='col-sm-3 txtleft'>
+                                            <div>
+                                                <label
+                                                    htmlFor='inputPassword3'
+                                                    className='radio-inline'
+                                                ><input
+                                                    type='radio'
+                                                    name='gender'
+                                                    value='male'
+                                                    checked={gender === 'male'}
+                                                    onChange={(e) => this.handleChange(e, 'gender')}
+                                                />
+                                                    {Strings.male}
+                                                </label>
+                                                <label
+                                                    htmlFor='inputPassword3'
+                                                    className='radio-inline'
+                                                ><input
+                                                    type='radio'
+                                                    name='gender'
+                                                    value='female'
+                                                    checked={gender === 'female'}
+                                                    onChange={(e) => this.handleChange(e, 'gender')}
+                                                />
+                                                    {Strings.female}
+                                                </label>
+                                            </div>
+                                        </div> :
+                                        <div className='col-sm-6'>
+                                            <label className='col-sm-3 control-label slabel'>
+                                                {gender}
+                                            </label>
+                                        </div>
                                 }
                             </div>
                             <div className='page-header'>
-                                <h2>Work and Education</h2>
+                                <h2>{Strings.workAndEducationTitle}</h2>
                             </div>
                             <div className='form-group'>
                                 <label
@@ -229,10 +271,9 @@ export default class Profile extends React.Component {
                                                 placeholder={Strings.jobPlaceHolder}
                                                 onChange={(e) => this.handleChange(e, 'job')}
                                                 value={job}
-                                                required='true'
                                             /> :
                                             <label className='col-sm-3 control-label slabel'>
-                                                {job}
+                                                {job || empty}
                                             </label>
                                     }
                                 </div>
@@ -251,10 +292,9 @@ export default class Profile extends React.Component {
                                                 placeholder={Strings.collegePlaceHolder}
                                                 onChange={(e) => this.handleChange(e, 'college')}
                                                 value={college}
-                                                required='true'
                                             /> :
                                             <label className='col-sm-3 control-label slabel'>
-                                                {college}
+                                                {college || empty}
                                             </label>
                                     }
                                 </div>
@@ -266,8 +306,9 @@ export default class Profile extends React.Component {
                                             <button
                                                 type='submit'
                                                 className='n-mystreet__add-street-btn btn btn-default'
+                                                onClick={this.onSaveClick}
                                             >
-                                                Save
+                                                {Strings.saveBtn}
                                             </button>
                                         </div> : null
                                 }
@@ -277,7 +318,7 @@ export default class Profile extends React.Component {
                 </div>
                 <div className='page-header'>
                     {
-                        editable ? <h2>Your Friends</h2> : <h2>{first_name+"'s"} Friends</h2>
+                        editable ? <h2>{Strings.yourFriendsTitle}</h2> : <h2>{first_name+"'s"} Friends</h2>
                     }
                 </div>
                 <div className='col-md-12'>

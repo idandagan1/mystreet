@@ -2,6 +2,7 @@ import createReducer from 'util/create-reducer';
 import postActionTypes from 'actions/post-action-types';
 import myStreetsActionTypes from 'actions/my-streets-action-types';
 import headerActionTypes from 'views/header/state/header-action-types';
+import appActionTypes from 'actions/app-action-types';
 
 const initialState = {
     newPost: {
@@ -10,6 +11,7 @@ const initialState = {
         createdDate: '',
     },
     postsfeed: [],
+    Strings: {},
 };
 
 export default createReducer(initialState, {
@@ -23,6 +25,15 @@ export default createReducer(initialState, {
         return {
             ...state,
             postsfeed: newPostsfeed,
+        };
+    },
+
+    [appActionTypes.SET_LANGUAGE](state, action) {
+        const { data: Strings } = action;
+
+        return {
+            ...state,
+            Strings,
         };
     },
 
