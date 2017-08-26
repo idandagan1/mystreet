@@ -137,7 +137,7 @@ export default class Profile extends React.Component {
                             ><img className='n-profile-facebook-icon' alt='facebook' src={facebookicon} role='img' /></a>
                         </div>
                         <div className='page-header'>
-                            <h2>{String.aboutTitle}</h2>
+                            <h2>{Strings.aboutTitle}</h2>
                         </div>
                         <form className='form-horizontal'>
                             <div className='form-group'>
