@@ -48,3 +48,8 @@
         display: inline-block;
     }
 }
+
+.x-rtl .n-google-search-form input{
+    text-align: right;
+    direction: rtl;
+}

@@ -1,7 +1,7 @@
 module.exports = {
     search: 'חפש',
     post: 'שלח',
-    postPlaceholder: 'שתף אותנו',
+    postPlaceholder: 'שתף אותנו ',
     findMyStreet: 'חפש רחוב...',
     writeComment: 'הגב',
     hello: 'שלום',
@@ -34,12 +34,12 @@ module.exports = {
     noAddress: 'אין כתובת עדיין',
     moreBtn: 'עוד',
     saveBtn: 'שמור',
-    postsFeedBtn: 'Postsfeed',
+    postsFeedBtn: 'פוסטים',
     maxStreetMsg: 'ניתן להרשם עד 4 רחובות',
     jobTitle: 'עבודה:',
     jobPlaceHolder: 'איפה אתה עובד',
     collegeTitle: 'לימודים:',
     collegePlaceHolder: 'איפה למדת',
     dateOfBirthTitle: 'תאריך לידה:',
-    lang: 'English',
+    language: 'he',
 };

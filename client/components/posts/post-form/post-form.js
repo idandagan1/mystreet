@@ -50,12 +50,12 @@ export default class PostForm extends React.Component {
                             ref={imagepath => { this.imagepath = imagepath; }}
                             value={this.state.imageurl}
                         />
-                        <div className='panel-body'>
+                        <div className='panel-body n-post-form'>
                             <div className='form-group'>
                                 <textarea
                                     ref={formfield => { this.formfield = formfield; }}
                                     className='form-control input-lg n-postform-textarea'
-                                    placeholder={Strings.postPlaceholder+username}
+                                    placeholder={Strings.postPlaceholder + username}
                                     required='true'
                                 />
                             </div>

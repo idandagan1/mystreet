@@ -41,4 +41,5 @@ module.exports = {
     collegeTitle: 'College:',
     collegePlaceHolder: 'Where did you study',
     dateOfBirthTitle: 'Date Of Birth:',
+    language: 'en',
 };

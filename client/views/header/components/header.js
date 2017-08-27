@@ -15,37 +15,21 @@ export default function Header(props) {
 
     function onLanguageChange(e) {
         const { setLanguage } = props;
-        utils.setCookie('language', e.target.getAttribute('value'));
-        setLanguage(e.target.getAttribute('value'));
+        utils.setCookie('language', e.target.value);
+        setLanguage(e.target.value);
     }
 
     function getLanguages() {
-        const { country } = props;
-
-        return country !== 'en' ?
-        (
-            <li>
-                <div className='n-lang btn-group' role='group' aria-label='...'>
-                    <button
-                        value='en'
-                        type='button'
-                        className='btn btn-default'
-                        onClick={onLanguageChange}
-                    >English</button>
-                    {getUserLocation()}
-                </div>
-            </li>
-        ) : null;
-    }
-
-    function getUserLocation() {
-        const { country } = props;
-        switch (country) {
-            case 'IL':
-                return <button value='he' type='button' className='btn btn-default' onClick={onLanguageChange}>עברית</button>
-            default:
-                return '';
-        }
+        return (
+            <select
+                value={Strings.language}
+                className='custom-select n-lang'
+                onChange={onLanguageChange}
+            >
+                <option value='en'>English</option>
+                <option value='he'>עברית</option>
+            </select>
+        );
     }
 
     return (
@@ -79,7 +63,7 @@ export default function Header(props) {
                         }
 
                         <li><Link to='/business'>{Strings.businessTitle}</Link></li>
-                        {getLanguages()}
+                        <li className='n-lang'>{getLanguages()}</li>
                         <li className='n-search-street-header'>
                             <SearchStreet
                                 Strings={Strings}
@@ -88,7 +72,7 @@ export default function Header(props) {
                         </li>
                     </ul>
 
-                    <ul className='nav navbar-nav navbar-right'>
+                    <ul className='n-profile-login nav navbar-nav navbar-right'>
                         {
                             isAuthenticated ?
                                 <ProfileButton

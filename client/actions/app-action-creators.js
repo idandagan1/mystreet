@@ -60,10 +60,12 @@ function getStrings(lang) {
     }
 
     if (lang.includes('en')) {
+        document.body.classList.remove('x-rtl');
         return require('../resources/languages/en');
     }
 
     if (lang.includes('he')) {
+        document.body.classList.add('x-rtl');
         return require('../resources/languages/he');
     }
 
