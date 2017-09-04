@@ -6,6 +6,9 @@ class CommentForm extends React.Component {
     static propTypes = {
         displayWriter: PropTypes.func,
         displayComment: PropTypes.func,
+        Strings: PropTypes.shape({
+            search: PropTypes.string,
+        }),
     };
 
     constructor(props) {
@@ -35,9 +38,8 @@ class CommentForm extends React.Component {
     }
 
     render() {
-
+        const { Strings } = this.props;
         return (
-
             <div className='panel-footer n-comment-footer'>
                 <div className='row'>
                     <div className='col-lg-12'>

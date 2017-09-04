@@ -66,7 +66,7 @@ export default class Profile extends React.Component {
             job: '',
             college: '',
             id: '',
-            empty: '',
+            empty: 'empty',
             friends: [],
             ...initialState.activeUser.primaryStreet,
         };
@@ -143,9 +143,9 @@ export default class Profile extends React.Component {
                             <div className='form-group'>
                                 <label
                                     htmlFor='inputEmail3'
-                                    className='col-sm-3 control-label'
+                                    className='col-sm-5 control-label'
                                 >{Strings.firstName}</label>
-                                <div className='col-sm-6'>
+                                <div className='col-sm-3'>
                                     {
                                         editable ?
                                             <textarea
@@ -164,9 +164,9 @@ export default class Profile extends React.Component {
                             <div className='form-group'>
                                 <label
                                     htmlFor='inputPassword3'
-                                    className='col-sm-3 control-label'
+                                    className='col-sm-5 control-label'
                                 >{Strings.lastName}</label>
-                                <div className='col-sm-6'>
+                                <div className='col-sm-3'>
                                     {
                                         editable ?
                                             <textarea
@@ -185,13 +185,13 @@ export default class Profile extends React.Component {
                             <div className='form-group'>
                                 <label
                                     htmlFor='inputPassword3'
-                                    className='col-sm-3 control-label'
+                                    className='col-sm-5 control-label'
                                 >{Strings.address}</label>
-                                <div className='col-sm-6'>
+                                <div className='col-sm-3'>
                                     {
                                         editable ?
                                             this.createUsersStreet() :
-                                            <label className='col-sm-3 control-label slabel'>
+                                            <label className='col-sm-7 control-label slabel'>
                                                 {address}
                                             </label>
                                     }
@@ -200,14 +200,14 @@ export default class Profile extends React.Component {
                             <div className='form-group'>
                                 <label
                                     htmlFor='inputPassword3'
-                                    className='col-sm-3 control-label'
+                                    className='col-sm-5 control-label'
                                 >{Strings.dateOfBirthTitle}</label>
-                                <div className='col-sm-6'>
+                                <div className='col-sm-3'>
                                     {
                                         editable ?
                                             <Datepicker onDateChange={this.onDateChange} /> :
-                                            <label className='col-sm-3 control-label slabel'>
-                                                {dateOfBirth}
+                                            <label className='col-sm-7 control-label slabel'>
+                                                20/03/89
                                             </label>
                                     }
                                 </div>
@@ -215,11 +215,11 @@ export default class Profile extends React.Component {
                             <div className='form-group'>
                                 <label
                                     htmlFor='inputPassword3'
-                                    className='col-sm-3 control-label'
+                                    className='col-sm-5 control-label'
                                 >{Strings.gender}</label>
                                 {
                                     editable ?
-                                        <div className='col-sm-3 txtleft'>
+                                        <div className='col-sm-4 txtleft'>
                                             <div>
                                                 <label
                                                     htmlFor='inputPassword3'
@@ -247,8 +247,8 @@ export default class Profile extends React.Component {
                                                 </label>
                                             </div>
                                         </div> :
-                                        <div className='col-sm-6'>
-                                            <label className='col-sm-3 control-label slabel'>
+                                        <div className='col-sm-5'>
+                                            <label className='col-sm-7 control-label slabel'>
                                                 {gender}
                                             </label>
                                         </div>
@@ -260,9 +260,9 @@ export default class Profile extends React.Component {
                             <div className='form-group'>
                                 <label
                                     htmlFor='inputPassword3'
-                                    className='col-sm-3 control-label'
+                                    className='col-sm-5 control-label'
                                 >{Strings.jobTitle}</label>
-                                <div className='col-sm-6'>
+                                <div className='col-sm-3'>
                                     {
                                         editable ?
                                             <textarea
@@ -272,7 +272,7 @@ export default class Profile extends React.Component {
                                                 onChange={(e) => this.handleChange(e, 'job')}
                                                 value={job}
                                             /> :
-                                            <label className='col-sm-3 control-label slabel'>
+                                            <label className='col-sm-7 control-label slabel'>
                                                 {job || empty}
                                             </label>
                                     }
@@ -281,9 +281,9 @@ export default class Profile extends React.Component {
                             <div className='form-group'>
                                 <label
                                     htmlFor='inputPassword3'
-                                    className='col-sm-3 control-label'
+                                    className='col-sm-5 control-label'
                                 >{Strings.collegeTitle}</label>
-                                <div className='col-sm-6'>
+                                <div className='col-sm-3'>
                                     {
                                         editable ?
                                             <textarea
@@ -293,7 +293,7 @@ export default class Profile extends React.Component {
                                                 onChange={(e) => this.handleChange(e, 'college')}
                                                 value={college}
                                             /> :
-                                            <label className='col-sm-3 control-label slabel'>
+                                            <label className='col-sm-7 control-label slabel'>
                                                 {college || empty}
                                             </label>
                                     }

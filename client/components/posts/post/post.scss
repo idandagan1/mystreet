@@ -35,15 +35,13 @@ hr {
 
 .n-post-user-icon {
     display: inline-block;
-    margin: 0px 7px 0px 0px;
+    margin: 0px 7px;
     border-radius: 2px;
     float: left;
     width: 35px;
     height: 35px;
 }
-.x-rtl .n-post-user-icon {
-    margin: 0px 0px 0px 7px;
-}
+
 .n-post-user{
     font-size: 14px;
     font-weight: bold;

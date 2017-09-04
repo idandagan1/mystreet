@@ -9,6 +9,12 @@
     display: inline-block;
 }
 
+.x-rtl .n-comment-footer {
+    & input{
+      direction: rtl;
+    }
+}
+
 .n-btn-comment{
     font-size: 11px;
     color:#006bb3;

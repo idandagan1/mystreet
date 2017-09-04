@@ -33,6 +33,9 @@ class Post extends React.Component {
             createDate: PropTypes.date,
             comments: PropTypes.array,
         }),
+        Strings: PropTypes.shape({
+            search: PropTypes.string,
+        }),
         addCommentHandler: PropTypes.func.isRequired,
     }
 
@@ -97,7 +100,6 @@ class Post extends React.Component {
 
     render() {
         const { Strings, postContent: { body, createDate, author, comments } } = this.props;
-        const { formattedDate } = this.state;
         const picturePath = `http://graph.facebook.com/${author.facebook.id}/picture?type=normal`;
         const linkToUserFacebook = `https://www.facebook.com/app_scoped_user_id/${author.facebook.id}`;
 
@@ -151,6 +153,7 @@ class Post extends React.Component {
                         <div>{
                             this.state.showCommentForm ?
                                 <CommentForm
+                                    Strings={Strings}
                                     displayWriter={this.displayWriter}
                                     displayComment={this.displayComment}
                                 /> : '' }</div>

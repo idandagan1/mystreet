@@ -1,4 +1,5 @@
 import React from 'react';
+import $ from 'jquery';
 import './my-streets.scss';
 
 export default class Report extends React.Component {
@@ -9,6 +10,14 @@ export default class Report extends React.Component {
             selectedOption: 'option1',
             isOtherDisabled: true,
         };
+    }
+
+    onSubmit = e => {
+        e.preventDefault();
+        $('#msg-report').fadeIn('slow');
+        setTimeout(() => {
+            $('#msg-report').fadeOut();
+        }, 4000);
     }
 
     onRadioChange = e => {
@@ -23,7 +32,6 @@ export default class Report extends React.Component {
         return (
             <div className='modal fade' id='myModal' role='dialog'>
                 <div className='modal-dialog'>
-
                     <div className='modal-content'>
                         <div className='modal-header'>
                             <button type='button' className='close' data-dismiss='modal'>&times;</button>
@@ -75,7 +83,7 @@ export default class Report extends React.Component {
                             </form>
                         </div>
                         <div className='modal-footer'>
-                            <button type='button' className='btn btn-danger' data-dismiss='modal'>Report</button>
+                            <button type='button' className='btn btn-danger' data-dismiss='modal' onClick={this.onSubmit}>Report</button>
                         </div>
                     </div>
                 </div>
