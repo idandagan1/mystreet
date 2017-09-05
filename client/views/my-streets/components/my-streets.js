@@ -1,9 +1,12 @@
 import React, { PropTypes } from 'react';
 import { PostsFeed, Map } from 'components';
+import Cookies from 'universal-cookie';
 import StreetNearby from './streetNearby';
 import StreetDetails from './street-details';
 import Report from './report-form';
 import './my-streets.scss';
+
+const cookies = new Cookies();
 
 export default class MyStreets extends React.Component {
 
@@ -63,6 +66,7 @@ export default class MyStreets extends React.Component {
 
     onStreetClick = (street) => {
         const { searchStreetSubmitted, selectedStreet: { placeId } } = this.props;
+        cookies.set('st', placeId, { path: '/' });
         return placeId !== street.placeId ? searchStreetSubmitted(street) : null;
     }
 

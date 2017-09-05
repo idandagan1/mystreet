@@ -67,6 +67,8 @@ export default class GoogleSearch extends Component {
             <div className='n-google-search-form'>
                 <form onSubmit={this.handleSearchClicked} className='form-horizontal'>
                     <input
+                        dir='auto'
+                        id='googlesearchtxt'
                         type='text'
                         placeholder={Strings.findMyStreet}
                         autoComplete='off'

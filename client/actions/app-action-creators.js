@@ -1,3 +1,4 @@
+import Cookies from 'universal-cookie';
 import appActionTypes from './app-action-types';
 import userActionTypes from './user-action-types';
 import myStreetsActionTypes from './my-streets-action-types';
@@ -5,6 +6,8 @@ import * as streetApi from '../api/streets-api';
 import * as userApi from '../api/user-api';
 import * as appApi from '../api/app-api';
 import * as utils from '../util/utils';
+
+const cookies = new Cookies();
 
 export function appLoaded() {
     return (dispatch, getState) => {
@@ -84,9 +87,9 @@ function getActiveUserSuccededed({ activeUser }) {
             type: userActionTypes.LOGIN_SUCCEEDED,
             data: { ...activeUser },
         });
-
+        const lastPlaceId = cookies.get('st');
         if (activeUser.local.primaryStreet) {
-            streetApi.getStreetByPlaceId(activeUser.local.primaryStreet.placeId)
+            streetApi.getStreetByPlaceId(lastPlaceId || activeUser.local.primaryStreet.placeId)
                 .then(
                     response => dispatch(getStreetSuccededed(response)),
                     error => dispatch(getStreetFailed(error)),

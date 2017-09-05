@@ -1,6 +1,9 @@
 import React, { PropTypes } from 'react';
+import Cookies from 'universal-cookie';
 import Street from './street';
 import Member from './member';
+
+const cookies = new Cookies();
 
 export default function StreetDetails({ props }) {
 
@@ -61,6 +64,7 @@ export default function StreetDetails({ props }) {
 
     function onStreetClick(street) {
         const { searchStreetSubmitted, selectedStreet: { placeId } } = props;
+        cookies.set('st', street.placeId, { path: '/' });
         return placeId !== street.placeId ? searchStreetSubmitted(street) : null;
     }
 

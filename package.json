@@ -78,6 +78,7 @@
     "webpack-dev-server": "^1.14.1"
   },
   "devDependencies": {
-    "css-loader": "^0.23.1"
+    "css-loader": "^0.23.1",
+    "universal-cookie": "^2.1.0"
   }
 }
