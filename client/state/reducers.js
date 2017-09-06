@@ -4,3 +4,4 @@ export myStreets from './my-streets/my-streets-reducer';
 export user from './user/user-reducer';
 export postsfeed from './posts-feed/posts-feed-reducer';
 export post from './posts-feed/post-reducer';
+export business from './business/business-reducer';

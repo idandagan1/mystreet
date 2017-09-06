@@ -61,7 +61,6 @@ export default function Header(props) {
                                 <li><Link to='/mystreets'>{Strings.myStreetsTitle}</Link></li> :
                                 null
                         }
-
                         <li><Link to='/business'>{Strings.businessTitle}</Link></li>
                         <li className='n-lang'>{getLanguages()}</li>
                         <li className='n-search-street-header'>
@@ -71,7 +70,6 @@ export default function Header(props) {
                             />
                         </li>
                     </ul>
-
                     <ul className='n-profile-login nav navbar-nav navbar-right'>
                         {
                             isAuthenticated ?

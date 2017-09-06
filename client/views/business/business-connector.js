@@ -1,6 +1,7 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import * as businessActions from '../../actions/business-action-creators';
 import Business from './components/business';
 
 function select(state) {
@@ -8,6 +9,7 @@ function select(state) {
         ...state.myStreets,
         isAuthenticated: state.app.isAuthenticated,
         activeUser: state.user,
+        ...state.business,
     };
 }
 
@@ -17,6 +19,7 @@ function BusinessConnector(props) {
     return (
         <Business
             {...props}
+            {...bindActionCreators(businessActions, dispatch)}
         />
     );
 }

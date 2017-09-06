@@ -37,6 +37,7 @@ class Map extends Component {
             isMapInitialized: PropTypes.bool,
         }),
         mapInitialized: PropTypes.func.isRequired,
+        radius: PropTypes.number,
     };
 
     constructor(props) {
@@ -89,7 +90,7 @@ class Map extends Component {
         this.setState({ markers: [] });
     }
 
-    setUsersMarkerOnMap = (users) => {
+    setUsersMarkerOnMap = (users, showCircle) => {
 
         if (!users) {
             return;
@@ -172,18 +173,35 @@ class Map extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        const { lat, lng, placeId } = this.props;
-        const { lat: nextLat, lng: nextLng, placeId: nextPlace } = nextProps;
+        const { lat, lng, placeId, users: oldUsers, radius } = this.props;
+        const { lat: nextLat, lng: nextLng, placeId: nextPlace, users,radius: newRadius } = nextProps;
 
-        return lat !== nextLat || lng !== nextLng || placeId !== nextPlace;
+        return lat !== nextLat || lng !== nextLng || placeId !== nextPlace || (users && oldUsers.length !== users.length) || radius !== newRadius;
     }
 
     componentDidUpdate(prevProps, prevState) {
-        const { lat, lng, friends, selectedUser, placeId } = this.props;
+        const { lat, lng, friends, selectedUser, placeId, users: NewUsers, radius, mapSettings } = this.props;
         const users = selectedUser ? [selectedUser, ...friends] : friends;
 
-        this.setMap(lat, lng, placeId);
-        this.setUsersMarkerOnMap(users);
+        // if (radius) {
+        //     this.cityCircle = new google.maps.Circle({
+        //         strokeColor: '#FF0000',
+        //         strokeOpacity: 0.8,
+        //         strokeWeight: 2,
+        //         fillColor: '#FF0000',
+        //         fillOpacity: 0.35,
+        //         map: this.map,
+        //         center: mapSettings.location,
+        //         radius: Number(radius),
+        //     });
+        // }
+
+        if (NewUsers) {
+            this.setUsersMarkerOnMap(NewUsers, true);
+        } else {
+            this.setMap(lat, lng, placeId);
+            this.setUsersMarkerOnMap(users);
+        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -194,7 +212,7 @@ class Map extends Component {
     }
 
     componentDidMount() {
-        const { lat, lng, placeId, mapSettings } = this.props;
+        const { lat, lng, placeId, mapSettings, radius } = this.props;
 
         this.mapOptions = {
             center: { lat, lng },
@@ -207,6 +225,19 @@ class Map extends Component {
         this.map = new google.maps.Map(this.mainMap, this.mapOptions);
         this.marker = new google.maps.Marker({ map: this.map });
         this.service = new google.maps.places.PlacesService(this.map);
+
+        // if (radius) {
+        //     this.cityCircle = new google.maps.Circle({
+        //         strokeColor: '#FF0000',
+        //         strokeOpacity: 0.8,
+        //         strokeWeight: 2,
+        //         fillColor: '#FF0000',
+        //         fillOpacity: 0.35,
+        //         map: this.map,
+        //         center: mapSettings.location,
+        //         radius: Number(radius),
+        //     });
+        // }
 
         if (!placeId) {
             mapSettings.isMapInitialized ?

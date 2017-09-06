@@ -88,6 +88,36 @@ router.get('/getFriends', (req, res) => {
     });
 });
 
+router.get('/getUsersByRadius', (req, res) => {
+    const { radius } = req.query;
+    const coords = JSON.parse(req.query.coords);
+
+    Street.find(
+        {
+            location: {
+                $near: {
+                    $geometry: {
+                        type: 'Point',
+                        coordinates: coords,
+                    },
+                    $maxDistance: (radius * 100),
+                    $minDistance: 10,
+                },
+            },
+        })
+        .lean()
+
+        .populate([{
+            path: 'members',
+            populate: ['local.primaryStreet'],
+        }, 'local.streets', 'local.primaryStreet'])
+
+        .then(streets => {
+            const users = streets.map(street => street.members);
+            res.send(users);
+        });
+});
+
 router.get('/getUserById', (req, res) => {
     const { userId } = req.query;
     User.findOne({ 'facebook.id': userId })
@@ -98,7 +128,7 @@ router.get('/getUserById', (req, res) => {
         .then(populateuser => {
             res.status(200).send({ selectedUser: populateuser });
         });
-})
+});
 
 router.post('/login/facebook', (req, res) => {
     const { id, name, first_name, last_name, gender, accessToken: token } = req.body;
