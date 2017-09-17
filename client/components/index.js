@@ -5,4 +5,3 @@ export PostsFeed from './posts/posts-feed/posts-feed';
 export Profile from '../views/profile/components/profile';
 export SearchStreet from './search-street/search-street';
 export Datepicker from './datepicker/datepicker';
-export Footer from './footer/footer';

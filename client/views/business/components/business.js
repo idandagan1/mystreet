@@ -21,13 +21,27 @@ export default class Business extends React.Component {
 
     }
 
+    groupByUsers(xs) {
+        if (Object.keys(xs).length === 0 && xs.constructor === Object) {
+            return;
+        }
+        return xs.reduce((rv, x) => {
+            if (rv[x.facebook.id]) {
+                return rv;
+            } else {
+                rv[x.facebook.id] = x;
+            }
+            return rv;
+        }, []);
+    }
+
     componentWillReceiveProps(nextProps) {
         const { users } = this.props;
         const arr = [];
         for (const user of users) {
             arr.push(...user);
         }
-        this.setState({ numOfNeighbors: arr.length, users: arr });
+        this.setState({ numOfNeighbors: arr.length, users: this.groupByUsers(arr) });
     }
 
     handleChange = e => {
@@ -38,7 +52,7 @@ export default class Business extends React.Component {
 
     render() {
         const { radius, numOfNeighbors, users } = this.state;
-        const { activeUser: { activeUser: { local: { primaryStreet: { location } } } } } = this.props;
+        const { activeUser: { activeUser: { local: { primaryStreet: { location, placeId } } } } } = this.props;
         return (
             <div className='n-business'>
                 <h1>Invite your neighbors</h1>
@@ -68,11 +82,7 @@ export default class Business extends React.Component {
                         onMouseUp={this.handleChange}
                     />
                 </div>
-                <label
-                    htmlFor='inputPassword3'
-                    className='control-label'
-                >Number of neighbors: {numOfNeighbors}</label>
-                <Map users={users} radius={radius} lat={location[1]} lng={location[0]} />
+                <Map users={users} radius={Number(radius)} lat={location[1]} lng={location[0]} placeId={placeId} />
                 <div id='postBtn'>
                     <button
                         type='submit'

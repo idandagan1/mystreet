@@ -19,7 +19,7 @@ function AppConnector(props) {
             <div className='n-msg-wrapper'>
                 <div id='msg-report'>
                     Thanks for your report!
-                    Out team will handle this.
+                    Our team will handle this.
                 </div>
             </div>
             {children}
