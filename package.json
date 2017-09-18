@@ -5,8 +5,8 @@
     "build": "npm run clean && npm run build:prod && npm run build:server && npm run start",
     "build:server": "webpack --config webpack.config.babel.js webpack.config.server.js",
     "build:prod": "NODE_ENV=production webpack --config webpack.config.babel.js",
-    "start": "nodemon servers.js --exec babel-node --presets es2015,stage-2",
-    "start:prod": "NODE_ENV=production node index.js",
+    "start": "./node_modules/babel-cli/bin/babel-node.js servers.js",
+    "start:dev": "node servers.js --exec babel-node --presets es2015,stage-2",
     "start-client": "nodemon ./client/dev-server.js --exec babel-node --presets es2015,stage-2",
     "start-server": "nodemon ./server/server.js --exec babel-node --presets es2015,stage-2",
     "clean": "rimraf dist"
