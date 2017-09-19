@@ -13,7 +13,7 @@ const port = process.env.PORT || SERVER_DEV_PORT;
 const app = express();
 const env = process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
-mongoose.connect('mongodb://emma:Aa123123@ds127949.mlab.com:27949/mystreetdb');
+mongoose.connect('mongodb://emma:Aa123123@ds157233.mlab.com:57233/mstreet');
 
 // if (env === 'development') {
 //     mongoose.connect('mongodb://localhost/mystreet');

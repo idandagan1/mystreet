@@ -1,10 +1,10 @@
-import path from 'path';
-import webpack from 'webpack';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
+var path = require('path');
+var webpack = require('webpack');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
 
-export default {
+module.exports = {
     entry: [
-        'webpack-dev-server/client?http://localhost:8000/',
+        'webpack-dev-server/client?mystreet-project.herokuapp.com',
         './client/entry.js',
     ],
 
