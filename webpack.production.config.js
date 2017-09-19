@@ -1,31 +1,22 @@
-import path from 'path';
-import webpack from 'webpack';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
-import CleanWebpackPlugin from 'clean-webpack-plugin';
+var path = require('path');
+var webpack = require('webpack');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
+var CleanWebpackPlugin = require('clean-webpack-plugin');
 
-export default {
+module.exports = {
     entry: './client/entry.js',
 
     output: {
         filename: 'application.js',
         path: path.join(__dirname, '/dist'),
-        publicPath: '/',
     },
 
     plugins: [
-        new CleanWebpackPlugin(['dist']),
         new HtmlWebpackPlugin({
             title: 'MyStreet',
             filename: 'index.html',
             template: './client/index.html',
-        }),
-        new webpack.optimize.CommonsChunkPlugin({
-            name: 'vendor',
-        }),
-        new webpack.DefinePlugin({
-            'process.env': {
-                NODE_ENV: JSON.stringify('production'),
-            },
+            favicon: './client/resources/images/favicon.ico',
         }),
     ],
 
@@ -54,23 +45,23 @@ export default {
                 loader: 'babel-loader',
                 test: /\.js$/,
                 exclude: /node_modules/,
+                query: {
+                    presets: ['es2015', 'react', 'stage-0'],
+                },
             },
             {
                 loader: 'style!css!sass',
                 test: /\.scss$/i,
             },
             {
-                test: /\.(?:png|svg|ico|jpe?g)$/i,
+                test: /\.(?:png|svg|jpe?g|ico)$/i,
                 loader: 'file-loader',
                 query: { name: 'images/[name].[ext]' },
             },
             {
-                test: /\.html$/,
-                loader: 'html-loader?attrs[]=video:src',
-            },
-            {
-                test: /\.mp4$/,
-                loader: 'url-loader?limit=10000&mimetype=video/mp4',
+                test: /\.(?:mp4)$/i,
+                loader: 'file-loader',
+                query: { name: 'videos/[name].[ext]' },
             },
         ],
     },
