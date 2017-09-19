@@ -1,6 +1,6 @@
 import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
-import config from '../webpack.development.config';
+import config from '../webpack.production.config';
 
 const CLIENT_DEV_PORT = process.env.PORT || 8000;
 
