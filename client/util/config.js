@@ -1,4 +1,4 @@
-const apiUrl = 'http://localhost:8001';
+const apiUrl = 'http://mystreet-project.herokuapp.com:8001';
 
 export default {
     user: `${apiUrl}/user`,

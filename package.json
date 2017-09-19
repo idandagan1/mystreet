@@ -6,7 +6,7 @@
     "build:server": "webpack --config webpack.config.babel.js webpack.config.server.js",
     "build:prod": "NODE_ENV=production webpack --config webpack.config.babel.js",
     "postinstall": "webpack -p --config ./webpack.production.config.js",
-    "start": "./node_modules/babel-cli/bin/babel-node.js servers.js",
+    "start": "NODE_ENV=production ./node_modules/babel-cli/bin/babel-node.js servers.js",
     "start-client": "nodemon ./client/dev-server.js --exec babel-node --presets es2015,stage-2",
     "start-server": "nodemon ./server/server.js --exec babel-node --presets es2015,stage-2",
     "clean": "rimraf dist"
