@@ -12,6 +12,7 @@ module.exports = {
     },
 
     plugins: [
+        new CleanWebpackPlugin(['dist']),
         new HtmlWebpackPlugin({
             title: 'MyStreet',
             filename: 'index.html',
