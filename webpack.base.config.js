@@ -6,8 +6,6 @@ var DIST_DIR = path.join(__dirname, 'dist'),
 module.exports = {
     context: CLIENT_DIR,
 
-    entry: './main',
-
     output: {
         path: DIST_DIR,
         filename: 'bundle.js',
