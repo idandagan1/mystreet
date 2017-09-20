@@ -4,9 +4,8 @@ var DIST_DIR = path.join(__dirname, 'dist'),
     CLIENT_DIR = path.join(__dirname, 'client');
 
 module.exports = {
-    context: CLIENT_DIR,
 
-    entry: './entry.js',
+    entry: './client/entry.js',
 
     output: {
         path: DIST_DIR,

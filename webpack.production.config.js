@@ -13,8 +13,8 @@ baseConfig.plugins = [
     new HtmlWebpackPlugin({
         title: 'MyStreet',
         filename: 'index.html',
-        template: './index.html',
-        favicon: './resources/images/favicon.ico',
+        template: './client/index.html',
+        favicon: './client/resources/images/favicon.ico',
     }),
 ];
 

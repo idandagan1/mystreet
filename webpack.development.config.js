@@ -4,7 +4,7 @@ var devConfig = require('./webpack.base.config.js');
 
 devConfig.entry = [
     'webpack-dev-server/client?http://localhost:8000/',
-    './entry.js',
+    './client/entry.js',
 ];
 
 devConfig.output.publicPath = '/';
@@ -16,8 +16,8 @@ devConfig.plugins = [
     new HtmlWebpackPlugin({
         title: 'MyStreet',
         filename: 'index.html',
-        template: './index.html',
-        favicon: './resources/images/favicon.ico',
+        template: './client/index.html',
+        favicon: './client/resources/images/favicon.ico',
     }),
 ];
 
