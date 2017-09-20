@@ -1,71 +1,14 @@
-var path = require('path');
 var webpack = require('webpack');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var CleanWebpackPlugin = require('clean-webpack-plugin');
+var baseConfig = require('./webpack.base.config.js');
 
-module.exports = {
-    entry: './client/entry.js',
+baseConfig.devtool = 'cheap-module-source-map';
 
-    output: {
-        filename: 'application.js',
-        path: path.join(__dirname, '/dist'),
-    },
+baseConfig.plugins = [
+    new webpack.DefinePlugin({
+        'process.env': {
+            NODE_ENV: JSON.stringify('production'),
+        },
+    }),
+];
 
-    plugins: [
-        new CleanWebpackPlugin(['dist']),
-        new HtmlWebpackPlugin({
-            title: 'MyStreet',
-            filename: 'index.html',
-            template: './client/index.html',
-            favicon: './client/resources/images/favicon.ico',
-        }),
-    ],
-
-    resolve: {
-        extensions: ['', '.js', '.jsx'],
-        root: [
-            path.resolve(__dirname, 'client'),
-            path.resolve(__dirname, 'node_modules'),
-        ],
-    },
-
-    resolveLoader: {
-        root: path.resolve(__dirname, 'node_modules'),
-    },
-
-    sassLoader: {
-        includePaths: [
-            path.resolve(__dirname, 'client'),
-            path.resolve(__dirname, 'node_modules'),
-        ],
-    },
-
-    module: {
-        loaders: [
-            {
-                loader: 'babel-loader',
-                test: /\.js$/,
-                exclude: /node_modules/,
-                query: {
-                    presets: ['es2015', 'react', 'stage-0'],
-                },
-            },
-            {
-                loader: 'style!css!sass',
-                test: /\.scss$/i,
-            },
-            {
-                test: /\.(?:png|svg|jpe?g|ico)$/i,
-                loader: 'file-loader',
-                query: { name: 'images/[name].[ext]' },
-            },
-            {
-                test: /\.(?:mp4)$/i,
-                loader: 'file-loader',
-                query: { name: 'videos/[name].[ext]' },
-            },
-        ],
-    },
-
-    devtool: 'eval',
-};
+module.exports = baseConfig;

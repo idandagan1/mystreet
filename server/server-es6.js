@@ -1,25 +1,39 @@
 import express from 'express';
+import path from 'path';
 import bodyParser from 'body-parser';
 import log from 'morgan';
 import mongoose from 'mongoose';
 import connectMongo from 'connect-mongo';
 import session from 'express-session';
 import expressValidator from 'express-validator';
+import webpack from 'webpack';
+import WebpackDevServer from 'webpack-dev-server';
+import * as devConfig from '../webpack.development.config';
 import routes from './routes/';
 
 const MongoStore = connectMongo(session);
 const SERVER_DEV_PORT = 8001;
 const port = process.env.PORT || SERVER_DEV_PORT;
 const app = express();
-const env = process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
-mongoose.connect('mongodb://emma:Aa123123@ds157233.mlab.com:57233/mstreet');
+const DIST_DIR = path.join(__dirname, 'dist'),
+    HTML_FILE = path.join(DIST_DIR, 'index.html'),
+    isDevelopment = process.env.NODE_ENV !== 'production',
+    CLIENT_DEV_PORT = process.env.PORT || 8000;
 
-// if (env === 'development') {
-//     mongoose.connect('mongodb://localhost/mystreet');
-// } else {
-//     mongoose.connect('mongodb://emma:Aa123123@ds127949.mlab.com:27949/mystreetdb');
-// }
+if (isDevelopment) {
+    mongoose.connect('mongodb://localhost/mystreet');
+    new WebpackDevServer(webpack(devConfig), { historyApiFallback: true }).listen(CLIENT_DEV_PORT, startServerCallback);
+} else {
+    mongoose.connect('mongodb://emma:Aa123123@ds127949.mlab.com:27949/mystreetdb');
+    app.use(express.static(DIST_DIR));
+    app.get('*', (req, res) => res.sendFile(HTML_FILE));
+}
+
+function startServerCallback(err, result) {
+    if (err) console.error(err);
+    console.log(`Listening at http://localhost:${CLIENT_DEV_PORT}/`);
+}
 
 app.use(session({
     secret: 'keyboard cat',
