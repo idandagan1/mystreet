@@ -3,10 +3,10 @@
   "version": "1.0.1",
   "scripts": {
     "build": "better-npm-run build",
-    "build:server": "babel ./server/server-es6.js --out-file ./server/server.js",
+    "build:server": "babel ./server/server-es6.js -o ./server/server.js",
     "build:client": "NODE_ENV=production webpack -p --config webpack.production.config.js --progress",
     "postinstall": "npm run build",
-    "start": "babel-node ./server/server.js",
+    "start": "babel-node ./server/server-es6.js",
     "start-client": "nodemon ./client/dev-server.js --exec babel-node --presets es2015,stage-2",
     "start-server": "nodemon ./server/server.js --exec babel-node --presets es2015,stage-2",
     "clean": "rimraf dist/* && rimraf ./server/server.js"

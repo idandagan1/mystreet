@@ -6,6 +6,8 @@ var DIST_DIR = path.join(__dirname, 'dist'),
 module.exports = {
     context: CLIENT_DIR,
 
+    entry: './entry.js',
+
     output: {
         path: DIST_DIR,
         filename: 'bundle.js',
@@ -34,6 +36,11 @@ module.exports = {
                 query: {
                     presets: ['es2015', 'react', 'stage-0'],
                 },
+            },
+            {
+                test: /\.css$/,
+                exclude: /node_modules/,
+                loader: 'style-loader!css-loader!autoprefixer-loader',
             },
             {
                 loader: 'style!css!sass',

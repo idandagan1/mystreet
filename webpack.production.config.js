@@ -5,7 +5,6 @@ baseConfig.devtool = 'cheap-module-source-map';
 
 baseConfig.entry = {
     app: '../server/server.js',
-    vendor: ['react', 'react-dom', 'react-router'],
 }
 
 baseConfig.plugins = [
