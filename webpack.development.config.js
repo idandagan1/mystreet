@@ -20,6 +20,12 @@ devConfig.plugins = [
         template: './client/index.html',
         favicon: './client/resources/images/favicon.ico',
     }),
+    new webpack.DefinePlugin({
+        'process.env': {
+            NODE_ENV: JSON.stringify('development'),
+            SERVER_URL: JSON.stringify('http://localhost:8001'),
+        },
+    }),
 ];
 
 module.exports = devConfig;

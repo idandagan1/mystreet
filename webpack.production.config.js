@@ -8,6 +8,7 @@ baseConfig.plugins = [
     new webpack.DefinePlugin({
         'process.env': {
             NODE_ENV: JSON.stringify('production'),
+            SERVER_URL: JSON.stringify('https://mystreet.herokuapp.com:8001'),
         },
     }),
     new HtmlWebpackPlugin({

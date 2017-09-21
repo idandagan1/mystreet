@@ -22,16 +22,18 @@ const CLIENT_DEV_PORT = process.env.PORT || 8000;
 
 if (isDevelopment) {
     mongoose.connect('mongodb://localhost/mystreet');
+    process.env.url = 'http://localhost';
     new WebpackDevServer(webpack(devConfig), { historyApiFallback: true }).listen(CLIENT_DEV_PORT, startServerCallback);
 } else {
     mongoose.connect('mongodb://emma:Aa123123@ds143734.mlab.com:43734/mystreet');
+    process.env.url = 'https://mystreet.herokuapp.com';
     app.use(express.static(DIST_DIR));
     app.get('*', (req, res) => res.sendFile(HTML_FILE));
 }
 
 function startServerCallback(err, result) {
     if (err) console.error(err);
-    console.log(`Listening at http://localhost:${CLIENT_DEV_PORT}/`);
+    console.log(`Listening at ${process.env.url}:${CLIENT_DEV_PORT}/`);
 }
 
 app.use(session({
@@ -62,7 +64,5 @@ app.use(log('dev'));
 app.use(routes);
 
 const server = app.listen(port, () => {
-    console.log(`${process.env.NODE_ENV} server started on http://${process.env.IP}:${process.env.WEB_PORT}`);
+    console.log(`${process.env.NODE_ENV} server started on ${process.env.url}:${SERVER_DEV_PORT}`);
 });
-
-/*./mongod --bind_ip localhost*/
