@@ -17,7 +17,7 @@ const port = config.port || 8000;
 const app = express();
 const DIST_DIR = path.join(__dirname, '../dist');
 const HTML_FILE = path.join(DIST_DIR, 'index.html');
-const isDevelopment = config !== 'production';
+const isDevelopment = config.env !== 'production';
 
 mongoose.connect(config.db);
 process.env.url = config.url;
@@ -25,7 +25,6 @@ process.env.url = config.url;
 if (isDevelopment) {
     new WebpackDevServer(webpack(devConfig), { historyApiFallback: true }).listen(config.clientport, startServerCallback);
 } else {
-    console.log('port: ', port);
     app.use(express.static(DIST_DIR));
     app.get('*', (req, res) => res.sendFile(HTML_FILE));
 }
