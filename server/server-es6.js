@@ -64,5 +64,5 @@ app.use(log('dev'));
 app.use(routes);
 
 const server = app.listen(port, () => {
-    console.log(`${process.env.NODE_ENV} server started on ${process.env.url}:${SERVER_DEV_PORT}`);
+    console.log(`${process.env.NODE_ENV} server started on ${process.env.url}:${port}`);
 });
