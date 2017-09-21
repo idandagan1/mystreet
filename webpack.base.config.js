@@ -5,11 +5,20 @@ var DIST_DIR = path.join(__dirname, 'dist'),
 
 module.exports = {
 
-    entry: './client/entry.js',
+    entry: {
+        app: [
+            './client/entry.js',
+        ],
+        vendor: [
+            'react',
+            'react-dom',
+        ],
+    },
 
     output: {
         path: DIST_DIR,
-        filename: 'bundle.js',
+        filename: '[name].[chunkhash].js',
+        publicPath: '/',
     },
 
     devtool: 'inline-source-map',
@@ -29,7 +38,7 @@ module.exports = {
 
         loaders: [
             {
-                loader: 'babel-loader',
+                loader: 'babel',
                 test: /\.js$/,
                 exclude: /node_modules/,
                 query: {

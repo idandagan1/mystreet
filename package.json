@@ -3,17 +3,17 @@
   "version": "1.0.1",
   "scripts": {
     "build": "better-npm-run build",
-    "build:server": "babel ./server/server-es6.js -o ./server/server.js",
+    "build:es6": "babel ./server/server-es6.js -o ./server/server.js",
+    "build:server": "NODE_ENV=production webpack -p --config webpack.production.server.js --progress",
     "build:client": "NODE_ENV=production webpack -p --config webpack.production.config.js --progress",
     "postinstall": "npm run build",
-    "start": "babel-node ./server/server-es6.js",
-    "start-client": "nodemon ./client/dev-server.js --exec babel-node --presets es2015,stage-2",
-    "start-server": "nodemon ./server/server.js --exec babel-node --presets es2015,stage-2",
+    "start": "BABEL_DISABLE_CACHE=1 NODE_ENV=development nodemon index.js --exec babel-node --presets es2015,stage-2",
+    "start:prod": "NODE_ENV=production node index.js",
     "clean": "rimraf dist/* && rimraf ./server/server.js"
   },
   "betterScripts": {
     "build": {
-      "command": "npm run build:server && npm run build:client",
+      "command": "npm run build:es6 && npm run build:server && npm run build:client",
       "env": {
         "NODE_ENV": "production"
       }
@@ -57,7 +57,6 @@
     "eslint-plugin-react": "^6.0.0",
     "express": "^4.14.0",
     "express-session": "^1.14.2",
-    "aws-sdk": "2.x",
     "express-validator": "^2.21.0",
     "extract-text-webpack-plugin": "^0.9.1",
     "file-loader": "^0.9.0",

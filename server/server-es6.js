@@ -63,7 +63,7 @@ app.use(log('dev'));
 app.use(routes);
 
 const server = app.listen(port, () => {
-    console.log(`Server started on ${port}`);
+    console.log(`${process.env.NODE_ENV} server started on http://${process.env.IP}:${process.env.WEB_PORT}`);
 });
 
 /*./mongod --bind_ip localhost*/
