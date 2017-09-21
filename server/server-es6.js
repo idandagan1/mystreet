@@ -24,7 +24,7 @@ if (isDevelopment) {
     mongoose.connect('mongodb://localhost/mystreet');
     new WebpackDevServer(webpack(devConfig), { historyApiFallback: true }).listen(CLIENT_DEV_PORT, startServerCallback);
 } else {
-    mongoose.connect('mongodb://emma:Aa123123@ds127949.mlab.com:27949/mystreetdb');
+    mongoose.connect('mongodb://emma:Aa123123@ds143734.mlab.com:43734/mystreet');
     app.use(express.static(DIST_DIR));
     app.get('*', (req, res) => res.sendFile(HTML_FILE));
 }
