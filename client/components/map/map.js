@@ -174,7 +174,7 @@ class Map extends Component {
 
     shouldComponentUpdate(nextProps, nextState) {
         const { lat, lng, placeId, users: oldUsers, radius } = this.props;
-        const { lat: nextLat, lng: nextLng, placeId: nextPlace, users,radius: newRadius } = nextProps;
+        const { lat: nextLat, lng: nextLng, placeId: nextPlace, users, radius: newRadius } = nextProps;
 
         return lat !== nextLat || lng !== nextLng || placeId !== nextPlace || (users && oldUsers.length !== users.length) || radius !== newRadius;
     }
@@ -182,19 +182,6 @@ class Map extends Component {
     componentDidUpdate(prevProps, prevState) {
         const { lat, lng, friends, selectedUser, placeId, users: NewUsers, radius, mapSettings } = this.props;
         const users = selectedUser ? [selectedUser, ...friends] : friends;
-
-        // if (radius) {
-        //     this.cityCircle = new google.maps.Circle({
-        //         strokeColor: '#FF0000',
-        //         strokeOpacity: 0.8,
-        //         strokeWeight: 2,
-        //         fillColor: '#FF0000',
-        //         fillOpacity: 0.35,
-        //         map: this.map,
-        //         center: mapSettings.location,
-        //         radius: Number(radius),
-        //     });
-        // }
 
         if (NewUsers) {
             this.setUsersMarkerOnMap(NewUsers, true);
@@ -226,33 +213,18 @@ class Map extends Component {
         this.marker = new google.maps.Marker({ map: this.map });
         this.service = new google.maps.places.PlacesService(this.map);
 
-        // if (radius) {
-        //     this.cityCircle = new google.maps.Circle({
-        //         strokeColor: '#FF0000',
-        //         strokeOpacity: 0.8,
-        //         strokeWeight: 2,
-        //         fillColor: '#FF0000',
-        //         fillOpacity: 0.35,
-        //         map: this.map,
-        //         center: mapSettings.location,
-        //         radius: Number(radius),
-        //     });
-        // }
-
         if (!placeId) {
             mapSettings.isMapInitialized ?
                 this.setMap(mapSettings.location.lat, mapSettings.location.lng, mapSettings.placeId)
                 : this.initializeMap();
         } else {
-            this.forceUpdate();//this.setMap(lat, lng, placeId);
+            this.forceUpdate();
         }
 
         google.maps.event.addListener(this.map, 'click', () => {
             this.infowindow.isOpen = false;
             this.infowindow.close();
         });
-
-        //this.forceUpdate();
 
     }
 
