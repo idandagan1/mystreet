@@ -25,6 +25,7 @@ process.env.url = config.url;
 if (isDevelopment) {
     new WebpackDevServer(webpack(devConfig), { historyApiFallback: true }).listen(config.clientport, startServerCallback);
 } else {
+    console.log('port: ', config.port);
     app.use(express.static(DIST_DIR));
     app.get('*', (req, res) => res.sendFile(HTML_FILE));
 }
