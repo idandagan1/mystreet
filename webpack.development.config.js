@@ -1,6 +1,7 @@
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var devConfig = require('./webpack.base.config.js');
+var config = require('./server/config/config');
 
 devConfig.entry = [
     'webpack-dev-server/client?http://localhost:8000/',
@@ -23,7 +24,7 @@ devConfig.plugins = [
     new webpack.DefinePlugin({
         'process.env': {
             NODE_ENV: JSON.stringify('development'),
-            SERVER_URL: JSON.stringify('http://localhost:8001'),
+            SERVER_URL: JSON.stringify(`${config.url}:${config.port}`),
         },
     }),
 ];
