@@ -13,7 +13,7 @@ import * as config from './config/config';
 import routes from './routes/';
 
 const MongoStore = connectMongo(session);
-const port = config.port;
+const port = config.port || 8000;
 const app = express();
 const DIST_DIR = path.join(__dirname, '../dist');
 const HTML_FILE = path.join(DIST_DIR, 'index.html');
@@ -25,7 +25,7 @@ process.env.url = config.url;
 if (isDevelopment) {
     new WebpackDevServer(webpack(devConfig), { historyApiFallback: true }).listen(config.clientport, startServerCallback);
 } else {
-    console.log('port: ', config.port);
+    console.log('port: ', port);
     app.use(express.static(DIST_DIR));
     app.get('*', (req, res) => res.sendFile(HTML_FILE));
 }
