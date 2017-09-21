@@ -8,12 +8,12 @@
     "build:client": "NODE_ENV=production webpack -p --config webpack.production.config.js --progress",
     "postinstall": "npm run build",
     "start": "BABEL_DISABLE_CACHE=1 NODE_ENV=development nodemon index.js --exec babel-node --presets es2015,stage-2",
-    "start:prod": "NODE_ENV=production node index.js",
+    "start:prod": "NODE_ENV=production babel-node index.js",
     "clean": "rimraf dist/* && rimraf ./server/server.js"
   },
   "betterScripts": {
     "build": {
-      "command": "npm run build:es6 && npm run build:server && npm run build:client",
+      "command": "npm run build:es6 && npm run build:client",
       "env": {
         "NODE_ENV": "production"
       }

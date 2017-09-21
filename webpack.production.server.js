@@ -12,4 +12,24 @@ serverConfig.output = {
     filename: 'server.bundle.js',
 };
 
+serverConfig.module = {
+    loaders: [
+        {
+            test: /\.js$/,
+            exclude: /node_modules/,
+            loader: 'babel-loader',
+            query: {
+                presets: [
+                    'react',
+                    'es2015',
+                    'stage-0',
+                ],
+            },
+        }, {
+            test: /\.json$/,
+            loader: 'json-loader',
+        },
+    ],
+};
+
 module.exports = serverConfig;

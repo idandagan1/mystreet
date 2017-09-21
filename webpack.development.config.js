@@ -8,6 +8,7 @@ devConfig.entry = [
 ];
 
 devConfig.output.publicPath = '/';
+devConfig.output.filename = 'bundle.js';
 
 devConfig.plugins = [
     new webpack.optimize.OccurenceOrderPlugin(),
