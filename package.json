@@ -83,6 +83,7 @@
     "sass-loader": "^4.0.0",
     "style-loader": "^0.13.1",
     "underscore": "^1.8.3",
+    "universal-cookie": "^2.1.0",
     "url-loader": "^0.5.8",
     "webpack": "^1.13.1",
     "webpack-dev-server": "^1.14.1"
@@ -90,7 +91,6 @@
   "devDependencies": {
     "css-loader": "^0.23.1",
     "react-input-range": "^1.2.1",
-    "universal-cookie": "^2.1.0",
     "babel-plugin-webpack-loaders": "^0.7.0"
   }
 }
