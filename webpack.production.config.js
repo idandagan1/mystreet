@@ -9,9 +9,13 @@ baseConfig.plugins = [
     new webpack.DefinePlugin({
         'process.env': {
             NODE_ENV: JSON.stringify('production'),
-            SERVER_URL: JSON.stringify(`${config.url}:${config.port}`),
+            SERVER_URL: JSON.stringify(`${config.url}`),
         },
     }),
+    new webpack.EnvironmentPlugin([
+        'NODE_ENV',
+        'PORT',
+    ]),
     new HtmlWebpackPlugin({
         title: 'MyStreet',
         filename: 'index.html',

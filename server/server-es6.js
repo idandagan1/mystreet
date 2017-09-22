@@ -23,9 +23,6 @@ const isDevelopment = config.env !== 'production';
 
 dotenv.config({ path: './config/config' });
 mongoose.connect(config.db);
-app.set('port', config.port);
-app.set('url', config.url);
-
 
 if (isDevelopment) {
     new WebpackDevServer(webpack(devConfig), { historyApiFallback: true }).listen(config.clientport, startServerCallback);
