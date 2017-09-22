@@ -20,7 +20,9 @@ const HTML_FILE = path.join(DIST_DIR, 'index.html');
 const isDevelopment = config.env !== 'production';
 
 mongoose.connect(config.db);
-process.env.url = config.url;
+app.set('port', config.port);
+app.set('url', config.url);
+
 
 if (isDevelopment) {
     new WebpackDevServer(webpack(devConfig), { historyApiFallback: true }).listen(config.clientport, startServerCallback);
@@ -64,3 +66,5 @@ app.use(routes);
 const server = app.listen(port, () => {
     console.log(`${config.env} server started on ${config.url}:${port}`);
 });
+
+module.exports = app;
