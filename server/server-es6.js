@@ -7,10 +7,12 @@ import connectMongo from 'connect-mongo';
 import session from 'express-session';
 import expressValidator from 'express-validator';
 import webpack from 'webpack';
+import dotenv from 'dotenv';
 import WebpackDevServer from 'webpack-dev-server';
 import * as devConfig from '../webpack.development.config';
 import * as config from './config/config';
 import routes from './routes/';
+
 
 const MongoStore = connectMongo(session);
 const port = config.port || 8000;
@@ -19,6 +21,7 @@ const DIST_DIR = path.join(__dirname, '../dist');
 const HTML_FILE = path.join(DIST_DIR, 'index.html');
 const isDevelopment = config.env !== 'production';
 
+dotenv.config({ path: '/server/config/config' });
 mongoose.connect(config.db);
 app.set('port', config.port);
 app.set('url', config.url);
