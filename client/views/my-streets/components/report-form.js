@@ -14,6 +14,7 @@ export default class Report extends React.Component {
 
     onSubmit = e => {
         e.preventDefault();
+        $('#msg-report').innerHTML = 'Thanks for your report!\nOur team will handle this.';
         $('#msg-report').fadeIn('slow');
         setTimeout(() => {
             $('#msg-report').fadeOut();

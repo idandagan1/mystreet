@@ -17,10 +17,7 @@ function AppConnector(props) {
             <Header />
             <div className='loadingImg' />
             <div className='n-msg-wrapper'>
-                <div id='msg-report'>
-                    Thanks for your report!
-                    Our team will handle this.
-                </div>
+                <div id='msg-report' />
             </div>
             {children}
         </div>

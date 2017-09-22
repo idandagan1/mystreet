@@ -432,13 +432,13 @@ function createStreet(placeId, user_id, location, streetName, address) {
 
 function getStreetByPlaceId(placeId) {
 
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
 
-        if(!placeId){
+        if (!placeId) {
             reject(null);
         }
 
-        Street.findOne({ placeId })//
+        await Street.findOne({ placeId })//
             .populate([{
                 path: 'postsfeed',
                 model: 'post',
@@ -447,7 +447,7 @@ function getStreetByPlaceId(placeId) {
                 },
                 populate: ['author', 'comments.author'],
             },
-                { path: 'members', model: 'user' }])
+            { path: 'members', model: 'user' }])
             .then((selectedStreet, err) => resolve(selectedStreet));
     });
 }
