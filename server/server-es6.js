@@ -33,7 +33,7 @@ if (isDevelopment) {
 
 function startServerCallback(err, result) {
     if (err) console.error(err);
-    console.log(`Listening at ${config.url}:${config.clientport}/`);
+    console.log(`Client started on ${config.url}:${config.clientport}/`);
 }
 
 app.use(session({

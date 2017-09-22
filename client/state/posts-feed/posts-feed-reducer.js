@@ -19,7 +19,7 @@ export default createReducer(initialState, {
     [postActionTypes.ADD_POST_SUCCEEDED](state, action) {
         const { data: { post: { newPost } } } = action;
         const { postsfeed } = state;
-        const newPostsfeed = postsfeed.slice();
+        const newPostsfeed = postsfeed ? postsfeed.slice() : [];
         newPostsfeed.unshift(newPost);
 
         return {

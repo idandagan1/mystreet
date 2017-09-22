@@ -47,7 +47,7 @@ router.delete('/unlikePost', (req, res) => {
     );
 });
 
-router.post('/addPost', (req, res) => {
+router.post('/addPost', async (req, res) => {
 
     const userId = req.session.user._id;
     const { post: { body }, streetId } = req.body;
@@ -61,19 +61,17 @@ router.post('/addPost', (req, res) => {
         author: userId,
         body,
     });
-    newPost.save((err) => {
+    await newPost.save((err) => {
         Post.populate(newPost, {
             path: 'author',
         }, (error, post) => {
             Street.findByIdAndUpdate(streetId, {
                 $push: { postsfeed: newPost },
-            }).exec()
-                .then(street => {
-                    if (street) {
-                        console.log('Added post');
-                        return res.status(200).send({ newPost: post, status: 'ok' });
-                    }
-                });
+            })
+            .then(street => {
+                console.log(`Added post: ${post}`);
+                return res.status(200).send({ newPost: post, status: 'ok' });
+            });
         });
     });
 
