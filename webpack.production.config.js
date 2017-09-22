@@ -9,7 +9,7 @@ baseConfig.plugins = [
     new webpack.DefinePlugin({
         'process.env': {
             NODE_ENV: JSON.stringify('production'),
-            SERVER_URL: JSON.stringify(`${config.url}:${process.env.PORT}`),
+            SERVER_URL: JSON.stringify(`${config.url}:${config.port}`),
         },
     }),
     new HtmlWebpackPlugin({
