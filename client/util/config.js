@@ -1,4 +1,4 @@
-const apiUrl = `${process.env.SERVER_URL}:${process.env.PORT}`;
+const apiUrl = `${process.env.SERVER_URL}`;
 
 export default {
     user: `${apiUrl}/user`,

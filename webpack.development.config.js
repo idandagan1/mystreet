@@ -24,7 +24,7 @@ devConfig.plugins = [
     new webpack.DefinePlugin({
         'process.env': {
             NODE_ENV: JSON.stringify('development'),
-            SERVER_URL: JSON.stringify(`${config.url}:${config.port}`),
+            SERVER_URL: JSON.stringify(`${config.url}`),
         },
     }),
 ];
