@@ -100,7 +100,7 @@ class Post extends React.Component {
 
     render() {
         const { Strings, postContent: { body, createDate, author, comments } } = this.props;
-        const picturePath = `http://graph.facebook.com/${author.facebook.id}/picture?type=normal`;
+        const picturePath = `https://graph.facebook.com/${author.facebook.id}/picture?type=normal`;
         const linkToUserFacebook = `https://www.facebook.com/app_scoped_user_id/${author.facebook.id}`;
 
         return (

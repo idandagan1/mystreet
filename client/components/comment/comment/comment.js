@@ -6,7 +6,7 @@ export default function Comment(props) {
 
     const { i, comment: { author, createDate, body } } = props;
     const formattedDate = moment(createDate).format('MM/DD/YYYY');
-    const picturePath = `http://graph.facebook.com/${author.facebook.id}/picture?type=normal`;
+    const picturePath = `https://graph.facebook.com/${author.facebook.id}/picture?type=normal`;
     const linkToUserFacebook = `https://www.facebook.com/app_scoped_user_id/${author.facebook.id}`;
 
     return (

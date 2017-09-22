@@ -4,7 +4,7 @@ import React, { PropTypes } from 'react';
 export default function Member(props) {
 
     const { member, i, userSelected } = props;
-    const picturePath = `http://graph.facebook.com/${member.facebook.id}/picture?type=normal`;
+    const picturePath = `https://graph.facebook.com/${member.facebook.id}/picture?type=normal`;
 
     return (
         <li style={{ height: 42 }} key={i}>

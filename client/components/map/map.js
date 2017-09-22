@@ -153,7 +153,7 @@ class Map extends Component {
             if (!primaryStreet) {
                 return;
             }
-            const picturePath = `http://graph.facebook.com/${id}/picture?type=normal`;
+            const picturePath = `https://graph.facebook.com/${id}/picture?type=normal`;
             const linkToUserFacebook = `https://www.facebook.com/app_scoped_user_id/${id}`;
 
             return list.concat(`

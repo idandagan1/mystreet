@@ -119,7 +119,7 @@ export default class Profile extends React.Component {
         const { user, dateOfBirth, first_name, last_name, friends, gender, id, job, college, address, location, placeId, editable, empty } = this.state;
         const { Strings } = this.props;
 
-        const picturePath = `http://graph.facebook.com/${id}/picture?type=normal`;
+        const picturePath = `https://graph.facebook.com/${id}/picture?type=normal`;
         const linkToUserFacebook = `https://www.facebook.com/app_scoped_user_id/${id}`;
 
         return (
