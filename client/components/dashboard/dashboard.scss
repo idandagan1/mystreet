@@ -30,19 +30,12 @@
         height: auto;
         position: absolute;
         z-index: -1000;
-        display: none;
     }
 }
 
 @media screen and (max-width: 780px) {
     video {
         display: none;
-    }
-
-    .n-dashboard {
-        img {
-            display: block;
-        }
     }
 }
 
