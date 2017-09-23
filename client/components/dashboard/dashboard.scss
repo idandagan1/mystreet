@@ -25,6 +25,13 @@
         position: absolute;
         z-index: -200;
     }
+    img {
+        width: 100%;
+        height: auto;
+        position: absolute;
+        z-index: -1000;
+        display: none;
+    }
 }
 
 @media screen and (max-width: 780px) {
@@ -33,8 +40,9 @@
     }
 
     .n-dashboard {
-        background: url(../../resources/images/cover.png);
-        background-size: cover;
+        img {
+            display: block;
+        }
     }
 }
 

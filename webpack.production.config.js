@@ -20,7 +20,7 @@ baseConfig.plugins = [
         title: 'MyStreet',
         filename: 'index.html',
         template: './client/index.html',
-        favicon: './client/resources/images/favicon.ico',
+        favicon: './favicon.ico',
     }),
 ];
 
