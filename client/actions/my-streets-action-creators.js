@@ -72,6 +72,7 @@ function getStreetSucceeded({ selectedStreet }) {
 }
 
 function searchStreetSucceeded({ selectedStreet }, street) {
+    console.log('75: searchStreetSucceeded: ', selectedStreet);
     return {
         type: myStreetsActionTypes.SEARCH_SUCCEEDED,
         data: { selectedStreet: selectedStreet || street },

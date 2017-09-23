@@ -92,22 +92,6 @@ async function getSelectedStreet(req, res) {
         });
 }
 
-async function getStreetByPlaceId(req, res) {
-
-    const { placeId } = req.query;
-
-    if (!placeId) {
-        return res.status(200).send({ msg: 'no placeId' });
-    }
-
-    getStreetByPlaceId(placeId)
-        .then(selectedStreet => {
-            req.session.selectedStreet = selectedStreet;
-            req.session.save();
-            return res.status(200).send({ selectedStreet });
-        });
-}
-
 async function getStreets(req, res) {
     // This method returns a list of streets from the user's street list.
     const userID = req.session.user._id;// TO CHANGE
@@ -359,7 +343,7 @@ async function createStreet(placeId, user_id, location, streetName, address) {
 
 async function getStreetByPlaceId(req, res) {
 
-    console.log('In getStreetByPlaceId');
+    console.log('346: In getStreetByPlaceId');
 
     const { placeId } = req.query;
 
@@ -369,22 +353,18 @@ async function getStreetByPlaceId(req, res) {
         }
 
         await Street.findOne({ placeId })//
-            // .populate([{
-            //     path: 'postsfeed',
-            //     model: 'post',
-            //     options: {
-            //         sort: { createDate: -1 },
-            //     },
-            //     populate: ['author', 'comments.author'],
-            // }, 'members'])
-            .populate('members')
+            .populate([{
+                path: 'postsfeed',
+                model: 'post',
+                options: {
+                    sort: { createDate: -1 },
+                },
+                populate: ['author', 'comments.author'],
+            }, 'members'])
             .then((selectedStreet, err) => {
-                console.log('selectedStreet:',selectedStreet);
-                console.log('err:',err);
                 return res.status(200).send({ selectedStreet });
             });
 
-    console.log('end of getStreetByPlaceId');
 }
 
 // GET
