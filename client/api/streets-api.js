@@ -2,7 +2,6 @@ import $ from 'jquery';
 import config from 'util/config';
 
 export function getStreetByPlaceId(placeId) {
-    console.log('5: placeId:', placeId);
     return new Promise((resolve, reject) => {
         $.ajax(`${config.mystreets}/getStreetByPlaceId?placeId=${placeId}`, {
             method: 'GET',

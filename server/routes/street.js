@@ -86,6 +86,7 @@ async function getSelectedStreet(req, res) {
 
     await getStreetByPlaceId(selectedStreet.placeId)
         .then(street => {
+            console.log('89: in getSelectedStreet:', street);
             req.session.selectedStreet = street;
             req.session.save();
             return res.status(200).send({ selectedStreet: street });
@@ -371,7 +372,30 @@ async function getStreetByPlaceId(req, res) {
 router.get('/getStreetsNearPrimaryStreet', getStreetsNearPrimaryStreet);
 router.get('/getNearbyStreets', getNearbyStreets);
 router.get('/getSelectedStreet', getSelectedStreet);
-router.get('/getStreetByPlaceId', getStreetByPlaceId);
+router.get('/getStreetByPlaceId', (req, res) => {
+
+    console.log('346: In getStreetByPlaceId');
+
+    const { placeId } = req.query;
+
+    if (!placeId) {
+        console.log('getStreetByPlaceId: no placeId');
+        return;
+    }
+
+    Street.findOne({ placeId })//
+        .populate([{
+            path: 'postsfeed',
+            model: 'post',
+            options: {
+                sort: { createDate: -1 },
+            },
+            populate: ['author', 'comments.author'],
+        }, 'members'])
+        .then((selectedStreet, err) => {
+            return res.status(200).send({ selectedStreet });
+        });
+});
 router.get('/getStreets', getStreets);
 router.get('/getMembers', getMembers);
 router.get('/getStreetAdmins', getStreetAdmins);
