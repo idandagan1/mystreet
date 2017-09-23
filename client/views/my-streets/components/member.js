@@ -4,7 +4,7 @@ import React, { PropTypes } from 'react';
 export default function Member(props) {
 
     const { member, i, userSelected } = props;
-    const picturePath = `https://graph.facebook.com/${member.facebook.id}/picture?type=normal`;
+    const picturePath = `https://graph.facebook.com/${member.facebook ? member.facebook.id : ''}/picture?type=normal`;
 
     return (
         <li style={{ height: 42 }} key={i}>
@@ -18,7 +18,7 @@ export default function Member(props) {
 
                 <ul className='dropdown-menu' aria-labelledby='dropdownMenuLink'>
                     <li>
-                        <a onClick={() => { userSelected(member.facebook.id); }}>Go To Profile</a>
+                        <a onClick={() => { userSelected(member.facebook ? member.facebook.id : ''); }}>Go To Profile</a>
                     </li>
                     <li><a className='dropdown-item' href='' data-toggle='modal' data-target='#myModal'>Report</a></li>
                 </ul>

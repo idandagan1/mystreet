@@ -373,8 +373,7 @@ async function getStreetByPlaceId(req, res) {
                     sort: { createDate: -1 },
                 },
                 populate: ['author', 'comments.author'],
-            },
-                { path: 'members', model: 'user' }])
+            }, 'members'])
             .then((selectedStreet, err) => {
                 return res.status(200).send({ selectedStreet });
             });
