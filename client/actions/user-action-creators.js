@@ -35,14 +35,11 @@ export function updatedProfileSubmitted(user) {
 
 export function logoutUser(user) {
     return dispatch => {
-
         userApi.logoutUser(user)
             .then(
                 response => dispatch(logoutSucceeded(response)),
                 error => dispatch(logoutFailed(error)),
             );
-
-        browserHistory.push('/');
     };
 }
 

@@ -20,7 +20,7 @@ export default function ProfileButton(props) {
             <ul className='dropdown-menu'>
                 <li><Link to={`/user/${id}`}>{Strings.myProfileTitle}</Link></li>
                 <li role='separator' className='divider' />
-                <li><a onClick={logoutSubmitted}>{Strings.logout}</a></li>
+                <li><a href='/' onClick={logoutSubmitted}>{Strings.logout}</a></li>
             </ul>
         </li>
     );
