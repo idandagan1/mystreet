@@ -158,7 +158,7 @@ export default class MyStreets extends React.Component {
                                     <StreetDetails props={this.props} />
                                 </div>
                             </div>
-                            <Report />
+                            <Report Strings={Strings} />
                             <div className='col-md-4 col-xs-12 col-sm-6 sub-main-li'>
                                 <div>
                                     {
