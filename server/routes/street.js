@@ -375,6 +375,10 @@ async function getStreetByPlaceId(req, res) {
                 populate: ['author', 'comments.author'],
             }, 'members'])
             .then((selectedStreet, err) => {
+                console.log('in getStreetByPlaceId: ', selectedStreet);
+                if(selectedStreet){
+                    console.log(selectedStreet.members);
+                }
                 return res.status(200).send({ selectedStreet });
             });
 }
