@@ -112,17 +112,19 @@ async function getStreets(req, res) {
 }
 
 async function getMembers(req, res) {
+    console.log('115: In getMembers');
 
     const { placeId } = req.query;
 
     if (!placeId) {
-        return res.send('StreetID', 400);
+        console.log('placeId missing');
+        return res.send('placeId', 400);
     }
 
     Street.findOne({ placeId }).populate('members')
-        .then(street => {
+        .then(selectedStreet => {
             console.log('getMembers executed successfully');
-            return res.send({ content: street ? street.members : null, status: 'ok' });
+            return res.status(200).send({ selectedStreet });
         });
 }
 

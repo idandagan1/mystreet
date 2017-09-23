@@ -188,7 +188,7 @@ async function loginFacebook(req, res) {
             req.session.user = user;
             req.session.save();
             console.log('190: user');
-            res.status(200).send({ user });
+            return res.status(200).send({ user });
         });
 }
 
