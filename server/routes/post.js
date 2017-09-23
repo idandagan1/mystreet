@@ -6,9 +6,12 @@ import { Post } from '../models/post';
 
 const router = expressRouter();
 
-router.post('/addLikeToPost', (req,res) => {
+async function getPostsFeed(req, res) {
+    return await res.status(200).send({ postsfeed: req.session.postsfeed });
+}
 
-    //TODO: change parameters
+async function addLikeToPost(req, res) {
+
     const postID = req.session.postID;
     const userID = req.session.user._id;
 
@@ -16,7 +19,7 @@ router.post('/addLikeToPost', (req,res) => {
         return res.send('There have been validation errors', 400);
     }
 
-    Post.findByIdAndUpdate(postID, {$addToSet: {likes: userID}}).exec()
+    await Post.findByIdAndUpdate(postID, {$addToSet: {likes: userID}}).exec()
         .then(likes => {
                 if (likes) {
                     console.log('Added like');
@@ -24,30 +27,9 @@ router.post('/addLikeToPost', (req,res) => {
                 }
             }
         );
+}
 
-});
-
-router.delete('/unlikePost', (req, res) => {
-
-    const postID = req.session.postID;
-    const userID = req.session.user._id;
-
-    if (postID == null || userID == null) {
-        return res.send('post or user is missing', 400);
-    }
-
-    Post.findByIdAndUpdate(
-        {_id: postID},
-        {
-            $pull: {likes: userID},
-        }, err => {
-            if (err) throw err;
-            else res.status(200).send({ msg: 'unlike post' });
-        }
-    );
-});
-
-router.post('/addPost', async (req, res) => {
+async function addPost(req, res) {
 
     const userId = req.session.user._id;
     const { post: { body }, streetId } = req.body;
@@ -68,16 +50,16 @@ router.post('/addPost', async (req, res) => {
             Street.findByIdAndUpdate(streetId, {
                 $push: { postsfeed: newPost },
             })
-            .then(street => {
-                console.log(`Added post: ${post}`);
-                return res.status(200).send({ newPost: post, status: 'ok' });
-            });
+                .then(street => {
+                    console.log(`Added post: ${post}`);
+                    return res.status(200).send({ newPost: post, status: 'ok' });
+                });
         });
     });
 
-});
+}
 
-router.post('/addComment', (req, res) => {
+async function addComment(req, res) {
 
     const userId = req.session.user._id;
     const { body, postId } = req.body;
@@ -93,24 +75,22 @@ router.post('/addComment', (req, res) => {
     }
 
     Post.findByIdAndUpdate(postId, {
-        $push: {
-            comments: {
-                createDate: Date.now(),
-                author: mongoose.Types.ObjectId(userId),
-                body,
+            $push: {
+                comments: {
+                    createDate: Date.now(),
+                    author: mongoose.Types.ObjectId(userId),
+                    body,
+                },
             },
         },
-    },
-    { new: true })
+        { new: true })
         .then(post => {
             console.log('Added comment successfully');
             return res.status(200).send({ newComment, status: 'ok' });
-    });
-});
+        });
+}
 
-router.get('/getPostsFeed', (req, res) => res.status(200).send({ postsfeed: req.session.postsfeed }));
-
-router.get('/getPostsByPlaceId', (req, res) => {
+async function getPostsByPlaceId(req, res) {
 
     const { placeId } = req.query;
 
@@ -118,7 +98,7 @@ router.get('/getPostsByPlaceId', (req, res) => {
         return res.send('placeId', 400);
     }
 
-    Street.findOne({ placeId })
+    await Street.findOne({ placeId })
         .populate({
             path: 'postsfeed',
             model: 'post',
@@ -134,9 +114,9 @@ router.get('/getPostsByPlaceId', (req, res) => {
             }
             return res.send({ postsfeed: [], remark: 'street not found' });
         });
-});
+}
 
-router.delete('/deletePost', (req, res) => {
+async function deletePost(req, res) {
 
     const { postId } = req.body;
 
@@ -144,7 +124,7 @@ router.delete('/deletePost', (req, res) => {
         return res.send('postID', 400);
     }
 
-    Post.findByIdAndRemove(postId).exec()
+    await Post.findByIdAndRemove(postId).exec()
         .then(post => {
                 if (post) {
                     console.log('Deleted post');
@@ -152,6 +132,37 @@ router.delete('/deletePost', (req, res) => {
                 }
             }
         );
-});
+}
+
+async function unlikePost(req, res) {
+
+    const postID = req.session.postID;
+    const userID = req.session.user._id;
+
+    if (postID == null || userID == null) {
+        return res.send('post or user is missing', 400);
+    }
+
+    await Post.findByIdAndUpdate(
+        {_id: postID},
+        {
+            $pull: {likes: userID},
+        }, err => {
+            if (err) throw err;
+            else res.status(200).send({ msg: 'unlike post' });
+        }
+    );
+}
+
+// POST
+router.post('/addLikeToPost', addLikeToPost);
+router.post('/addPost', addPost);
+router.post('/addComment', addComment);
+// GET
+router.get('/getPostsFeed', getPostsFeed);
+router.get('/getPostsByPlaceId', getPostsByPlaceId);
+// DELETE
+router.delete('/deletePost', deletePost);
+router.delete('/unlikePost', unlikePost);
 
 export default router;
