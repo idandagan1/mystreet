@@ -109,6 +109,7 @@ async function getUserById(req, res) {
 }
 
 async function getUserLogin(req, res) {
+    console.log('112: in getUserLogin');
     const { user: activeUser } = req.session;
     activeUser ?
         await User.findOne({ 'facebook.id': activeUser.facebook.id })

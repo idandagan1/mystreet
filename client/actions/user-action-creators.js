@@ -109,11 +109,11 @@ function loginSucceeded({ user }) {
         });
 
         //if (user.local.primaryStreet) {
-            streetApi.getStreetByPlaceId('ChIJSR926opLHRUR6QH6ANhmFe4')
-                .then(
-                    response => dispatch(searchStreetSucceeded(response, user.local.primaryStreet)),
-                    error => dispatch(searchStreetFailed(error)),
-            );
+        streetApi.getStreetByPlaceId('ChIJSR926opLHRUR6QH6ANhmFe4')
+            .then(
+                response => dispatch(searchStreetSucceeded(response, user.local.primaryStreet)),
+                error => dispatch(searchStreetFailed(error)),
+        );
         //}
 
         dispatch(push('/mystreets'));
