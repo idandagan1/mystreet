@@ -110,7 +110,8 @@ export default class Profile extends React.Component {
 
     onSaveClick = (e) => {
         e.preventDefault();
-        $('#msg-report').innerHTML = 'Your profile has been changed!';
+        const { Strings } = this.props;
+        $('#msg-report').text(Strings.profileChangeMsg);
         $('#msg-report').fadeIn('slow');
         setTimeout(() => {
             $('#msg-report').fadeOut();

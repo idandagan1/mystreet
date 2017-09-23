@@ -41,5 +41,7 @@ module.exports = {
     collegeTitle: 'לימודים:',
     collegePlaceHolder: 'איפה למדת',
     dateOfBirthTitle: 'תאריך לידה:',
+    profileChangeMsg: 'הפרופיל שלך התעדכן בהצלחה!',
+    reportFormMsg: 'תודה על הדיווח! הצוות שלנו יטפל בזה.',
     language: 'he',
 };

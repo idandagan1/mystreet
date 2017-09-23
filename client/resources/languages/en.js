@@ -41,5 +41,7 @@ module.exports = {
     collegeTitle: 'College:',
     collegePlaceHolder: 'Where did you study',
     dateOfBirthTitle: 'Date Of Birth:',
+    profileChangeMsg: 'Your profile has been changed successfully!',
+    reportFormMsg: 'Thanks for your report! Our team will handle this.',
     language: 'en',
 };

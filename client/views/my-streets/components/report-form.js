@@ -1,8 +1,14 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import $ from 'jquery';
 import './my-streets.scss';
 
 export default class Report extends React.Component {
+
+    static propTypes = {
+        Strings: PropTypes.shape({
+            search: PropTypes.string,
+        }),
+    };
 
     constructor(props) {
         super(props);
@@ -14,19 +20,20 @@ export default class Report extends React.Component {
 
     onSubmit = e => {
         e.preventDefault();
-        $('#msg-report').innerHTML = 'Thanks for your report!\nOur team will handle this.';
+        const { Strings } = this.props;
+        $('#msg-report').text(Strings.reportFormMsg);
         $('#msg-report').fadeIn('slow');
         setTimeout(() => {
             $('#msg-report').fadeOut();
         }, 4000);
-    }
+    };
 
     onRadioChange = e => {
         this.setState({
             isOtherDisabled: e.target.value !== 'option3',
             selectedOption: e.target.value,
         });
-    }
+    };
 
     render() {
         const { selectedOption, isOtherDisabled } = this.state;
