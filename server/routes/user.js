@@ -180,7 +180,7 @@ function loginFacebook(req, res) {
 
     // find the user in the database based on their facebook id
     User.findOne({ 'facebook.id': id })
-        .populate(['local.primaryStreet', 'local.streets', 'facebook.friends'])
+        .populate(['local.primaryStreet', 'local.streets', 'facebook.friends', 'local.primaryStreet.members'])
         .then((user, err) => {
             let sessionUser;
 
