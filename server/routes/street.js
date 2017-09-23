@@ -357,12 +357,12 @@ async function createStreet(placeId, user_id, location, streetName, address) {
     });
 }
 
-async function getStreetByPlaceId(placeId) {
+async function getStreetByPlaceId(req, res) {
 
-    return new Promise(async (resolve, reject) => {
+    const { placeId } = req.query;
 
         if (!placeId) {
-            reject(null);
+            return;
         }
 
         await Street.findOne({ placeId })//
@@ -375,8 +375,9 @@ async function getStreetByPlaceId(placeId) {
                 populate: ['author', 'comments.author'],
             },
                 { path: 'members', model: 'user' }])
-            .then((selectedStreet, err) => resolve(selectedStreet));
-    });
+            .then((selectedStreet, err) => {
+                return res.status(200).send({ selectedStreet });
+            });
 }
 
 // GET
