@@ -362,23 +362,21 @@ async function getStreetByPlaceId(req, res) {
     const { placeId } = req.query;
 
         if (!placeId) {
+            console.log('getStreetByPlaceId: no placeId');
             return;
         }
 
         await Street.findOne({ placeId })//
-            .populate([{
-                path: 'postsfeed',
-                model: 'post',
-                options: {
-                    sort: { createDate: -1 },
-                },
-                populate: ['author', 'comments.author'],
-            }, 'members'])
+            // .populate([{
+            //     path: 'postsfeed',
+            //     model: 'post',
+            //     options: {
+            //         sort: { createDate: -1 },
+            //     },
+            //     populate: ['author', 'comments.author'],
+            // }, 'members'])
+            .populate('members')
             .then((selectedStreet, err) => {
-                console.log('in getStreetByPlaceId: ', selectedStreet);
-                if(selectedStreet){
-                    console.log(selectedStreet.members);
-                }
                 return res.status(200).send({ selectedStreet });
             });
 }

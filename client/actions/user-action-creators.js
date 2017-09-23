@@ -122,7 +122,6 @@ function loginSucceeded({ user }) {
 
 function searchStreetSucceeded(response, primaryStreet) {
     const { selectedStreet } = response;
-    console.log('in searchStreetSucceeded. response:', response);
     return {
         type: myStreetsActionTypes.SEARCH_SUCCEEDED,
         data: { selectedStreet: selectedStreet || primaryStreet },
