@@ -111,7 +111,7 @@ async function getStreets(req, res) {
         );
 }
 
-async function getMembers(req, res) {
+function getMembers(req, res) {
     console.log('115: In getMembers');
 
     const { placeId } = req.query;
