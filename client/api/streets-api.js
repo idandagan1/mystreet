@@ -2,15 +2,8 @@ import $ from 'jquery';
 import config from 'util/config';
 
 export function getStreetByPlaceId(placeId) {
-    // return new Promise((resolve, reject) => {
-    //     $.ajax(`${config.mystreets}/getStreetByPlaceId?placeId=${placeId}`, {
-    //         method: 'GET',
-    //         success: (res, status, xhr) => resolve(res),
-    //         error: (xhr, status, error) => reject(xhr.responseJSON),
-    //     });
-    // });
     return new Promise((resolve, reject) => {
-        $.ajax(`${config.mystreets}/getMembers?placeId=${placeId}`, {
+        $.ajax(`${config.mystreets}/getStreetByPlaceId?placeId=${placeId}`, {
             method: 'GET',
             success: (res, status, xhr) => resolve(res),
             error: (xhr, status, error) => reject(xhr.responseJSON),

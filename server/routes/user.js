@@ -108,93 +108,6 @@ async function getUserById(req, res) {
         });
 }
 
-async function getUserLogin(req, res) {
-    console.log('112: in getUserLogin');
-    const { user: activeUser } = req.session;
-    activeUser ?
-        await User.findOne({ 'facebook.id': activeUser.facebook.id })
-            .populate([{
-                path: 'facebook.friends',
-                populate: ['local.primaryStreet'],
-            }, { path: 'local.primaryStreet' }, { path: 'local.streets' }])
-            .then(populateuser => {
-                res.status(200).send({ activeUser: populateuser });
-            }) : res.status(200).send({ msg: 'user not fund' });
-
-}
-
-async function logoutUser(req, res) {
-    req.session.destroy();
-    res.status(200).send({ msg: 'user logged out successfully' });
-}
-
-function loginFacebook(req, res) {
-    const { id, name, first_name, last_name, gender, accessToken: token } = req.body;
-
-    return res.status(200).send({ msg: 'ok' });
-
-    // // find the user in the database based on their facebook id
-    // await User.findOne({ 'facebook.id': id })
-    //     .populate(['local.primaryStreet', 'local.streets', 'facebook.friends'])
-    //     .then((user, err) => {
-    //         let sessionUser;
-    //
-    //         return new Promise((resolve, reject) => {
-    //             // if the user is found, then log them in
-    //             if (!user) {
-    //                 console.log('142: user not exist');
-    //                 const newUser = new User({
-    //                     facebook: {
-    //                         id,
-    //                         token,
-    //                         name,
-    //                         first_name,
-    //                         last_name,
-    //                         gender,
-    //                     },
-    //                     name,
-    //                 });
-    //
-    //                 newUser.save(error => {
-    //                     if (error) throw error;
-    //                 });
-    //
-    //                 sessionUser = newUser;
-    //             } else {
-    //                 console.log('160: user exist');
-    //                 user.local.lastLogged = Date.now();
-    //                 user.save();
-    //                 sessionUser = user;
-    //             }
-    //
-    //             resolve(sessionUser);
-    //         });
-    //     })
-    //     .then((user, errors) =>
-    //         new Promise((resolve, reject) => {
-    //             getFacebookFriends(token)
-    //                 .then((friends, error) => {
-    //                     console.log('174: getting user friends');
-    //                     User.findOneAndUpdate({ 'facebook.id': id },
-    //                         { $addToSet: { 'facebook.friends': { $each: friends } } },
-    //                         { new: true })
-    //                         .populate([{
-    //                             path: 'facebook.friends',
-    //                             populate: ['local.primaryStreet'],
-    //                         }, { path: 'local.primaryStreet' }, { path: 'local.streets' }])
-    //                         .then(populateuser => {
-    //                             resolve(populateuser);
-    //                         });
-    //                 });
-    //         }))
-    //     .then((user) => {
-    //         req.session.user = user;
-    //         req.session.save();
-    //         console.log('190: user');
-    //         return res.status(200).send({ user });
-    //     });
-}
-
 async function updateUserInfo(req, res) {
     const { first_name, last_name, gender, job, newAddress, _id: userId, college } = req.body;
     const { user: { _id } } = req.session;
@@ -242,6 +155,86 @@ router.get('/logoutUser', logoutUser)
 router.post('/login/facebook', loginFacebook);
 router.post('/updateUserInfo', updateUserInfo);
 router.post('/updateProfessionalInfo', updateProfessionalInfo);
+
+function getUserLogin(req, res) {
+    const { user: activeUser } = req.session;
+    activeUser ?
+        User.findOne({ 'facebook.id': activeUser.facebook.id })
+            .populate([{
+                path: 'facebook.friends',
+                populate: ['local.primaryStreet'],
+            }, { path: 'local.primaryStreet' }, { path: 'local.streets' }])
+            .then(populateuser => {
+                res.status(200).send({ activeUser: populateuser });
+            }) : res.status(200).send({ msg: 'user not fund' });
+
+}
+
+function logoutUser(req, res) {
+    req.session.destroy();
+    return res.status(200).send({ msg: 'user logged out successfully' });
+}
+
+function loginFacebook(req, res) {
+    const { id, name, first_name, last_name, gender, accessToken: token } = req.body;
+
+    // find the user in the database based on their facebook id
+    User.findOne({ 'facebook.id': id })
+        .populate(['local.primaryStreet', 'local.streets', 'facebook.friends'])
+        .then((user, err) => {
+            let sessionUser;
+
+            return new Promise((resolve, reject) => {
+                // if the user is found, then log them in
+                if (!user) {
+                    const newUser = new User({
+                        facebook: {
+                            id,
+                            token,
+                            name,
+                            first_name,
+                            last_name,
+                            gender,
+                        },
+                        name,
+                    });
+
+                    newUser.save(error => {
+                        if (error) throw error;
+                    });
+
+                    sessionUser = newUser;
+                } else {
+                    user.local.lastLogged = Date.now();
+                    user.save();
+                    sessionUser = user;
+                }
+
+                resolve(sessionUser);
+            });
+        })
+        .then((user, errors) =>
+            new Promise((resolve, reject) => {
+                getFacebookFriends(token)
+                    .then((friends, error) => {
+                        User.findOneAndUpdate({ 'facebook.id': id },
+                            { $addToSet: { 'facebook.friends': { $each: friends } } },
+                            { new: true })
+                            .populate([{
+                                path: 'facebook.friends',
+                                populate: ['local.primaryStreet'],
+                            }, { path: 'local.primaryStreet' }, { path: 'local.streets' }])
+                            .then(populateuser => {
+                                resolve(populateuser);
+                            });
+                    });
+            }))
+        .then((user) => {
+            req.session.user = user;
+            req.session.save();
+            return res.status(200).send({ user });
+        });
+}
 
 function getFacebookFriends(token) {
     return new Promise((resolve, reject) => {

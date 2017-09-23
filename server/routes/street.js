@@ -111,7 +111,7 @@ async function getStreets(req, res) {
         );
 }
 
-function getMembers(req, res) {
+async function getMembers(req, res) {
     console.log('115: In getMembers');
 
     const { placeId } = req.query;
@@ -121,7 +121,7 @@ function getMembers(req, res) {
         return res.send('placeId', 400);
     }
 
-    Street.findOne({ placeId }).populate('members')
+    await Street.findOne({ placeId }).populate('members')
         .then(selectedStreet => {
             console.log('getMembers executed successfully');
             return res.status(200).send({ selectedStreet });
@@ -374,30 +374,7 @@ async function getStreetByPlaceId(req, res) {
 router.get('/getStreetsNearPrimaryStreet', getStreetsNearPrimaryStreet);
 router.get('/getNearbyStreets', getNearbyStreets);
 router.get('/getSelectedStreet', getSelectedStreet);
-router.get('/getStreetByPlaceId', (req, res) => {
-
-    console.log('346: In getStreetByPlaceId');
-
-    const { placeId } = req.query;
-
-    if (!placeId) {
-        console.log('getStreetByPlaceId: no placeId');
-        return;
-    }
-
-    Street.findOne({ placeId })//
-        .populate([{
-            path: 'postsfeed',
-            model: 'post',
-            options: {
-                sort: { createDate: -1 },
-            },
-            populate: ['author', 'comments.author'],
-        }, 'members'])
-        .then((selectedStreet, err) => {
-            return res.status(200).send({ selectedStreet });
-        });
-});
+router.get('/getStreetByPlaceId', getStreetByPlaceId);
 router.get('/getStreets', getStreets);
 router.get('/getMembers', getMembers);
 router.get('/getStreetAdmins', getStreetAdmins);
