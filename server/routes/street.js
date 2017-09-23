@@ -359,6 +359,8 @@ async function createStreet(placeId, user_id, location, streetName, address) {
 
 async function getStreetByPlaceId(req, res) {
 
+    console.log('In getStreetByPlaceId');
+
     const { placeId } = req.query;
 
         if (!placeId) {
@@ -377,8 +379,12 @@ async function getStreetByPlaceId(req, res) {
             // }, 'members'])
             .populate('members')
             .then((selectedStreet, err) => {
+                console.log('selectedStreet:',selectedStreet);
+                console.log('err:',err);
                 return res.status(200).send({ selectedStreet });
             });
+
+    console.log('end of getStreetByPlaceId');
 }
 
 // GET

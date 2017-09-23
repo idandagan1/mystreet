@@ -139,6 +139,7 @@ async function loginFacebook(req, res) {
             return new Promise((resolve, reject) => {
                 // if the user is found, then log them in
                 if (!user) {
+                    console.log('142: user not exist');
                     const newUser = new User({
                         facebook: {
                             id,
@@ -157,6 +158,7 @@ async function loginFacebook(req, res) {
 
                     sessionUser = newUser;
                 } else {
+                    console.log('160: user exist');
                     user.local.lastLogged = Date.now();
                     user.save();
                     sessionUser = user;
@@ -169,6 +171,7 @@ async function loginFacebook(req, res) {
             new Promise((resolve, reject) => {
                 getFacebookFriends(token)
                     .then((friends, error) => {
+                        console.log('174: getting user friends');
                         User.findOneAndUpdate({ 'facebook.id': id },
                             { $addToSet: { 'facebook.friends': { $each: friends } } },
                             { new: true })
@@ -184,6 +187,7 @@ async function loginFacebook(req, res) {
         .then((user) => {
             req.session.user = user;
             req.session.save();
+            console.log('190: user');
             res.status(200).send({ user });
         });
 }
