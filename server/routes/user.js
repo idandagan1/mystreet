@@ -157,7 +157,9 @@ router.post('/updateUserInfo', updateUserInfo);
 router.post('/updateProfessionalInfo', updateProfessionalInfo);
 
 function getUserLogin(req, res) {
+    console.log('In getUserLogin');
     const { user: activeUser } = req.session;
+    console.log('activeUser.facebook.id');
     activeUser ?
         User.findOne({ 'facebook.id': activeUser.facebook.id })
             .populate([{
