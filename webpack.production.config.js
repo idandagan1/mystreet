@@ -1,7 +1,7 @@
-var webpack = require('webpack');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var baseConfig = require('./webpack.base.config.js');
-var config = require('./server/config/config');
+const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const baseConfig = require('./webpack.base.config');
+const config = require('./server/config/config');
 
 baseConfig.devtool = 'cheap-module-source-map';
 

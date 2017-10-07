@@ -28,7 +28,7 @@ if (isDevelopment) {
     new WebpackDevServer(webpack(devConfig), { historyApiFallback: true }).listen(config.clientport, startServerCallback);
 } else {
     app.use(express.static(DIST_DIR));
-    app.get('*', (req, res) => res.sendFile(HTML_FILE));
+    app.get('/', (req, res) => res.sendFile(HTML_FILE));
 }
 
 function startServerCallback(err, result) {
