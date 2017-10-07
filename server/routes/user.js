@@ -144,19 +144,35 @@ async function updateUserInfo(req, res) {
 
 }
 
-function getUserLogin(req, res) {
+async function getUserLogin(req, res) {
 
     const { user: activeUser } = req.session;
 
     activeUser ?
-        User.findOne({ 'facebook.id': activeUser.facebook.id })
+        await User.findOne({ 'facebook.id': activeUser.facebook.id })
             .populate([{
                 path: 'facebook.friends',
                 populate: ['local.primaryStreet'],
             }, { path: 'local.primaryStreet' }, { path: 'local.streets' }])
+            .then((user, errors) =>
+                new Promise((resolve, reject) => {
+                    getFacebookFriends(user.facebook.token)
+                        .then((friends, error) => {
+                            User.findOneAndUpdate({ 'facebook.id': user.facebook.id },
+                                { $addToSet: { 'facebook.friends': { $each: friends } } },
+                                { new: true })
+                                .populate([{
+                                    path: 'facebook.friends',
+                                    populate: ['local.primaryStreet'],
+                                }, { path: 'local.primaryStreet' }, { path: 'local.streets' }])
+                                .then(populateuser => {
+                                    resolve(populateuser);
+                                });
+                        });
+                }))
             .then(populateuser => {
                 res.status(200).send({ activeUser: populateuser });
-            }) : res.status(200).send({ msg: 'user not fund' });
+            }) : await res.status(200).send({ msg: 'user not fund' });
 
 }
 
@@ -244,7 +260,11 @@ function getFacebookFriends(token) {
 
             if (facebookResult) {
                 const { data } = JSON.parse(facebookResult);
-                const friendsIds = data.map(friend => friend.id);
+                const friendsIds = data ? data.map(friend => friend.id) : void(0);
+
+                if (!friendsIds) {
+                    reject();
+                }
 
                 User.aggregate(
                     { $match: { 'facebook.id': { $in: friendsIds } } })

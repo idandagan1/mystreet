@@ -17,7 +17,6 @@ const Application = (
 
 $.ajaxSetup({
     contentType: 'application/json',
-    cache: false,
     xhrFields: {
         withCredentials: true,
     },
