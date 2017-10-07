@@ -51,7 +51,7 @@ async function addPost(req, res) {
                 $push: { postsfeed: newPost },
             })
                 .then(street => {
-                    console.log(`Added post: ${post}`);
+                    console.log(`Added post by ${userId}`);
                     return res.status(200).send({ newPost: post, status: 'ok' });
                 });
         });

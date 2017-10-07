@@ -144,24 +144,12 @@ async function updateUserInfo(req, res) {
 
 }
 
-// GET
-router.get('/getFriends', getFriends);
-router.get('/getUsersByRadius', getUsersByRadius);
-router.get('/getUserById', getUserById);
-router.get('/getUserLogin', getUserLogin);
-router.get('/logoutUser', logoutUser)
+async function getUserLogin(req, res) {
 
-// POST
-router.post('/login/facebook', loginFacebook);
-router.post('/updateUserInfo', updateUserInfo);
-router.post('/updateProfessionalInfo', updateProfessionalInfo);
-
-function getUserLogin(req, res) {
-    console.log('In getUserLogin');
     const { user: activeUser } = req.session;
-    console.log('activeUser.facebook.id');
+
     activeUser ?
-        User.findOne({ 'facebook.id': activeUser.facebook.id })
+        await User.findOne({ 'facebook.id': activeUser.facebook.id })
             .populate([{
                 path: 'facebook.friends',
                 populate: ['local.primaryStreet'],
@@ -172,16 +160,16 @@ function getUserLogin(req, res) {
 
 }
 
-function logoutUser(req, res) {
-    req.session.destroy();
+async function logoutUser(req, res) {
+    await req.session.destroy();
     return res.status(200).send({ msg: 'user logged out successfully' });
 }
 
-function loginFacebook(req, res) {
+async function loginFacebook(req, res) {
     const { id, name, first_name, last_name, gender, accessToken: token } = req.body;
 
     // find the user in the database based on their facebook id
-    User.findOne({ 'facebook.id': id })
+    await User.findOne({ 'facebook.id': id })
         .populate(['local.primaryStreet', 'local.streets', 'facebook.friends', 'local.primaryStreet.members'])
         .then((user, err) => {
             let sessionUser;
@@ -237,6 +225,18 @@ function loginFacebook(req, res) {
             return res.status(200).send({ user });
         });
 }
+
+// GET
+router.get('/getFriends', getFriends);
+router.get('/getUsersByRadius', getUsersByRadius);
+router.get('/getUserById', getUserById);
+router.get('/getUserLogin', getUserLogin);
+router.get('/logoutUser', logoutUser)
+
+// POST
+router.post('/login/facebook', loginFacebook);
+router.post('/updateUserInfo', updateUserInfo);
+router.post('/updateProfessionalInfo', updateProfessionalInfo);
 
 function getFacebookFriends(token) {
     return new Promise((resolve, reject) => {
