@@ -127,11 +127,6 @@ class Post extends React.Component {
                             <ol className='pull-left list-inline'>
                                 <li>
                                     <div>
-                                        <div className='n-footer-btn' onClick={this.onLikeClick}>{Strings.like}</div>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div>
                                         <div
                                             className='n-footer-btn'
                                             onClick={this.onCommentClick}
