@@ -86,7 +86,6 @@ async function getSelectedStreet(req, res) {
 
     await getStreetByPlaceId(selectedStreet.placeId)
         .then(street => {
-            console.log('89: in getSelectedStreet:', street);
             req.session.selectedStreet = street;
             req.session.save();
             return res.status(200).send({ selectedStreet: street });
@@ -112,7 +111,6 @@ async function getStreets(req, res) {
 }
 
 async function getMembers(req, res) {
-    console.log('115: In getMembers');
 
     const { placeId } = req.query;
 
@@ -345,8 +343,6 @@ async function createStreet(placeId, user_id, location, streetName, address) {
 }
 
 async function getStreetByPlaceId(req, res) {
-
-    console.log('346: In getStreetByPlaceId');
 
     const { placeId } = req.query;
 

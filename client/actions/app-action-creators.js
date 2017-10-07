@@ -106,7 +106,7 @@ function getActiveUserFailed(response) {
 }
 
 function getStreetSuccededed({ selectedStreet }) {
-    console.log('109: selectedStreet:', selectedStreet);
+
     return selectedStreet ? {
         type: myStreetsActionTypes.SEARCH_SUCCEEDED,
         data: { selectedStreet },
