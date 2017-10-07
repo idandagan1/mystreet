@@ -23,12 +23,14 @@ const isDevelopment = config.env !== 'production';
 
 dotenv.config({ path: './config/config' });
 mongoose.connect(config.db);
+app.use(log('dev'));
+app.use(routes);
 
 if (isDevelopment) {
     new WebpackDevServer(webpack(devConfig), { historyApiFallback: true }).listen(config.clientport, startServerCallback);
 } else {
     app.use(express.static(DIST_DIR));
-    app.get('/', (req, res) => res.sendFile(HTML_FILE));
+    app.get('*', (req, res) => res.sendFile(HTML_FILE));
 }
 
 function startServerCallback(err, result) {
@@ -59,9 +61,6 @@ app.use((req, res, next) => {
     res.header('Access-Control-Allow-Credentials', 'true');
     next();
 });
-
-app.use(log('dev'));
-app.use(routes);
 
 const server = app.listen(port, () => {
     console.log(`${config.env} server started on ${config.url}:${port}`);
