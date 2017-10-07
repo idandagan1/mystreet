@@ -1,14 +1,13 @@
-var webpack = require('webpack');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var devConfig = require('./webpack.base.config.js');
-var config = require('./server/config/config');
+const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const devConfig = require('./webpack.base.config');
+const config = require('./server/config/config');
 
 devConfig.entry = [
     'webpack-dev-server/client?http://localhost:8000/',
     './client/entry.js',
 ];
 
-devConfig.output.publicPath = '/';
 devConfig.output.filename = 'bundle.js';
 
 devConfig.plugins = [
