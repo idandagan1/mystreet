@@ -144,12 +144,12 @@ async function updateUserInfo(req, res) {
 
 }
 
-async function getUserLogin(req, res) {
+function getUserLogin(req, res) {
 
     const { user: activeUser } = req.session;
 
     activeUser ?
-        await User.findOne({ 'facebook.id': activeUser.facebook.id })
+        User.findOne({ 'facebook.id': activeUser.facebook.id })
             .populate([{
                 path: 'facebook.friends',
                 populate: ['local.primaryStreet'],

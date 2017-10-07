@@ -21,6 +21,28 @@ const DIST_DIR = path.join(__dirname, '../dist');
 const HTML_FILE = path.join(DIST_DIR, 'index.html');
 const isDevelopment = config.env !== 'production';
 
+app.use(session({
+    secret: 'keyboard cat',
+    store: new MongoStore({ mongooseConnection: mongoose.connection }),
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        httpOnly: false,
+    },
+}));
+app.use(bodyParser.urlencoded({
+    extended: true,
+}));
+app.use(bodyParser.json());
+app.use(expressValidator());
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', req.headers.origin);
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    next();
+});
+
 dotenv.config({ path: './config/config' });
 mongoose.connect(config.db);
 app.use(log('dev'));
@@ -37,30 +59,6 @@ function startServerCallback(err, result) {
     if (err) console.error(err);
     console.log(`Client started on ${config.url}:${config.clientport}/`);
 }
-
-app.use(session({
-    secret: 'keyboard cat',
-    store: new MongoStore({ mongooseConnection: mongoose.connection }),
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        httpOnly: false,
-    },
-}));
-
-app.use(bodyParser.urlencoded({
-    extended: true,
-}));
-app.use(bodyParser.json());
-app.use(expressValidator());
-
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', req.headers.origin);
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
-    res.header('Access-Control-Allow-Credentials', 'true');
-    next();
-});
 
 const server = app.listen(port, () => {
     console.log(`${config.env} server started on ${config.url}:${port}`);
