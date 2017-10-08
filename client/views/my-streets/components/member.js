@@ -4,21 +4,21 @@ import React, { PropTypes } from 'react';
 export default function Member(props) {
 
     const { member, i, userSelected } = props;
-    const picturePath = `https://graph.facebook.com/${member.facebook.id}/picture?type=normal`;
+    const { name, facebook: { picture, id } } = member;
 
     return (
         <li style={{ height: 42 }} key={i}>
             <div className='po dropdown show'>
                 <a className='n-post-user' id='dropdownMenuLink' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-                    <img className='n-comment-user-icon' src={picturePath} role='img' />
+                    <img className='n-comment-user-icon' src={picture} role='img' />
                     <div style={{ height: 8 }} />
-                    <div className='n-street-name col-xs-12'>{member.name}</div>
+                    <div className='n-street-name col-xs-12'>{name}</div>
                     <span className='caret' />
                 </a>
 
                 <ul className='dropdown-menu' aria-labelledby='dropdownMenuLink'>
                     <li>
-                        <a onClick={() => { userSelected(member.facebook.id); }}>Go To Profile</a>
+                        <a onClick={() => { userSelected(id); }}>Go To Profile</a>
                     </li>
                     <li><a className='dropdown-item' href='' data-toggle='modal' data-target='#myModal'>Report</a></li>
                 </ul>

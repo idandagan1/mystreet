@@ -1,5 +1,7 @@
 import React, { PropTypes } from 'react';
 import moment from 'moment';
+import { FileLoader } from 'components';
+import superagent from 'superagent';
 import './post-form.scss';
 
 export default class PostForm extends React.Component {
@@ -16,30 +18,75 @@ export default class PostForm extends React.Component {
         super(props);
         const { Strings } = props;
         this.state = {
+            url: '',
+            params: {},
             image: '',
-            filepath: '',
             body: Strings.postPlaceholder,
         };
+    }
 
+    onFileUpload = (url, params, image) => {
+        this.setState({
+            url,
+            params,
+            image,
+        });
     }
 
     onSubmitForm = (e) => {
         e.preventDefault();
-        const { addNewPost } = this.props;
+        const { url, params, image } = this.state;
 
+        if (!url || !params || !image) {
+            this.submitPost();
+            return;
+        }
+
+        this.submitImage(url, params, image);
+
+    }
+
+    submitImage(url, params, image) {
+        const uploadRequest = superagent.post(url);
+        uploadRequest.attach('file', image);
+
+        Object.keys(params).forEach((key) => {
+            uploadRequest.field(key, params[key]);
+        });
+
+        uploadRequest.end((err, resp) => {
+            if (err) {
+                console.log('error while uploading image');
+                return;
+            }
+            this.submitPost(resp.body.secure_url);
+        });
+    }
+
+    submitPost(imageUrl) {
+        const { addNewPost } = this.props;
         const newPost = {
             body: this.formfield.value,
             createDate: moment(),
             comment: [],
-            imageurl: this.imagepath.value,
+            imageUrl,
         }
-        this.formfield.value = '';
-        addNewPost(newPost);
 
+        addNewPost(newPost);
+        this.cleanInputs();
+    }
+
+    cleanInputs() {
+        this.formfield.value = '';
+        document.getElementById('fileInputId').value = '';
+        this.setState({
+            url: '',
+            params: {},
+            image: '',
+        });
     }
 
     render() {
-        const { filepath } = this.state;
         const { username, Strings } = this.props;
         return (
             <div className='panel'>
@@ -59,19 +106,12 @@ export default class PostForm extends React.Component {
                                     required='true'
                                 />
                             </div>
-                            <h3>{filepath}</h3>
                         </div>
                         <div className='panel-footer n-postform-footer'>
-
                             <div className='n-footer-filepicker'>
                                 <ul className='pull-left list-inline'>
-                                    <li><input
-                                        onChange={this.uploadFile}
-                                        ref='file'
-                                        className='filepicker'
-                                        id='file'
-                                        type='file'
-                                    />
+                                    <li>
+                                        <FileLoader onFileUpload={this.onFileUpload} />
                                     </li>
                                 </ul>
                             </div>
@@ -87,6 +127,6 @@ export default class PostForm extends React.Component {
                     </form>
                 </div>
             </div>
-        )
+        );
     }
 }

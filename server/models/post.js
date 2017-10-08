@@ -47,6 +47,9 @@ const postSchema = new Schema({
         type: ObjectId,
         ref: 'user',
     }],
+    imageUrl: {
+        type: String,
+    },
     comments: [commentSchema],
 }, { collection: 'post' });
 mongoose.model('comments', commentSchema);

@@ -182,7 +182,7 @@ async function logoutUser(req, res) {
 }
 
 async function loginFacebook(req, res) {
-    const { id, name, first_name, last_name, gender, accessToken: token } = req.body;
+    const { picture: { data: { url: picture } }, id, name, first_name, last_name, gender, accessToken: token } = req.body;
 
     // find the user in the database based on their facebook id
     await User.findOne({ 'facebook.id': id })
@@ -196,6 +196,7 @@ async function loginFacebook(req, res) {
                     const newUser = new User({
                         facebook: {
                             id,
+                            picture,
                             token,
                             name,
                             first_name,

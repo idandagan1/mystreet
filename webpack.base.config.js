@@ -47,7 +47,7 @@ module.exports = {
             {
                 test: /\.css$/,
                 exclude: /node_modules/,
-                loader: 'style-loader!css-loader!autoprefixer-loader',
+                use: ['style-loader', 'css-loader', 'autoprefixer-loader'],
             },
             {
                 loader: 'style!css!sass',

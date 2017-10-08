@@ -32,6 +32,7 @@ class Post extends React.Component {
             body: PropTypes.string,
             createDate: PropTypes.date,
             comments: PropTypes.array,
+            imageUrl: PropTypes.string,
         }),
         Strings: PropTypes.shape({
             search: PropTypes.string,
@@ -99,7 +100,7 @@ class Post extends React.Component {
     }
 
     render() {
-        const { Strings, postContent: { body, createDate, author, comments } } = this.props;
+        const { Strings, postContent: { body, createDate, author, comments, imageUrl } } = this.props;
         const picturePath = `https://graph.facebook.com/${author.facebook.id}/picture?type=normal`;
         const linkToUserFacebook = `https://www.facebook.com/app_scoped_user_id/${author.facebook.id}`;
 
@@ -121,7 +122,15 @@ class Post extends React.Component {
                             </div>
                             <hr />
                             <div className='form-group'>
-                                {body}
+                                <span>{body}</span>
+                                {
+                                    imageUrl ?
+                                        <img
+                                            src={imageUrl}
+                                            alt='post-img'
+                                            className='img-responsive n-post-img'
+                                        /> : void(0)
+                                }
                             </div>
                             <hr />
                             <ol className='pull-left list-inline'>

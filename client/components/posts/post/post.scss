@@ -16,6 +16,7 @@
     cursor: pointer;
     text-decoration: underline;
 }
+
 hr {
     border: 0px;
     height: 0px;
@@ -23,41 +24,56 @@ hr {
     border-top: 1px solid rgba(0, 0, 0, 0.1);
     border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
-.n-post-header {
-    padding-left: 15px;
-    display: inline-block;
-    position: relative;
-    width: 100%;
+
+.n-post {
+
+    &-user-icon {
+        display: inline-block;
+        margin: 0px 7px;
+        border-radius: 2px;
+        float: left;
+        width: 35px;
+        height: 35px;
+    }
+
+    &-img {
+        margin: 5px 0px;
+    }
+
+    &-user {
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    &-date {
+        font-size: 12px;
+        color: grey;
+    }
+
+    &-body {
+        padding: 15px 15px 3px 15px;
+    }
+
+    &-reactions {
+        display: inline-block;
+        margin: 0px 5px;
+    }
+
+    &-header {
+        padding-left: 15px;
+        display: inline-block;
+        position: relative;
+        width: 100%;
+    }
 }
+
 .x-rtl .n-post-header{
     padding-right: 15px;
-}
-
-.n-post-user-icon {
-    display: inline-block;
-    margin: 0px 7px;
-    border-radius: 2px;
-    float: left;
-    width: 35px;
-    height: 35px;
-}
-
-.n-post-user{
-    font-size: 14px;
-    font-weight: bold;
-}
-.n-post-date{
-    font-size: 12px;
-    color: grey;
 }
 
 .typing{
     font-style: italic;
     font-size: 11px;
-}
-
-.n-post-body{
-    padding: 15px 15px 3px 15px;
 }
 
 .n-text-12{
@@ -67,10 +83,5 @@ hr {
 .n-reactions-icon{
     width: 15px;
     height: 15px;
-}
-
-.n-post-reactions{
-    display: inline-block;
-    margin: 0px 5px;
 }
 

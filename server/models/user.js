@@ -44,6 +44,7 @@ const userSchema = new Schema({
     },
     facebook: {
         id: String,
+        picture: String,
         token: String,
         email: String,
         name: String,

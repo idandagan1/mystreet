@@ -32,7 +32,7 @@ async function addLikeToPost(req, res) {
 async function addPost(req, res) {
 
     const userId = req.session.user._id;
-    const { post: { body }, streetId } = req.body;
+    const { post: { body, imageUrl }, streetId } = req.body;
 
     if (!userId || !streetId) {
         return res.status(400).send('There have been validation errors');
@@ -41,8 +41,10 @@ async function addPost(req, res) {
     const newPost = new Post({
         createDate: Date.now(),
         author: userId,
+        imageUrl,
         body,
     });
+
     await newPost.save((err) => {
         Post.populate(newPost, {
             path: 'author',
