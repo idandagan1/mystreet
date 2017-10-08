@@ -4,13 +4,14 @@ import React, { PropTypes } from 'react';
 export default function Member(props) {
 
     const { member, i, userSelected } = props;
-    const { name, facebook: { picture, id } } = member;
+    const { facebook: { id }, name } = member;
+    const picturePath = `https://graph.facebook.com/v2.6/${member.facebook.id}/fields=picture?type=normal`;
 
     return (
         <li style={{ height: 42 }} key={i}>
             <div className='po dropdown show'>
                 <a className='n-post-user' id='dropdownMenuLink' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-                    <img className='n-comment-user-icon' src={picture} role='img' />
+                    <img className='n-comment-user-icon' alt='user-icon' src={picturePath} role='img' />
                     <div style={{ height: 8 }} />
                     <div className='n-street-name col-xs-12'>{name}</div>
                     <span className='caret' />
