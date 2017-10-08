@@ -5,7 +5,7 @@ export default function Member(props) {
 
     const { member, i, userSelected } = props;
     const { facebook: { id }, name } = member;
-    const picturePath = `https://graph.facebook.com/v2.6/${member.facebook.id}/fields=picture?type=normal`;
+    const picturePath = `https://graph.facebook.com/${id}/picture?type=normal`;
 
     return (
         <li style={{ height: 42 }} key={i}>
