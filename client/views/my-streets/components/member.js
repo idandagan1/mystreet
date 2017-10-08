@@ -10,7 +10,7 @@ export default function Member(props) {
         <li style={{ height: 42 }} key={i}>
             <div className='po dropdown show'>
                 <a className='n-post-user' id='dropdownMenuLink' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-                    <img className='n-comment-user-icon' alt='user-icon' src={picturePath} role='img' />
+                    <img className='n-comment-user-icon' src={picturePath} role='img' />
                     <div style={{ height: 8 }} />
                     <div className='n-street-name col-xs-12'>{member.name}</div>
                     <span className='caret' />
