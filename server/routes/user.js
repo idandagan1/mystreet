@@ -155,8 +155,8 @@ async function getUserLogin(req, res) {
                 populate: ['local.primaryStreet'],
             }, { path: 'local.primaryStreet' }, { path: 'local.streets' }])
             .then((user, errors) =>
-                new Promise(async (resolve, reject) => {
-                    await getFacebookFriends(user.facebook.token)
+                new Promise((resolve, reject) => {
+                    getFacebookFriends(user.facebook.token)
                         .then((friends, error) => {
                             User.findOneAndUpdate({ 'facebook.id': user.facebook.id },
                                 { $addToSet: { 'facebook.friends': { $each: friends } } },
