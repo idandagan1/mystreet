@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 import { SearchStreet } from 'components';
-import { FacebookLogin } from 'react-facebook-login-component';
+import FacebookLogin from 'react-facebook-login';
 import * as utils from '../../../util/utils';
 import logo from '../logo2.png';
 import ProfileButton from './profile-button';
@@ -85,15 +85,12 @@ export default function Header(props) {
                                 /> :
                                 <li>
                                     <FacebookLogin
-                                        socialId={process.env.SERVER_HOST === 'http://localhost' ? '120994491908422' : '678252172335402'}
-                                        language='en_US'
-                                        scope='user_friends,public_profile,email,user_about_me'
-                                        responseHandler={onLoginClick}
-                                        xfbml={true}
-                                        fields='id,email,name'
-                                        version='v2.5'
-                                        className='btn n-google-search-btn-search n-ch'
-                                        buttonText={Strings.login}
+                                        appId={process.env.SERVER_HOST === 'http://localhost' ? '120994491908422' : '678252172335402'}
+                                        autoLoad={false}
+                                        fields='name,email,picture'
+                                        callback={onLoginClick}
+                                        cssClass='btn n-google-search-btn-search n-ch'
+                                        textButton='Login'
                                     />
                                 </li>
                         }
