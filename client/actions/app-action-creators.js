@@ -1,4 +1,5 @@
 import Cookies from 'universal-cookie';
+import { browserHistory } from 'react-router';
 import appActionTypes from './app-action-types';
 import userActionTypes from './user-action-types';
 import myStreetsActionTypes from './my-streets-action-types';
@@ -95,7 +96,7 @@ function getActiveUserSuccededed({ activeUser }) {
                     error => dispatch(getStreetFailed(error)),
                 );
         }
-
+        browserHistory.push('/mystreets');
     };
 }
 
