@@ -86,7 +86,7 @@ export default function Header(props) {
                                 <li>
                                     <FacebookLogin
                                         socialId={process.env.SERVER_HOST === 'http://localhost' ? '120994491908422' : '678252172335402'}
-                                        scope='name,email,picture'
+                                        scope='user_friends,public_profile,email,user_about_me'
                                         responseHandler={onLoginClick}
                                         xfbml={true}
                                         version='v2.5'
