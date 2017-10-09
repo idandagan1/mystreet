@@ -120,6 +120,8 @@ export default function StreetDetails({ props }) {
                             />
                             : null
                     }
+                    {(canUserJoinStreet() && !isAuthenticated) ? <p className='n-arrow'>&darr;</p> : null}
+                    {(canUserJoinStreet() && !isAuthenticated) ? <p>You must log in</p> : null}
                 </div>
             </div>
             {
