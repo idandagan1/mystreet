@@ -16,6 +16,18 @@
         width: 100%;
     }
 
+    &-img {
+        display: none;
+    }
+
+    &-title {
+        display: none;
+    }
+
+    &-subtitle {
+        display: none;
+    }
+
     video {
         min-width:100%;
         max-width:100%;
@@ -37,5 +49,36 @@
     video {
         display: none;
     }
+
+    .n-dashboard-img {
+        display: inline-block;
+    }
+}
+
+@media screen and (max-width: 450px) {
+    .n-search-tips-container {
+        display: none;
+    }
+
+    .n-dashboard {
+
+        &-img {
+            display: inline-block;
+            position: relative !important;
+        }
+
+        &-title {
+            display: inline-block;
+            margin: 25px 25px 0px 25px;
+        }
+
+        &-subtitle {
+            display: inline-block;
+            margin: 0px 25px;
+            color: darkorange;
+            font-weight: 200;
+        }
+    }
+
 }
 

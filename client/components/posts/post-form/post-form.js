@@ -35,6 +35,7 @@ export default class PostForm extends React.Component {
 
     onSubmitForm = (e) => {
         e.preventDefault();
+        document.body.classList.add('uploadImg');
         const { url, params, image } = this.state;
 
         if (!url || !params || !image) {
@@ -57,6 +58,8 @@ export default class PostForm extends React.Component {
         uploadRequest.end((err, resp) => {
             if (err) {
                 console.log('error while uploading image');
+                alert('unable to upload photo, please try again later');
+                this.cleanInputs();
                 return;
             }
             this.submitPost(resp.body.secure_url);
@@ -79,6 +82,7 @@ export default class PostForm extends React.Component {
     cleanInputs() {
         this.formfield.value = '';
         document.getElementById('fileInputId').value = '';
+        document.body.classList.remove('uploadImg');
         this.setState({
             url: '',
             params: {},

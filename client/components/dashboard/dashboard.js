@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { SearchStreet } from 'components';
 import streetVideo from 'resources/videos/1.mp4';
-import streetImage from 'resources/images/cover.png';
+import streetImage from 'resources/images/cover.jpg';
 import './dashboard.scss';
 
 export default class Dashboard extends React.Component {
@@ -31,7 +31,9 @@ export default class Dashboard extends React.Component {
                 >
                     <source src={streetVideo} type='video/mp4' />
                 </video>
-                <img src={streetImage} alt='street' />
+                <img className='n-dashboard-img' src={streetImage} alt='street' />
+                <h1 className='n-dashboard-title'>MyStreet</h1>
+                <h3 className='n-dashboard-subtitle'>for a better neighborhood</h3>
                 <div className='n-dashboard-search'>
                     <div className='n-street-search'>
                         <div className='navbar-form'>

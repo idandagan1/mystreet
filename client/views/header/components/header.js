@@ -79,7 +79,7 @@ export default function Header(props) {
                                     id={id}
                                 /> :
                                 <FacebookLogin
-                                    appId='678252172335402'
+                                    appId={process.env.SERVER_HOST === 'http://localhost' ? '120994491908422' : '678252172335402'}
                                     isLoggedIn={isAuthenticated}
                                     callback={loginSubmitted}
                                     autoLoad={autoLoad}

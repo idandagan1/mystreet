@@ -25,3 +25,9 @@
 .n-street-search{
     margin: 25% auto;
 }
+
+@media screen and (max-width: 450px) {
+    .n-street-search{
+        margin: 0% auto;
+    }
+}

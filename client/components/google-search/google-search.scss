@@ -63,8 +63,12 @@
         display: inline-block;
     }
 }
-//
-//.x-rtl .n-google-search-form input{
-//    text-align: right;
-//    direction: rtl;
-//}
+
+@media screen and (max-width: 450px) {
+
+    .n-google-search{
+        &-textfield {
+            width: 220px;
+        }
+    }
+}
