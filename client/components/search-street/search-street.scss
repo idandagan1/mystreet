@@ -26,6 +26,12 @@
     margin: 25% auto;
 }
 
+@media screen and (max-width: 600px) {
+    .n-search-tip-icon {
+        display: none;
+    }
+}
+
 @media screen and (max-width: 450px) {
     .n-street-search{
         margin: 0% auto;
