@@ -19,6 +19,11 @@ export default function Header(props) {
         setLanguage(e.target.value);
     }
 
+    function onLoginClick(response) {
+        document.getElementById('bs-example-navbar-collapse-1').classList.remove('in');
+        loginSubmitted(response);
+    }
+
     function getLanguages() {
         return (
             <select
@@ -83,7 +88,7 @@ export default function Header(props) {
                                         socialId={process.env.SERVER_HOST === 'http://localhost' ? '120994491908422' : '678252172335402'}
                                         language='en_US'
                                         scope='user_friends,public_profile,email,user_about_me'
-                                        responseHandler={loginSubmitted}
+                                        responseHandler={onLoginClick}
                                         xfbml={true}
                                         fields='id,email,name'
                                         version='v2.5'
