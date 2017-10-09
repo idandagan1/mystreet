@@ -1,7 +1,19 @@
 /* eslint-disable no-undef */
 import React, { PropTypes } from 'react';
+import { objectToParams } from 'util/utils';
 import './facebook-button.scss';
 
+const getIsMobile = () => {
+    let isMobile = false;
+
+    try {
+        isMobile = !!((window.navigator && window.navigator.standalone) || navigator.userAgent.match('CriOS') || navigator.userAgent.match(/mobile/i));
+    } catch (ex) {
+        // continue regardless of error
+    }
+
+    return isMobile;
+};
 
 export default class FacebookLogin extends React.Component {
 
@@ -9,11 +21,13 @@ export default class FacebookLogin extends React.Component {
         isLoggedIn: PropTypes.bool,
         callback: PropTypes.func.isRequired,
         appId: PropTypes.string.isRequired,
+        disableMobileRedirect: PropTypes.bool,
         xfbml: PropTypes.bool,
         cookie: PropTypes.bool,
         reAuthenticate: PropTypes.bool,
         scope: PropTypes.string,
         redirectUri: PropTypes.string,
+        isMobile: PropTypes.bool,
         autoLoad: PropTypes.bool,
         fields: PropTypes.string,
         version: PropTypes.string,
@@ -28,6 +42,7 @@ export default class FacebookLogin extends React.Component {
         xfbml: false,
         cookie: false,
         reAuthenticate: false,
+        isMobile: getIsMobile(),
         fields: 'name',
         version: '2.3',
         language: 'en_US',
@@ -35,10 +50,17 @@ export default class FacebookLogin extends React.Component {
     };
 
     state = {
+        isSdkLoaded: false,
         isProcessing: false,
     };
 
     componentDidMount() {
+        this._isMounted = true;
+        if (document.getElementById('facebook-jssdk')) {
+            this.sdkLoaded();
+            return;
+        }
+        this.setFbAsyncInit();
         this.loadSdkAsynchronously();
         let fbRoot = document.getElementById('fb-root');
         if (!fbRoot) {
@@ -49,8 +71,22 @@ export default class FacebookLogin extends React.Component {
         this.setFbAsyncInit();
     }
 
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
+
+    setStateIfMounted(state) {
+        if (this._isMounted) {
+            this.setState(state);
+        }
+    }
+
     onLoginClick = () => {
-        const { isProcessing } = this.state;
+        const { isSdkLoaded, isProcessing } = this.state;
+        const { isMobile, disableMobileRedirect } = this.props;
+        if (!isSdkLoaded || isProcessing) {
+            return;
+        }
         document.body.classList.add('loading');
         const {
             scope,
@@ -82,7 +118,11 @@ export default class FacebookLogin extends React.Component {
             params.auth_type = 'reauthenticate';
         }
 
-        window.FB.login(this.checkLoginState, { scope, auth_type: params.auth_type });
+        if (isMobile && !disableMobileRedirect) {
+            window.location.href = `//www.facebook.com/dialog/oauth?${objectToParams(params)}`;
+        } else {
+            window.FB.login(this.checkLoginState, { scope, auth_type: params.auth_type });
+        }
     };
 
     setFbAsyncInit() {
@@ -94,6 +134,7 @@ export default class FacebookLogin extends React.Component {
                 xfbml,
                 cookie,
             });
+            this.setStateIfMounted({ isSdkLoaded: true });
             if (autoLoad || window.location.search.includes('facebookdirect')) {
                 window.FB.getLoginStatus(this.checkLoginAfterRefresh);
             }
@@ -138,12 +179,16 @@ export default class FacebookLogin extends React.Component {
     };
 
     checkLoginAfterRefresh = (response) => {
-        if (response.status === 'unknown') {
-            window.FB.login(loginResponse => this.checkLoginState(loginResponse), true);
-        } else {
+        if (response.status === 'connected') {
             this.checkLoginState(response);
+        } else {
+            window.FB.login(loginResponse => this.checkLoginState(loginResponse), true);
         }
     };
+
+    sdkLoaded() {
+        this.setState({ isSdkLoaded: true });
+    }
 
     render() {
         const { children } = this.props;

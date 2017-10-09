@@ -14,6 +14,24 @@ module.exports = {
     },
 }
 
+/**
+ * Encode object to url parameters
+ *
+ * @param      {Object} paramsObj The object needs to encode as url parameters
+ * @return     {String} Encoded url parameters
+ */
+
+module.exports.objectToParams = function (paramsObj) {
+    let str = '';
+    for (const key in paramsObj) {
+        if (str !== '') {
+            str += '&';
+        }
+        str += `${key}=${encodeURIComponent(paramsObj[key])}`;
+    }
+    return str;
+}
+
 module.exports.setCookie = function (c_name, value, exdays) {
     const exdate = new Date();
     exdate.setDate(exdate.getDate() + exdays);
