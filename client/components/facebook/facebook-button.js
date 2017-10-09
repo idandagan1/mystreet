@@ -40,7 +40,7 @@ export default class FacebookLogin extends React.Component {
         redirectUri: `${process.env.SERVER_URL}/user/login/facebook/callback`,
         scope: 'user_friends,public_profile,email,user_about_me',
         xfbml: false,
-        cookie: false,
+        cookie: true,
         reAuthenticate: false,
         isMobile: getIsMobile(),
         fields: 'name',

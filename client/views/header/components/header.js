@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
-import FacebookLogin from 'components/facebook/facebook-button';
 import { SearchStreet } from 'components';
+import { FacebookLogin } from 'react-facebook-login-component';
 import * as utils from '../../../util/utils';
 import logo from '../logo2.png';
 import ProfileButton from './profile-button';
@@ -23,7 +23,7 @@ export default function Header(props) {
         return (
             <select
                 value={Strings.language}
-                className='custom-select n-lang'
+                className='custom-select n-ch'
                 onChange={onLanguageChange}
             >
                 <option value='en'>English</option>
@@ -61,7 +61,7 @@ export default function Header(props) {
                                 <li><Link to='/mystreets'>{Strings.myStreetsTitle}</Link></li> :
                                 null
                         }
-                        <li className='n-lang'>{getLanguages()}</li>
+                        <li className='n-ch'>{getLanguages()}</li>
                         <li className='n-search-street-header'>
                             <SearchStreet
                                 Strings={Strings}
@@ -78,14 +78,19 @@ export default function Header(props) {
                                     name={name}
                                     id={id}
                                 /> :
-                                <FacebookLogin
-                                    appId={process.env.SERVER_HOST === 'http://localhost' ? '120994491908422' : '678252172335402'}
-                                    isLoggedIn={isAuthenticated}
-                                    callback={loginSubmitted}
-                                    autoLoad={autoLoad}
-                                >
-                                    {Strings.login}
-                                </FacebookLogin>
+                                <li>
+                                    <FacebookLogin
+                                        socialId={process.env.SERVER_HOST === 'http://localhost' ? '120994491908422' : '678252172335402'}
+                                        language='en_US'
+                                        scope='user_friends,public_profile,email,user_about_me'
+                                        responseHandler={loginSubmitted}
+                                        xfbml={true}
+                                        fields='id,email,name'
+                                        version='v2.5'
+                                        className='btn n-google-search-btn-search n-ch'
+                                        buttonText={Strings.login}
+                                    />
+                                </li>
                         }
                     </ul>
                 </div>
