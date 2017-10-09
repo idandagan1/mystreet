@@ -89,6 +89,7 @@ export default function Header(props) {
                                         scope='name,email,picture'
                                         responseHandler={onLoginClick}
                                         xfbml={true}
+                                        version='v2.5'
                                         className='btn n-google-search-btn-search n-ch'
                                         buttonText='Login'
                                     />
