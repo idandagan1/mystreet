@@ -42,11 +42,7 @@ export default class FacebookLogin extends React.Component {
             });
 
             if (autoLoad || window.location.search.includes('facebookdirect')) {
-                FB.getLoginStatus((response) => {
-                    if (response.status === 'connected') {
-                        callback({ status: response.status });
-                    }
-                });
+                FB.getLoginStatus((response) => this.responseApi(response.authResponse));
             }
         };
     }

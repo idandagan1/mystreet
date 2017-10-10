@@ -130,8 +130,17 @@ function getUserFailed(error) {
     };
 }
 
-function loginSucceeded({ activeUser }) {
+function loginSucceeded({ activeUser, msg }) {
     return dispatch => {
+
+        if (!activeUser) {
+            dispatch({
+                type: userActionTypes.USER_NOT_FOUND,
+                data: { msg },
+            });
+            return;
+        }
+
         dispatch({
             type: userActionTypes.LOGIN_SUCCEEDED,
             data: { ...activeUser },

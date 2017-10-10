@@ -18,9 +18,9 @@ export default function Header(props) {
         setLanguage(e.target.value);
     }
 
-    function onLoginClick(response) {
+    function onLoginClick(user) {
         document.getElementById('bs-example-navbar-collapse-1').classList.remove('in');
-        loginSubmitted(response);
+        loginSubmitted(user);
     }
 
     function getLanguages() {
