@@ -51,6 +51,10 @@ export default class FacebookLogin extends React.Component {
     }
 
     responseApi = (authResponse) => {
+        if (!authResponse) {
+            document.body.classList.remove('loading');
+            return;
+        }
         const { callback } = this.props;
         FB.api('/me', { fields: this.props.fields }, (me) => {
             me.accessToken = authResponse.accessToken;
