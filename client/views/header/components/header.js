@@ -19,7 +19,6 @@ export default function Header(props) {
     }
 
     function onLoginClick(user) {
-        document.getElementById('bs-example-navbar-collapse-1').classList.remove('in');
         loginSubmitted(user);
     }
 
@@ -54,7 +53,14 @@ export default function Header(props) {
                         <span className='icon-bar' />
                     </button>
                     <Link className='navbar-brand' to='/'>
-                        <img alt='logo' src={logo} width='23' height='23' />
+                        <img
+                            alt='logo'
+                            src={logo} width='23'
+                            height='23'
+                            data-toggle='collapse'
+                            data-target='#bs-example-navbar-collapse-1'
+                            aria-expanded='false'
+                        />
                     </Link>
                 </div>
 
@@ -62,8 +68,14 @@ export default function Header(props) {
                     <ul className='nav navbar-nav'>
                         {
                             isAuthenticated ?
-                                <li><Link to='/mystreets'>{Strings.myStreetsTitle}</Link></li> :
-                                null
+                                <li>
+                                    <Link
+                                        data-toggle='collapse'
+                                        data-target='#bs-example-navbar-collapse-1'
+                                        aria-expanded='false'
+                                        to='/mystreets'
+                                    >{Strings.myStreetsTitle}</Link>
+                                </li> : null
                         }
                         <li className='n-ch'>{getLanguages()}</li>
                         <li className='n-search-street-header'>

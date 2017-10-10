@@ -18,7 +18,15 @@ export default function ProfileButton(props) {
                 <span className='caret' />
             </a>
             <ul className='dropdown-menu'>
-                <li><Link to={`/user/${id}`}>{Strings.myProfileTitle}</Link></li>
+                <li>
+                    <Link
+                        to={`/user/${id}`}
+                        data-toggle='collapse'
+                        data-target='#bs-example-navbar-collapse-1'
+                        aria-expanded='false'
+                    >{Strings.myProfileTitle}
+                    </Link>
+                </li>
                 <li role='separator' className='divider' />
                 <li><a href='/' onClick={logoutSubmitted}>{Strings.logout}</a></li>
             </ul>

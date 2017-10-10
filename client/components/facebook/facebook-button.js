@@ -22,6 +22,7 @@ export default class FacebookLogin extends React.Component {
     };
 
     componentDidMount() {
+        document.body.classList.add('loading');
         const { autoLoad, callback } = this.props;
         (function (d, s, id) {
             const element = d.getElementsByTagName(s)[0];
@@ -43,6 +44,8 @@ export default class FacebookLogin extends React.Component {
 
             if (autoLoad || window.location.search.includes('facebookdirect')) {
                 FB.getLoginStatus((response) => this.responseApi(response.authResponse));
+            } else {
+                document.body.classList.remove('loading');
             }
         };
     }
