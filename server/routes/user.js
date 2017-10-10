@@ -312,8 +312,8 @@ router.get('/auth/facebook', passport.authenticate('facebook', {
 router.get('/auth/facebook/callback', (req, res, next) => {
     passport.authenticate('facebook', (error, user) => {
         const uri = process.env.NODE_ENV === 'production' ?
-            'http://localhost:8000'
-            : 'https://mystreet.herokuapp.com';
+            'https://mystreet.herokuapp.com'
+            : 'http://localhost:8000';
 
         if (error || !user) {
             res.redirect(uri);
