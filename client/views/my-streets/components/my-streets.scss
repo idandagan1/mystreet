@@ -148,6 +148,7 @@
     padding: 0px;
     margin: 0px;
     width:100%;
+    overflow: scroll;
     max-height: 207px;
 }
 
@@ -181,7 +182,7 @@
         overflow: hidden;
         padding: 0px;
         white-space: nowrap;
-        max-width: 100px;
+        max-width: 50%;
     }
 }
 
