@@ -20,6 +20,12 @@ export default createReducer(initialState, {
         };
     },
 
+    [postActionTypes.DELETE_POST_SUCCEEDED](state, action) {
+        return {
+            ...state,
+        };
+    },
+
     [appActionTypes.SET_LANGUAGE](state, action) {
         const { data: Strings } = action;
 

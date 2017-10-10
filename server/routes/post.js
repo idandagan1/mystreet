@@ -120,18 +120,16 @@ async function getPostsByPlaceId(req, res) {
 
 async function deletePost(req, res) {
 
-    const { postId } = req.body;
+    const {id} = req.query;
 
-    if (!postId) {
-        return res.send('postID', 400);
+    if (!id) {
+        return res.send('post id missing', 400);
     }
 
-    await Post.findByIdAndRemove(postId).exec()
+    await Post.findByIdAndRemove(id)
         .then(post => {
-                if (post) {
-                    console.log('Deleted post');
-                    res.status(200).send({ msg: 'Deleted post' });
-                }
+                console.log('Deleted post: ', id);
+                res.status(200).send({ msg: 'Deleted post' });
             }
         );
 }

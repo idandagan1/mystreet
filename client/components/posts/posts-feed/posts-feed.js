@@ -48,10 +48,15 @@ class PostsFeed extends Component {
     }
 
     getPostsFeedList = () => {
-        const { addCommentSubmitted, postsfeed, Strings } = this.props;
+        const { addCommentSubmitted, postsfeed } = this.props;
 
         return postsfeed && postsfeed.length > 0 ?
-            postsfeed.map((post, i) => <Post addCommentHandler={addCommentSubmitted} key={i} postContent={post} />) : null;
+            postsfeed.map((post, i) =>
+                <Post
+                    key={i}
+                    addCommentHandler={addCommentSubmitted}
+                    postContent={post}
+                />) : null;
     }
 
     addNewPost = (newPost) => {

@@ -57,3 +57,13 @@ export function getPostsFeed() {
         });
     });
 }
+
+export function deletePost(id) {
+    return new Promise((resolve, reject) => {
+        $.ajax(`${config.posts}/deletePost?id=${id}`, {
+            method: 'DELETE',
+            success: (res, status, xhr) => resolve(res),
+            error: (xhr, status, error) => reject(xhr.responseJSON),
+        });
+    });
+}

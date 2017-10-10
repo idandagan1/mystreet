@@ -1,12 +1,14 @@
 import React, { PropTypes } from 'react';
 import { Comment, CommentForm } from 'components/comment';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { replaceDateTime } from 'util/utils.js';
 import moment from 'moment';
+import { deletePost } from 'actions/post-action-creators';
 import './post.scss';
 
 function select(state) {
-    const { post: { newComment }, user: { Strings } } = state;
+    const { post: { newComment }, user: { Strings, activeUser } } = state;
 
     const comments = [];
     if (newComment.author) {
@@ -19,6 +21,7 @@ function select(state) {
         newComment,
         comments,
         Strings,
+        activeUser,
     };
 }
 
@@ -99,11 +102,20 @@ class Post extends React.Component {
         }
     }
 
+    isAuthor(authorId) {
+        const { activeUser: { _id } } = this.props;
+        return authorId === _id;
+    }
+
+    onDeletePost(id) {
+        const { deletePost } = this.props;
+        deletePost(id);
+    }
+
     render() {
-        const { Strings, postContent: { body, createDate, author, comments, imageUrl } } = this.props;
+        const { Strings, postContent: { _id, body, createDate, author, comments, imageUrl } } = this.props;
         const picturePath = `https://graph.facebook.com/${author.facebook.id}/picture?type=normal`;
         const linkToUserFacebook = `https://www.facebook.com/app_scoped_user_id/${author.facebook.id}`;
-
         return (
             <div className='panel n-postform-panel'>
                 <div className='panel-content'>
@@ -113,12 +125,37 @@ class Post extends React.Component {
                                 <div >
                                     <img alt='user-icon' className='n-post-user-icon' src={picturePath} />
                                 </div>
-                                <div>
+                                <div style={{ display: 'inline-block' }}>
                                     <a className='n-post-user' rel='noopener noreferrer' target='_blank' href={linkToUserFacebook}>
                                         {author.name}
                                     </a>
                                     <div className='n-post-date'>{this.getFormattedDate(createDate)}</div>
                                 </div>
+                                {
+                                    this.isAuthor(author._id) ?
+                                        <div className='dropdown show street-caret pull-right po'>
+                                            <a
+                                                className='n-post-user'
+                                                id='dropdownMenuLink'
+                                                data-toggle='dropdown'
+                                                aria-haspopup='true'
+                                                aria-expanded='false'
+                                            >
+                                                <span className='caret' />
+                                            </a>
+                                            <ul
+                                                className='dropdown-menu'
+                                                aria-labelledby='dropdownMenuLink'
+                                            >
+                                                <li>
+                                                <span
+                                                    className='n-mystreet-street-item'
+                                                    onClick={() => this.onDeletePost(_id)}
+                                                >Delete post</span>
+                                                </li>
+                                            </ul>
+                                        </div> : null
+                                }
                             </div>
                             <hr />
                             <div className='form-group'>
@@ -168,4 +205,8 @@ class Post extends React.Component {
     }
 }
 
-export default connect(select, null)(Post);
+function matchDispatchToProps(dispatch) {
+    return bindActionCreators({ deletePost }, dispatch);
+}
+
+export default connect(select, matchDispatchToProps)(Post);

@@ -8,4 +8,7 @@ export default createActionTypes('POST', [
     'POSTSFEED_NOT_FOUND',
     'ADD_COMMENT_SUCCEEDED',
     'ADD_COMMENT_FAILED',
+    'DELETE_POST_SUBMITTED',
+    'DELETE_POST_SUCCEEDED',
+    'DELETE_POST_FAILED',
 ]);

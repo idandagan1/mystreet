@@ -26,6 +26,22 @@ export function getPostsByPlaceId(placeId) {
     };
 }
 
+export function deletePost(id) {
+    return dispatch => {
+
+        dispatch({
+            type: postActionTypes.DELETE_POST_SUBMITTED,
+            data: id,
+        });
+
+        postApi.deletePost(id)
+            .then(
+                response => dispatch(deletePostSucceeded(response)),
+                error => dispatch(deletePostFailed(error)),
+            );
+    };
+}
+
 export function addCommentSubmitted(comment, postId) {
     return dispatch => {
         postApi.addComment(comment, postId)
@@ -33,6 +49,18 @@ export function addCommentSubmitted(comment, postId) {
                 response => dispatch(addCommentSucceeded(response)),
                 error => dispatch(addCommentFailed(error)),
             );
+    };
+}
+
+function deletePostSucceeded(response) {
+    return {
+        type: postActionTypes.DELETE_POST_SUCCEEDED,
+    };
+}
+
+function deletePostFailed(response) {
+    return {
+        type: postActionTypes.DELETE_POST_FAILED,
     };
 }
 
