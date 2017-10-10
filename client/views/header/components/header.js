@@ -38,7 +38,6 @@ export default function Header(props) {
     return (
         <div className='navbar navbar-default n-header-theme'>
             <div className='container-fluid'>
-
                 <div className='navbar-header'>
                     <button
                         type='button'
@@ -56,12 +55,32 @@ export default function Header(props) {
                         <img
                             alt='logo'
                             src={logo} width='23'
+                            className='hidden-xs'
                             height='23'
-                            data-toggle='collapse'
-                            data-target='#bs-example-navbar-collapse-1'
-                            aria-expanded='false'
                         />
                     </Link>
+                    <ul className='col-xs-8 n-profile-login nav navbar-nav navbar-left visible-xs'>
+                        {
+                            isAuthenticated ?
+                                <ProfileButton
+                                    Strings={Strings}
+                                    logoutSubmitted={logoutSubmitted}
+                                    name={name}
+                                    id={id}
+                                /> :
+                                <FacebookLogin
+                                    appId={process.env.NODE_ENV === 'production' ? '678252172335402' : '120994491908422'}
+                                    scope='user_friends,public_profile,email,user_about_me'
+                                    callback={onLoginClick}
+                                    cookie={true}
+                                    autoLoad={true}
+                                    xfbml={true}
+                                    version='v2.5'
+                                    className='btn n-google-search-btn-search n-ch'
+                                    buttonText='Login'
+                                />
+                        }
+                    </ul>
                 </div>
 
                 <div className='collapse navbar-collapse' id='bs-example-navbar-collapse-1'>
@@ -70,6 +89,11 @@ export default function Header(props) {
                             isAuthenticated ?
                                 <li>
                                     <Link
+                                        className='hidden-xs'
+                                        to='/mystreets'
+                                    >{Strings.myStreetsTitle}</Link>
+                                    <Link
+                                        className='visible-xs'
                                         data-toggle='collapse'
                                         data-target='#bs-example-navbar-collapse-1'
                                         aria-expanded='false'
@@ -85,7 +109,7 @@ export default function Header(props) {
                             />
                         </li>
                     </ul>
-                    <ul className='n-profile-login nav navbar-nav navbar-right'>
+                    <ul className='n-profile-login nav navbar-nav navbar-right hidden-xs'>
                         {
                             isAuthenticated ?
                                 <ProfileButton

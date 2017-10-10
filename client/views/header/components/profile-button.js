@@ -21,6 +21,12 @@ export default function ProfileButton(props) {
                 <li>
                     <Link
                         to={`/user/${id}`}
+                        className='hidden-xs'
+                    >{Strings.myProfileTitle}
+                    </Link>
+                    <Link
+                        to={`/user/${id}`}
+                        className='visible-xs'
                         data-toggle='collapse'
                         data-target='#bs-example-navbar-collapse-1'
                         aria-expanded='false'
