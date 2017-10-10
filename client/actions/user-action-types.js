@@ -14,4 +14,5 @@ export default createActionTypes('USER', [
     'GET_USER_FAILED',
     'UPDATE_USER_FAILED',
     'UPDATE_USER_SUCCEEDED',
+    'GET_USER_LOGIN_SUCCEEDED',
 ]);

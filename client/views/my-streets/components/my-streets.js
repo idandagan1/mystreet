@@ -30,6 +30,7 @@ export default class MyStreets extends React.Component {
                 streets: PropTypes.array,
             }),
         }),
+        getActiveUser: PropTypes.func.isRequired,
         streetsNearby: PropTypes.array,
         isAuthenticated: PropTypes.bool.isRequired,
         addStreetSubmitted: PropTypes.func.isRequired,
@@ -56,7 +57,9 @@ export default class MyStreets extends React.Component {
     }
 
     componentDidMount() {
+        const { getActiveUser, activeUser } = this.props;
         this.updateDimensions();
+        getActiveUser(activeUser);
         window.addEventListener('resize', this.updateDimensions);
     }
 

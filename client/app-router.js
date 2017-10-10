@@ -25,6 +25,7 @@ export default class AppRouter extends Component {
                 <Route path='/' component={AppLayout}>
                     <IndexRoute component={Dashboard} />
                     <Route path='mystreets' component={MyStreets} />
+                    <Route path='mystreets/#_=_' component={MyStreets} />
                     <Route path='business' component={Business} />
                     <Route path='user/:id' component={Profile} />
                 </Route>

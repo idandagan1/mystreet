@@ -9,6 +9,7 @@ import expressValidator from 'express-validator';
 import webpack from 'webpack';
 import dotenv from 'dotenv';
 import WebpackDevServer from 'webpack-dev-server';
+import passportInit from './config/passport';
 import * as devConfig from '../webpack.development.config';
 import * as config from './config/config';
 import routes from './routes/';
@@ -46,6 +47,7 @@ app.use((req, res, next) => {
 dotenv.config({ path: './config/config' });
 mongoose.connect(config.db);
 app.use(log('dev'));
+passportInit(app);
 app.use(routes);
 
 if (isDevelopment) {

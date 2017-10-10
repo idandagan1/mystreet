@@ -1,11 +1,40 @@
 import * as userApi from 'api/user-api';
 import * as streetApi from 'api/streets-api';
-import { browserHistory } from 'react-router'
 import { push } from 'react-router-redux';
 import headerActionTypes from 'views/header/state/header-action-types';
 import userActionTypes from './user-action-types';
 import myStreetsActionTypes from './my-streets-action-types';
 
+export function getActiveUser(user) {
+    return dispatch => {
+        if (user && user._id) {
+            dispatch(getUserLoginSucceeded(user));
+            return;
+        }
+        userApi.getActiveUser()
+            .then(
+                response => dispatch(loginSucceeded(response)),
+                error => dispatch(loginFailed(error)),
+            );
+    };
+}
+
+function getUserLoginSucceeded(user) {
+    return dispatch => {
+        dispatch({
+            type: userActionTypes.GET_USER_LOGIN_SUCCEEDED,
+            data: { ...user },
+        });
+
+        if (user.local.primaryStreet) {
+            streetApi.getStreetByPlaceId(user.local.primaryStreet.placeId)
+                .then(
+                    response => dispatch(searchStreetSucceeded(response, user.local.primaryStreet)),
+                    error => dispatch(searchStreetFailed(error)),
+                );
+        }
+    };
+}
 
 export function facebookLoginSubmitted(user) {
     return dispatch => {
@@ -101,17 +130,17 @@ function getUserFailed(error) {
     };
 }
 
-function loginSucceeded({ user }) {
+function loginSucceeded({ activeUser }) {
     return dispatch => {
         dispatch({
             type: userActionTypes.LOGIN_SUCCEEDED,
-            data: { ...user },
+            data: { ...activeUser },
         });
 
-        if (user.local.primaryStreet) {
-            streetApi.getStreetByPlaceId(user.local.primaryStreet.placeId)
+        if (activeUser.local.primaryStreet) {
+            streetApi.getStreetByPlaceId(activeUser.local.primaryStreet.placeId)
                 .then(
-                    response => dispatch(searchStreetSucceeded(response, user.local.primaryStreet)),
+                    response => dispatch(searchStreetSucceeded(response, activeUser.local.primaryStreet)),
                     error => dispatch(searchStreetFailed(error)),
             );
         }

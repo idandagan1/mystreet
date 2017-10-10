@@ -1,5 +1,6 @@
 /* eslint-disable no-underscore-dangle, consistent-return, no-param-reassign */
 import { Router as expressRouter } from 'express';
+import passport from 'passport';
 import { Street } from '../models/street';
 import { User } from '../models/user';
 import getFbData from '../models/facebook';
@@ -148,31 +149,31 @@ async function getUserLogin(req, res) {
 
     const { user: activeUser } = req.session;
 
-    activeUser ?
-        await User.findOne({ 'facebook.id': activeUser.facebook.id })
+    await activeUser ?
+        User.findOne({ 'facebook.id': activeUser.facebook.id })
             .populate([{
                 path: 'facebook.friends',
                 populate: ['local.primaryStreet'],
             }, { path: 'local.primaryStreet' }, { path: 'local.streets' }])
-            .then((user, errors) =>
-                new Promise((resolve, reject) => {
-                    getFacebookFriends(user.facebook.token)
-                        .then((friends, error) => {
-                            User.findOneAndUpdate({ 'facebook.id': user.facebook.id },
-                                { $addToSet: { 'facebook.friends': { $each: friends } } },
-                                { new: true })
-                                .populate([{
-                                    path: 'facebook.friends',
-                                    populate: ['local.primaryStreet'],
-                                }, { path: 'local.primaryStreet' }, { path: 'local.streets' }])
-                                .then(populateuser => {
-                                    resolve(populateuser);
-                                });
-                        });
-                }))
+            // .then((user, errors) =>
+            //     new Promise((resolve, reject) => {
+            //         getFacebookFriends(user.facebook.token)
+            //             .then((friends, error) => {
+            //                 User.findOneAndUpdate({ 'facebook.id': user.facebook.id },
+            //                     { $addToSet: { 'facebook.friends': { $each: friends } } },
+            //                     { new: true })
+            //                     .populate([{
+            //                         path: 'facebook.friends',
+            //                         populate: ['local.primaryStreet'],
+            //                     }, { path: 'local.primaryStreet' }, { path: 'local.streets' }])
+            //                     .then(populateuser => {
+            //                         resolve(populateuser);
+            //                     });
+            //             });
+            //     }))
             .then(populateuser => {
-                res.status(200).send({ activeUser: populateuser });
-            }) : await res.status(200).send({ msg: 'user not fund' });
+               return res.status(200).send({ activeUser: populateuser });
+            }) : res.status(200).send({ msg: 'user not fund' });
 
 }
 
@@ -239,7 +240,7 @@ async function loginFacebook(req, res) {
         .then((user) => {
             req.session.user = user;
             req.session.save();
-            return res.status(200).send({ user });
+            return res.status(200).send({ activeUser: user });
         });
 }
 
@@ -248,7 +249,7 @@ router.get('/getFriends', getFriends);
 router.get('/getUsersByRadius', getUsersByRadius);
 router.get('/getUserById', getUserById);
 router.get('/getUserLogin', getUserLogin);
-router.get('/logoutUser', logoutUser)
+router.get('/logoutUser', logoutUser);
 
 // POST
 router.post('/login/facebook', loginFacebook);
@@ -303,5 +304,25 @@ function updateProfessionalInfo(req, res) {
     // }));
 
 }
+
+router.get('/auth/facebook', passport.authenticate('facebook', {
+    scope: ['public_profile', 'user_location', 'email', 'user_friends']
+}));
+
+router.get('/auth/facebook/callback', (req, res, next) => {
+    passport.authenticate('facebook', (error, user) => {
+        if (error || !user) {
+            res.redirect('http://localhost:8000');
+            return;
+        }
+
+        if (user) {
+            req.session.user = user;
+            req.session.save();
+            res.redirect('http://localhost:8000/mystreets');
+        }
+    })(req, res, next);
+
+});
 
 export default router;

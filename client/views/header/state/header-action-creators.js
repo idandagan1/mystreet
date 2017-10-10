@@ -1,4 +1,4 @@
-import { facebookLoginSubmitted, logoutUser } from 'actions/user-action-creators';
+import { getActiveUser, logoutUser } from 'actions/user-action-creators';
 import * as streetsApi from 'api/streets-api';
 import * as postsApi from 'api/post-api';
 import headerActionTypes from './header-action-types';
@@ -9,7 +9,7 @@ export function loginSubmitted(user) {
             type: headerActionTypes.LOGIN_SUBMITTED,
         });
 
-        dispatch(facebookLoginSubmitted(user));
+        dispatch(getActiveUser());
     };
 }
 

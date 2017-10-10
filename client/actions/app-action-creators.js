@@ -25,11 +25,11 @@ export function appLoaded() {
                 error => dispatch(getLocationFailed(error)),
             );
 
-        userApi.getActiveUser()
-            .then(
-                response => dispatch(getActiveUserSuccededed(response)),
-                error => dispatch(getActiveUserFailed(error)),
-            );
+        // userApi.getActiveUser()
+        //     .then(
+        //         response => dispatch(getActiveUserSuccededed(response)),
+        //         error => dispatch(getActiveUserFailed(error)),
+        //     );
     };
 }
 
@@ -83,7 +83,6 @@ function getActiveUserSuccededed({ activeUser }) {
         if (!activeUser) {
             return dispatch({ type: userActionTypes.USER_NOT_FOUND });
         }
-
         dispatch({
             type: userActionTypes.LOGIN_SUCCEEDED,
             data: { ...activeUser },

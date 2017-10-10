@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 import { SearchStreet } from 'components';
-import { FacebookLogin } from 'react-facebook-login-component';
+import FacebookLogin from 'components/facebook/facebook-button';
 import * as utils from '../../../util/utils';
 import logo from '../logo2.png';
 import ProfileButton from './profile-button';
@@ -11,7 +11,6 @@ import './header.scss';
 export default function Header(props) {
 
     const { Strings, isAuthenticated, logoutSubmitted, loginSubmitted, searchSubmitted, user: { name, facebook: { id } } } = props;
-    const autoLoad = false;
 
     function onLanguageChange(e) {
         const { setLanguage } = props;
@@ -38,7 +37,7 @@ export default function Header(props) {
     }
 
     return (
-        <nav className='navbar navbar-default n-header-theme'>
+        <div className='navbar navbar-default n-header-theme'>
             <div className='container-fluid'>
 
                 <div className='navbar-header'>
@@ -83,22 +82,22 @@ export default function Header(props) {
                                     name={name}
                                     id={id}
                                 /> :
-                                <li>
-                                    <FacebookLogin
-                                        socialId={process.env.SERVER_HOST === 'http://localhost' ? '120994491908422' : '678252172335402'}
-                                        scope='user_friends,public_profile,email,user_about_me'
-                                        responseHandler={onLoginClick}
-                                        xfbml={true}
-                                        version='v2.5'
-                                        className='btn n-google-search-btn-search n-ch'
-                                        buttonText='Login'
-                                    />
-                                </li>
+                                <FacebookLogin
+                                    appId={process.env.SERVER_HOST === 'http://localhost' ? '120994491908422' : '678252172335402'}
+                                    scope='user_friends,public_profile,email,user_about_me'
+                                    callback={onLoginClick}
+                                    cookie={true}
+                                    autoLoad={true}
+                                    xfbml={true}
+                                    version='v2.5'
+                                    className='btn n-google-search-btn-search n-ch'
+                                    buttonText='Login'
+                                />
                         }
                     </ul>
                 </div>
             </div>
-        </nav>
+        </div>
     );
 }
 

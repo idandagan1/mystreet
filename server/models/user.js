@@ -48,6 +48,8 @@ const userSchema = new Schema({
         token: String,
         email: String,
         name: String,
+        link: String,
+        imgurl: String,
         first_name: String,
         last_name: String,
         gender: String,

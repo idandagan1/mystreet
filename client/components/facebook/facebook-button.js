@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { login } from 'actions/user-action-creators';
 
 export default class FacebookLogin extends React.Component {
 
@@ -16,15 +17,17 @@ export default class FacebookLogin extends React.Component {
         language: PropTypes.string,
         onClick: PropTypes.func,
         children: PropTypes.node,
+        className: PropTypes.string,
         buttonText: PropTypes.string,
     };
 
     componentDidMount() {
+        const { autoLoad, callback } = this.props;
         (function (d, s, id) {
             const element = d.getElementsByTagName(s)[0];
             const fjs = element;
             let js = element;
-            if (d.getElementById(id)) {return;}
+            if (d.getElementById(id)) { return; }
             js = d.createElement(s); js.id = id;
             js.src = '//connect.facebook.net/en_US/sdk.js';
             fjs.parentNode.insertBefore(js, fjs);
@@ -32,11 +35,19 @@ export default class FacebookLogin extends React.Component {
 
         window.fbAsyncInit = () => {
             FB.init({
-                appId: this.props.socialId,
+                appId: this.props.appId,
                 xfbml: this.props.xfbml,
                 cookie: this.props.cookie,
                 version: this.props.version,
             });
+
+            if (autoLoad || window.location.search.includes('facebookdirect')) {
+                FB.getLoginStatus((response) => {
+                    if (response.status === 'connected') {
+                        callback({ status: response.status });
+                    }
+                });
+            }
         };
     }
 
@@ -54,10 +65,8 @@ export default class FacebookLogin extends React.Component {
         if (response.authResponse) {
             this.responseApi(response.authResponse);
         } else {
-            if (callback) {
-                document.body.classList.remove('loading');
-                callback({ status: response.status });
-            }
+            document.body.classList.remove('loading');
+            callback({ status: response.status });
         }
     }
 
@@ -65,7 +74,7 @@ export default class FacebookLogin extends React.Component {
         document.body.classList.add('loading');
         FB.getLoginStatus((response) => {
             if (response.status !== 'connected') {
-                FB.login(this.checkLoginState, { scope: this.props.scope });
+                 window.location = 'http://localhost:8001/user/auth/facebook';
             } else {
                 this.checkLoginState(response);
             }
@@ -73,18 +82,13 @@ export default class FacebookLogin extends React.Component {
     };
 
     render() {
-        const {
-            appId, xfbml, cookie, version, language, fields, onClick,
-            children, buttonText, ...props
-        } = this.props;
+        const { buttonText, className } = this.props;
 
         return (
-            <li>
-                <a
-                    className='btn n-google-search-btn-search n-ch'
-                    onClick={this.onLoginClick}
-                >{buttonText}</a>
-            </li>
+            <a
+                className={className}
+                onClick={this.onLoginClick}
+            >{buttonText}</a>
         );
     }
 }
