@@ -83,7 +83,7 @@ export default function Header(props) {
                                     id={id}
                                 /> :
                                 <FacebookLogin
-                                    appId={process.env.SERVER_HOST === 'http://localhost' ? '120994491908422' : '678252172335402'}
+                                    appId={process.env.NODE_ENV === 'production' ? '678252172335402' : '120994491908422'}
                                     scope='user_friends,public_profile,email,user_about_me'
                                     callback={onLoginClick}
                                     cookie={true}

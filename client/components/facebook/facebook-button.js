@@ -74,7 +74,9 @@ export default class FacebookLogin extends React.Component {
         document.body.classList.add('loading');
         FB.getLoginStatus((response) => {
             if (response.status !== 'connected') {
-                 window.location = 'http://localhost:8001/user/auth/facebook';
+                 window.location = process.env.NODE_ENV === 'production' ?
+                     'https://mystreet.herokuapp.com/user/auth/facebook/callback'
+                     : 'http://localhost:8001/user/auth/facebook';
             } else {
                 this.checkLoginState(response);
             }
