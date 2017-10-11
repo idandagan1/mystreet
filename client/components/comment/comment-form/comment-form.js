@@ -5,7 +5,7 @@ class CommentForm extends React.Component {
 
     static propTypes = {
         displayWriter: PropTypes.func,
-        displayComment: PropTypes.func,
+        submitComment: PropTypes.func,
         Strings: PropTypes.shape({
             search: PropTypes.string,
         }),
@@ -18,17 +18,14 @@ class CommentForm extends React.Component {
         };
     }
 
-    onCommentClick = () => {
-        const { username } = this.state;
-        const { displayComment } = this.props;
+    onCommentSubmit = () => {
+        const { submitComment } = this.props;
         const comment = {
-            username,
             body: this.comment.value,
-        }
-        if (comment) {
-            displayComment(comment);
-            this.comment.value = '';
-        }
+        };
+
+        submitComment(comment);
+        this.comment.value = '';
     }
 
     onChange = () => {
@@ -43,17 +40,18 @@ class CommentForm extends React.Component {
             <div className='panel-footer n-comment-footer'>
                 <div className='row'>
                     <div className='col-lg-12'>
-                        <div className='input-group'>
+                        <div className='input-group' >
                             <input
                                 type='text'
                                 className='form-control'
                                 ref={comment => { this.comment = comment; }}
                                 placeholder={Strings.writeComment}
+                                required={true}
                             />
                             <span className='input-group-btn' >
                                 <button
-                                    onClick={this.onCommentClick}
                                     className='btn btn-default'
+                                    onClick={this.onCommentSubmit}
                                     type='button'
                                 >{Strings.comment}</button>
                             </span>

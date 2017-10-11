@@ -42,9 +42,9 @@ export function deletePost(id) {
     };
 }
 
-export function addCommentSubmitted(comment, postId) {
+export function addCommentSubmitted(comment, postId, authorId) {
     return dispatch => {
-        postApi.addComment(comment, postId)
+        postApi.addComment(comment, postId, authorId)
             .then(
                 response => dispatch(addCommentSucceeded(response)),
                 error => dispatch(addCommentFailed(error)),

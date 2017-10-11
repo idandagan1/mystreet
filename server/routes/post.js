@@ -63,24 +63,17 @@ async function addPost(req, res) {
 
 async function addComment(req, res) {
 
-    const userId = req.session.user._id;
-    const { body, postId } = req.body;
+    const { postId, comment: { body, authorId, date } } = req.body;
 
-    if (!userId || !postId) {
+    if (!authorId || !postId) {
         return res.status(400).send({ msg: 'There have been validation errors' });
-    }
-
-    const newComment = {
-        createDate: Date.now(),
-        author: req.session.user,
-        body,
     }
 
     Post.findByIdAndUpdate(postId, {
             $push: {
                 comments: {
-                    createDate: Date.now(),
-                    author: mongoose.Types.ObjectId(userId),
+                    createDate: date,
+                    author: mongoose.Types.ObjectId(authorId),
                     body,
                 },
             },
@@ -88,7 +81,7 @@ async function addComment(req, res) {
         { new: true })
         .then(post => {
             console.log('Added comment successfully');
-            return res.status(200).send({ newComment, status: 'ok' });
+            return res.status(200).send({ post, status: 'ok' });
         });
 }
 

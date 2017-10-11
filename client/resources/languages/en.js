@@ -44,4 +44,5 @@ module.exports = {
     profileChangeMsg: 'Your profile has been changed successfully!',
     reportFormMsg: 'Thanks for your report! Our team will handle this.',
     language: 'en',
+    deletePost: 'Delete Post',
 };

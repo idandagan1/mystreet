@@ -18,10 +18,15 @@ export function addPost(post, streetId) {
     });
 }
 
-export function addComment(comment, postId) {
+export function addComment(comment, postId, authorId) {
+    const { body, date } = comment;
     const data = {
         postId,
-        body: comment.body,
+        comment: {
+            body,
+            date,
+            authorId,
+        },
     }
 
     return new Promise((resolve, reject) => {

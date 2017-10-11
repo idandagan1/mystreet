@@ -8,18 +8,9 @@ import { deletePost } from 'actions/post-action-creators';
 import './post.scss';
 
 function select(state) {
-    const { post: { newComment }, user: { Strings, activeUser } } = state;
-
-    const comments = [];
-    if (newComment.author) {
-        const comment = Object.assign({}, newComment);
-        comments.unshift(comment);
-        newComment.author = null;
-    }
+    const { user: { Strings, activeUser } } = state;
 
     return {
-        newComment,
-        comments,
         Strings,
         activeUser,
     };
@@ -47,7 +38,6 @@ class Post extends React.Component {
         super(props);
         const { postContent: { createDate, _id } } = props;
         const formattedDate = this.getFormattedDate(createDate);
-
         this.state = {
             showCommentForm: false,
             isWritting: false,
@@ -70,15 +60,26 @@ class Post extends React.Component {
         this.interval = setInterval(this.updatePostDate, 60000);
     }
 
+    componentWillReceiveProps = (props, newprops) => {
+        const { postContent: { comments } } = props;
+        this.setState({ comments });
+    }
+
     onCommentClick = () => {
         this.setState({ showCommentForm: !this.state.showCommentForm });
     }
 
-    displayComment = (comment) => {
-        const { addCommentHandler, postContent: { _id } } = this.props;
-        const comments = this.state.comments;
-        comments.push(comment);
-        addCommentHandler(comment, _id);
+    onSubmitComment = (comment) => {
+        const { activeUser, addCommentHandler, postContent: { _id } } = this.props;
+        const { comments } = this.state;
+        const newComment = {
+            date: Date.now(),
+            author: activeUser,
+            body: comment.body,
+        }
+
+        comments.push(newComment);
+        addCommentHandler(newComment, _id, activeUser._id);
         this.setState({ comments });
     }
 
@@ -113,7 +114,8 @@ class Post extends React.Component {
     }
 
     render() {
-        const { Strings, postContent: { _id, body, createDate, author, comments, imageUrl } } = this.props;
+        const { Strings, postContent: { _id, body, createDate, author, imageUrl } } = this.props;
+        const { comments } = this.state;
         const picturePath = `https://graph.facebook.com/${author.facebook.id}/picture?type=normal`;
         const linkToUserFacebook = `https://www.facebook.com/app_scoped_user_id/${author.facebook.id}`;
         return (
@@ -148,10 +150,10 @@ class Post extends React.Component {
                                                 aria-labelledby='dropdownMenuLink'
                                             >
                                                 <li>
-                                                <span
-                                                    className='n-mystreet-street-item'
-                                                    onClick={() => this.onDeletePost(_id)}
-                                                >Delete post</span>
+                                                    <span
+                                                        className='n-mystreet-street-item'
+                                                        onClick={() => this.onDeletePost(_id)}
+                                                    >{Strings.deletePost}</span>
                                                 </li>
                                             </ul>
                                         </div> : null
@@ -166,11 +168,11 @@ class Post extends React.Component {
                                             src={imageUrl}
                                             alt='post-img'
                                             className='img-responsive n-post-img'
-                                        /> : void(0)
+                                        /> : null
                                 }
                             </div>
                             <hr />
-                            <ol className='pull-left list-inline'>
+                            <ul className='pull-left list-inline'>
                                 <li>
                                     <div>
                                         <div
@@ -182,7 +184,7 @@ class Post extends React.Component {
                                 <li>
                                     <div className='typing'>{this.state.writer}</div>
                                 </li>
-                            </ol>
+                            </ul>
                         </div>
                         <div className='panel-footer n-post-footer'>
                             <div>
@@ -196,7 +198,7 @@ class Post extends React.Component {
                                 <CommentForm
                                     Strings={Strings}
                                     displayWriter={this.displayWriter}
-                                    displayComment={this.displayComment}
+                                    submitComment={this.onSubmitComment}
                                 /> : '' }</div>
                     </form>
                 </div>

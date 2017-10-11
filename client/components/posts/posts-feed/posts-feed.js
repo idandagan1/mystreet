@@ -8,7 +8,6 @@ import './posts-feed.scss';
 
 function select(state) {
     const { postsfeed: { postsfeed }, user: { Strings } } = state;
-
     return {
         postsfeed,
         Strings,
