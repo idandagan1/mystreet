@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import moment from 'moment';
 import { FileLoader } from 'components';
 import superagent from 'superagent';
+import $ from 'jquery';
 import './post-form.scss';
 
 export default class PostForm extends React.Component {
@@ -23,6 +24,7 @@ export default class PostForm extends React.Component {
             image: '',
             body: Strings.postPlaceholder,
         };
+
     }
 
     onFileUpload = (url, params, image) => {
@@ -35,7 +37,6 @@ export default class PostForm extends React.Component {
 
     onSubmitForm = (e) => {
         e.preventDefault();
-        document.body.classList.add('loading');
         const { url, params, image } = this.state;
 
         if (!url || !params || !image) {
@@ -47,14 +48,21 @@ export default class PostForm extends React.Component {
     }
 
     submitImage(url, params, image) {
-        const uploadRequest = superagent.post(url);
+
+        let progressVal;
+        const uploadRequest = superagent.post(url).on('progress', (e) => {
+            progressVal = Math.round((e.loaded * 100.0) / e.total);
+            $('.progress-bar').css('width', `${progressVal}%`);
+            $('.progress-bar').text(`${progressVal}%`);
+        });
         uploadRequest.attach('file', image);
 
         Object.keys(params).forEach((key) => {
             uploadRequest.field(key, params[key]);
         });
-
+        $('#progressWrapper').fadeIn('slow');
         uploadRequest.end((err, resp) => {
+            $('#progressWrapper').fadeOut();
             if (err) {
                 console.log('error while uploading image');
                 alert('unable to upload photo, please try again later');
@@ -81,7 +89,6 @@ export default class PostForm extends React.Component {
     cleanInputs() {
         this.formfield.value = '';
         document.getElementById('fileInputId').value = '';
-        document.body.classList.remove('loading');
         this.setState({
             url: '',
             params: {},
@@ -92,42 +99,58 @@ export default class PostForm extends React.Component {
     render() {
         const { username, Strings } = this.props;
         return (
-            <div className='panel'>
-                <div className='panel-content'>
-                    <form onSubmit={this.onSubmitForm} className='form center-block'>
-                        <input
-                            type='hidden'
-                            ref={imagepath => { this.imagepath = imagepath; }}
-                            value={this.state.imageurl}
-                        />
-                        <div className='panel-body n-post-form'>
-                            <div className='form-group'>
-                                <textarea
-                                    ref={formfield => { this.formfield = formfield; }}
-                                    className='form-control input-lg n-postform-textarea'
-                                    placeholder={Strings.postPlaceholder + username}
-                                    required='true'
-                                />
+            <div>
+                <div className='panel'>
+                    <div className='panel-content'>
+                        <form onSubmit={this.onSubmitForm} className='form center-block'>
+                            <input
+                                type='hidden'
+                                ref={imagepath => { this.imagepath = imagepath; }}
+                                value={this.state.imageurl}
+                            />
+                            <div className='panel-body n-post-form'>
+                                <div className='form-group'>
+                                    <textarea
+                                        ref={formfield => { this.formfield = formfield; }}
+                                        className='form-control input-lg n-postform-textarea'
+                                        placeholder={Strings.postPlaceholder + username}
+                                        required='true'
+                                    />
+                                </div>
                             </div>
-                        </div>
-                        <div className='panel-footer n-postform-footer'>
-                            <div className='n-footer-filepicker'>
-                                <ul className='pull-left list-inline'>
-                                    <li>
-                                        <FileLoader onFileUpload={this.onFileUpload} />
-                                    </li>
-                                </ul>
+                            <div className='panel-footer n-postform-footer'>
+                                <div className='n-footer-filepicker'>
+                                    <ul className='pull-left list-inline'>
+                                        <li>
+                                            <FileLoader onFileUpload={this.onFileUpload} />
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div className='n-post-btn-wrapper'>
+                                    <button
+                                        type='submit'
+                                        className='btn btn-sm postbutton n-btn-post'
+                                    >
+                                        {Strings.post}
+                                    </button>
+                                </div>
                             </div>
-                            <div className='n-post-btn-wrapper'>
-                                <button
-                                    type='submit'
-                                    className='btn btn-sm postbutton n-btn-post'
-                                >
-                                    {Strings.post}
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
+                </div>
+
+                <div id='progressWrapper' className='panel'>
+                    <div id='progressTxt'>{Strings.uploadPost}</div>
+                    <div className='progress'>
+                        <div
+                            className='progress-bar'
+                            role='progressbar'
+                            style={{ width: '0%' }}
+                            aria-valuenow='0'
+                            aria-valuemin='0'
+                            aria-valuemax='100'
+                        >0%</div>
+                    </div>
                 </div>
             </div>
         );

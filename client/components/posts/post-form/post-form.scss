@@ -69,3 +69,17 @@ body.uploadImg {
 body.uploadImg #n-uploadimg {
     display: block;
 }
+
+#progressWrapper {
+    width: 100%;
+    padding: 5px 11px;
+    background-color: white;
+}
+#progressTxt {
+    margin: 5px 0px;
+}
+#myBar {
+    width: 1%;
+    height: 30px;
+    background-color: orange;
+}

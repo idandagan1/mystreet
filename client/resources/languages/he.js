@@ -45,4 +45,5 @@ module.exports = {
     reportFormMsg: 'תודה על הדיווח! הצוות שלנו יטפל בזה.',
     language: 'he',
     deletePost: 'מחק פוסט',
+    uploadPost: 'מעלים את הפוסט שלך...',
 };

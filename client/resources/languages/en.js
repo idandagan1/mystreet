@@ -45,4 +45,5 @@ module.exports = {
     reportFormMsg: 'Thanks for your report! Our team will handle this.',
     language: 'en',
     deletePost: 'Delete Post',
+    uploadPost: 'Uploading your post...',
 };
