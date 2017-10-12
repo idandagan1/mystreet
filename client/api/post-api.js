@@ -7,7 +7,6 @@ export function addPost(post, streetId) {
         streetId,
         post,
     }
-
     return new Promise((resolve, reject) => {
         $.ajax(`${config.posts}/addPost`, {
             method: 'POST',

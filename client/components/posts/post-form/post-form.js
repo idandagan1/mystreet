@@ -38,7 +38,7 @@ export default class PostForm extends React.Component {
     onSubmitForm = (e) => {
         e.preventDefault();
         const { url, params, image } = this.state;
-
+        this.setState({ body: this.formfield.value });
         if (!url || !params || !image) {
             this.submitPost();
             return;
@@ -61,8 +61,9 @@ export default class PostForm extends React.Component {
             uploadRequest.field(key, params[key]);
         });
         $('#progressWrapper').fadeIn('slow');
+        this.cleanInputs();
         uploadRequest.end((err, resp) => {
-            $('#progressWrapper').fadeOut();
+            this.afterProgressBarEnd();
             if (err) {
                 console.log('error while uploading image');
                 alert('unable to upload photo, please try again later');
@@ -73,17 +74,25 @@ export default class PostForm extends React.Component {
         });
     }
 
+    afterProgressBarEnd() {
+        $('#progressWrapper').fadeOut();
+        setTimeout(() => {
+            $('.progress-bar').text('0%');
+            $('.progress-bar').css('width', '0%');
+        }, 3000);
+    }
+
     submitPost(imageUrl) {
         const { addNewPost } = this.props;
+        const { body } = this.state;
         const newPost = {
-            body: this.formfield.value,
+            body,
             createDate: moment(),
             comment: [],
             imageUrl,
         }
 
         addNewPost(newPost);
-        this.cleanInputs();
     }
 
     cleanInputs() {
