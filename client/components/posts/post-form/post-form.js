@@ -139,7 +139,7 @@ export default class PostForm extends React.Component {
                     </div>
                 </div>
 
-                <div id='progressWrapper' className='panel'>
+                <div id='progressWrapper' className='panel' style={{ display: 'none' }}>
                     <div id='progressTxt'>{Strings.uploadPost}</div>
                     <div className='progress'>
                         <div
