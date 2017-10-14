@@ -52,10 +52,13 @@ export default class PostForm extends React.Component {
         let progressVal;
         const uploadRequest = superagent.post(url).on('progress', (e) => {
             progressVal = Math.round((e.loaded * 100.0) / e.total);
-            $('.progress-bar').css('width', `${progressVal}%`);
-            $('.progress-bar').text(`${progressVal}%`);
+            if (Number.isInteger(progressVal)) {
+                $('.progress-bar').css('width', `${progressVal}%`);
+                $('.progress-bar').text(`${progressVal}%`);
+            }
         });
         uploadRequest.attach('file', image);
+        uploadRequest.attach('face_coordinates', 'a_ignore');
 
         Object.keys(params).forEach((key) => {
             uploadRequest.field(key, params[key]);
@@ -65,7 +68,7 @@ export default class PostForm extends React.Component {
         uploadRequest.end((err, resp) => {
             this.afterProgressBarEnd();
             if (err) {
-                console.log('error while uploading image');
+                console.log(err.response.body.error.message);
                 alert('unable to upload photo, please try again later');
                 this.cleanInputs();
                 return;
@@ -93,6 +96,7 @@ export default class PostForm extends React.Component {
         }
 
         addNewPost(newPost);
+        this.cleanInputs();
     }
 
     cleanInputs() {
