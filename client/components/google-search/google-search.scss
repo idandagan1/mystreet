@@ -68,11 +68,24 @@
     }
 }
 
+#searchsubmit-s {
+    display: none;
+}
+
 @media screen and (max-width: 450px) {
 
     .n-google-search{
         &-textfield {
             width: 220px;
         }
+    }
+}
+
+@media screen and (max-width: 767px) {
+    #searchsubmit-m {
+        display: none;
+    }
+    #searchsubmit-s {
+        display: inline-block;
     }
 }

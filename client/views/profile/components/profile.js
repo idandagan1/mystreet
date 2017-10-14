@@ -203,21 +203,21 @@ export default class Profile extends React.Component {
                                     }
                                 </div>
                             </div>
-                            <div className='form-group'>
-                                <label
-                                    htmlFor='inputPassword3'
-                                    className='col-sm-5 control-label'
-                                >{Strings.dateOfBirthTitle}</label>
-                                <div className='col-sm-3'>
-                                    {
-                                        editable ?
-                                            <Datepicker onDateChange={this.onDateChange} /> :
-                                            <label className='col-sm-7 control-label slabel'>
-                                                20/03/89
-                                            </label>
-                                    }
-                                </div>
-                            </div>
+                            {/*<div className='form-group'>*/}
+                                {/*<label*/}
+                                    {/*htmlFor='inputPassword3'*/}
+                                    {/*className='col-sm-5 control-label'*/}
+                                {/*>{Strings.dateOfBirthTitle}</label>*/}
+                                {/*<div className='col-sm-3'>*/}
+                                    {/*{*/}
+                                        {/*editable ?*/}
+                                            {/*<Datepicker onDateChange={this.onDateChange} /> :*/}
+                                            {/*<label className='col-sm-7 control-label slabel'>*/}
+                                                {/*20/03/89*/}
+                                            {/*</label>*/}
+                                    {/*}*/}
+                                {/*</div>*/}
+                            {/*</div>*/}
                             <div className='form-group'>
                                 <label
                                     htmlFor='inputPassword3'

@@ -78,8 +78,18 @@ export default class GoogleSearch extends Component {
                     />
                     <input
                         type='submit'
+                        id='searchsubmit-m'
                         className='btn n-google-search-btn-search'
                         value={Strings.search}
+                    />
+                    <input
+                        type='submit'
+                        id='searchsubmit-s'
+                        className='btn n-google-search-btn-search'
+                        value={Strings.search}
+                        data-toggle='collapse'
+                        data-target='#bs-example-navbar-collapse-1'
+                        aria-expanded='false'
                     />
                 </form>
             </div>
