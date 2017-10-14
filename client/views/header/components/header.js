@@ -10,7 +10,7 @@ import './header.scss';
 
 export default function Header(props) {
 
-    const { Strings, isAuthenticated, logoutSubmitted, loginSubmitted, searchSubmitted, user: { name, facebook: { id } } } = props;
+    const { Strings, isAuthenticated, logoutSubmitted, loginSubmitted, searchSubmitted, user: { facebook: { id, first_name, last_name } } } = props;
 
     function onLanguageChange(e) {
         const { setLanguage } = props;
@@ -65,7 +65,7 @@ export default function Header(props) {
                                 <ProfileButton
                                     Strings={Strings}
                                     logoutSubmitted={logoutSubmitted}
-                                    name={name}
+                                    name={`${first_name} ${last_name}`}
                                     id={id}
                                 /> :
                                 <FacebookLogin
@@ -115,7 +115,7 @@ export default function Header(props) {
                                 <ProfileButton
                                     Strings={Strings}
                                     logoutSubmitted={logoutSubmitted}
-                                    name={name}
+                                    name={`${first_name} ${last_name}`}
                                     id={id}
                                 /> :
                                 <FacebookLogin

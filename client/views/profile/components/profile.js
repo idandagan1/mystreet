@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import facebookicon from 'resources/images/facebook-icon.ico';
 import { Map, Datepicker } from 'components';
+import $ from 'jquery';
 import './profile.scss';
 
 const initialState = {
@@ -119,6 +120,7 @@ export default class Profile extends React.Component {
         const { updatedProfileSubmitted, activeUser: { _id } } = this.props;
         const { first_name, last_name, gender, job, college, newAddress, dateOfBirth } = this.state;
         updatedProfileSubmitted({ first_name, dateOfBirth, last_name, gender, job, college, newAddress, _id });
+        $('html, body').animate({scrollTop: '0px'}, 300);
     }
 
     render() {

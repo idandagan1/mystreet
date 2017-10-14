@@ -103,23 +103,37 @@ class Post extends React.Component {
         }
     }
 
-    isAuthor(authorId) {
+    onImageLoaded = (postId) => {
+
+        if (this.imgpost.complete) {
+            document.getElementById(postId).classList.remove('hidden');
+        } else {
+            debugger;
+        }
+    }
+
+    isAuthor = (authorId) => {
         const { activeUser: { _id } } = this.props;
         return authorId === _id;
     }
 
-    onDeletePost(id) {
+    onDeletePost = (id) => {
         const { deletePost } = this.props;
         deletePost(id);
     }
 
     render() {
-        const { Strings, postContent: { _id, body, createDate, author, imageUrl } } = this.props;
+        const { key: index, Strings, postContent: { _id, body, createDate, author, imageUrl } } = this.props;
+        const postId = `postWrapper${index}`;
         const { comments } = this.state;
         const picturePath = `https://graph.facebook.com/${author.facebook.id}/picture?type=normal`;
         const linkToUserFacebook = `https://www.facebook.com/app_scoped_user_id/${author.facebook.id}`;
         return (
-            <div className='panel n-postform-panel'>
+            <div
+                ref={postwrapper => { this.postwrapper = postwrapper; }}
+                id={postId}
+                className={`panel n-postform-panel ${imageUrl ? 'hidden' : ''}`}
+            >
                 <div className='panel-content'>
                     <form onSubmit={this.onSubmit} className='form center-block'>
                         <div className='panel-body n-post-body'>
@@ -146,7 +160,7 @@ class Post extends React.Component {
                                                 <span className='caret' />
                                             </a>
                                             <ul
-                                                className='dropdown-menu'
+                                                className='dropdown-menu post-menu'
                                                 aria-labelledby='dropdownMenuLink'
                                             >
                                                 <li>
@@ -168,6 +182,8 @@ class Post extends React.Component {
                                             src={imageUrl}
                                             alt='post-img'
                                             className='img-responsive n-post-img'
+                                            ref={imgpost => { this.imgpost = imgpost; }}
+                                            onLoad={() => this.onImageLoaded(postId)}
                                         /> : null
                                 }
                             </div>
