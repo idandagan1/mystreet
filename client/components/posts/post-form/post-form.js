@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import moment from 'moment';
 import { FileLoader } from 'components';
+import deleteIcon from 'resources/images/delete-icon.png';
 import superagent from 'superagent';
 import $ from 'jquery';
 import './post-form.scss';
@@ -33,6 +34,8 @@ export default class PostForm extends React.Component {
             params,
             image,
         });
+
+        this.readURL(image);
     }
 
     onSubmitForm = (e) => {
@@ -47,7 +50,7 @@ export default class PostForm extends React.Component {
         this.submitImage(url, params, image);
     }
 
-    submitImage(url, params, image) {
+    submitImage = (url, params, image) => {
 
         let progressVal;
         const uploadRequest = superagent.post(url).on('progress', (e) => {
@@ -77,7 +80,32 @@ export default class PostForm extends React.Component {
         });
     }
 
-    afterProgressBarEnd() {
+    readURL = (image) => {
+
+        if (image) {
+            const reader = new FileReader();
+
+            reader.onload = (e) => {
+                $('#prevWrapper').show();
+                $('#imgpreview').attr('src', e.target.result);
+            }
+
+            reader.readAsDataURL(image);
+        }
+    }
+
+    onDeleteImgPrev = () => {
+        document.getElementById('fileInputId').value = '';
+        $('#prevWrapper').hide();
+        $('#imgpreview').attr('src', '#');
+        this.setState({
+            url: '',
+            params: {},
+            image: '',
+        });
+    }
+
+    afterProgressBarEnd = () => {
         $('#progressWrapper').fadeOut();
         setTimeout(() => {
             $('.progress-bar').text('0%');
@@ -85,7 +113,7 @@ export default class PostForm extends React.Component {
         }, 3000);
     }
 
-    submitPost(imageUrl) {
+    submitPost = (imageUrl) => {
         const { addNewPost } = this.props;
         const { body } = this.state;
         const newPost = {
@@ -99,9 +127,11 @@ export default class PostForm extends React.Component {
         this.cleanInputs();
     }
 
-    cleanInputs() {
+    cleanInputs = () => {
         this.formfield.value = '';
         document.getElementById('fileInputId').value = '';
+        $('#prevWrapper').hide();
+        $('#imgpreview').attr('src', '#');
         this.setState({
             url: '',
             params: {},
@@ -122,7 +152,7 @@ export default class PostForm extends React.Component {
                                 value={this.state.imageurl}
                             />
                             <div className='panel-body n-post-form'>
-                                <div className='form-group'>
+                                <div>
                                     <textarea
                                         ref={formfield => { this.formfield = formfield; }}
                                         className='form-control input-lg n-postform-textarea'
@@ -130,6 +160,20 @@ export default class PostForm extends React.Component {
                                         required='true'
                                     />
                                 </div>
+                            </div>
+                            <div id='prevWrapper' style={{ display: 'none' }}>
+                                <img
+                                    id='imgpreview'
+                                    src='#'
+                                    alt='imgpreview'
+                                    className='img-responsive img-preview'
+                                />
+                                <img
+                                    alt='delete'
+                                    className='delete-prev'
+                                    onClick={this.onDeleteImgPrev}
+                                    src={deleteIcon}
+                                />
                             </div>
                             <div className='panel-footer n-postform-footer'>
                                 <div className='n-footer-filepicker'>

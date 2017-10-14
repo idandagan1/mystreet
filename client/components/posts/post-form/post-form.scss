@@ -89,3 +89,15 @@ body.uploadImg #n-uploadimg {
 .progress-bar {
      background-color: orange;
 }
+
+.img-preview {
+    max-width: 25%;
+    padding: 15px;
+    display: inline-block;
+}
+
+.delete-prev {
+    max-width: 5%;
+    display: inline-block;
+    cursor: pointer;
+}
