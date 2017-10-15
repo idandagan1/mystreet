@@ -18,12 +18,11 @@ export default class PostForm extends React.Component {
 
     constructor(props) {
         super(props);
-        const { Strings } = props;
         this.state = {
             url: '',
             params: {},
             image: '',
-            body: Strings.postPlaceholder,
+            body: '',
         };
 
     }
@@ -115,9 +114,9 @@ export default class PostForm extends React.Component {
 
     submitPost = (imageUrl) => {
         const { addNewPost } = this.props;
-        const { body } = this.state;
+
         const newPost = {
-            body,
+            body: this.formfield.value,
             createDate: moment(),
             comment: [],
             imageUrl,

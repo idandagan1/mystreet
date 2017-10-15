@@ -5,7 +5,7 @@ import headerActionTypes from 'views/header/state/header-action-types';
 import userActionTypes from './user-action-types';
 import myStreetsActionTypes from './my-streets-action-types';
 
-export function getActiveUser(user) {
+export function getActiveUser(user, streetSelected) {
     return dispatch => {
         if (user && user._id) {
             dispatch(getUserLoginSucceeded(user));
@@ -13,7 +13,7 @@ export function getActiveUser(user) {
         }
         userApi.getActiveUser()
             .then(
-                response => dispatch(loginSucceeded(response)),
+                response => dispatch(loginSucceeded(response, streetSelected)),
                 error => dispatch(loginFailed(error)),
             );
     };
@@ -130,7 +130,7 @@ function getUserFailed(error) {
     };
 }
 
-function loginSucceeded({ activeUser, msg }) {
+function loginSucceeded({ activeUser, msg }, streetSelected) {
     return dispatch => {
 
         if (!activeUser) {
@@ -146,15 +146,15 @@ function loginSucceeded({ activeUser, msg }) {
             data: { ...activeUser },
         });
 
-        if (activeUser.local.primaryStreet) {
+        if (!streetSelected && activeUser.local.primaryStreet) {
             streetApi.getStreetByPlaceId(activeUser.local.primaryStreet.placeId)
                 .then(
                     response => dispatch(searchStreetSucceeded(response, activeUser.local.primaryStreet)),
                     error => dispatch(searchStreetFailed(error)),
             );
-        }
 
-        dispatch(push('/mystreets'));
+            dispatch(push('/mystreets'));
+        }
     };
 }
 

@@ -28,6 +28,7 @@ class Post extends React.Component {
             comments: PropTypes.array,
             imageUrl: PropTypes.string,
         }),
+        index: PropTypes.number.isRequired,
         Strings: PropTypes.shape({
             search: PropTypes.string,
         }),
@@ -107,8 +108,6 @@ class Post extends React.Component {
 
         if (this.imgpost.complete) {
             document.getElementById(postId).classList.remove('hidden');
-        } else {
-            debugger;
         }
     }
 
@@ -123,7 +122,7 @@ class Post extends React.Component {
     }
 
     render() {
-        const { key: index, Strings, postContent: { _id, body, createDate, author, imageUrl } } = this.props;
+        const { index, Strings, postContent: { _id, body, createDate, author, imageUrl } } = this.props;
         const postId = `postWrapper${index}`;
         const { comments } = this.state;
         const picturePath = `https://graph.facebook.com/${author.facebook.id}/picture?type=normal`;
@@ -132,7 +131,7 @@ class Post extends React.Component {
             <div
                 ref={postwrapper => { this.postwrapper = postwrapper; }}
                 id={postId}
-                className={`panel n-postform-panel ${imageUrl ? 'hidden' : ''}`}
+                className='panel n-postform-panel'
             >
                 <div className='panel-content'>
                     <form onSubmit={this.onSubmit} className='form center-block'>
@@ -183,7 +182,6 @@ class Post extends React.Component {
                                             alt='post-img'
                                             className='img-responsive n-post-img'
                                             ref={imgpost => { this.imgpost = imgpost; }}
-                                            onLoad={() => this.onImageLoaded(postId)}
                                         /> : null
                                 }
                             </div>

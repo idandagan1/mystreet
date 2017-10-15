@@ -53,6 +53,7 @@ class PostsFeed extends Component {
             postsfeed.map((post, i) =>
                 <Post
                     key={i}
+                    index={i}
                     addCommentHandler={addCommentSubmitted}
                     postContent={post}
                 />) : null;
