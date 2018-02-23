@@ -1,95 +1,42 @@
 /* eslint-disable no-underscore-dangle, consistent-return, no-param-reassign */
 import { Router as expressRouter } from 'express';
 import { Street } from '../models/street';
-import { User, removeStreet } from '../models/user';
+import { User } from '../models/user';
 
 const router = expressRouter();
 
 async function getStreetsNearPrimaryStreet(req, res) {
-    const userID = req.session.user._id;
+    const { _id: userId } = req.session.user;
     const radiusInMeters = 2000;
     const limit = 5;
     let myLocation;
 
-    if (!userID) {
-        return res.send('UserID', 400);
+    if (!userId) {
+        return res.send('userId', 400);
     }
 
-    await User.findById(userID).populate('local.primaryStreet').exec()
-        .then(user => {
-            if (user) {
-                const coords = [];
-                myLocation = user.local.primaryStreet.placeId;
-                coords[0] = user.local.primaryStreet.location[0];
-                coords[1] = user.local.primaryStreet.location[1];
+    try {
 
-                getStreetsNearPoint(radiusInMeters, limit, coords, streets =>{
+        const user = await User.findById(userId).populate('local.primaryStreet').exec();
+        if (user) {
+            const coords = [];
+            myLocation = user.local.primaryStreet.placeId;
+            coords[0] = user.local.primaryStreet.location[0];
+            coords[1] = user.local.primaryStreet.location[1];
 
-                    if (streets) {
-                        return res.send({
-                            myLocation,
-                            list: streets,
-                            status: 'ok',
-                        });
-                    }
-
-                });
-
-            }
-        });
-}
-
-async function getNearbyStreets(req, res) {
-    const maxDistance = 1000;
-    const minDistance = 5;
-    const limit = 8;
-    const coords = JSON.parse(req.query.location);
-
-    if (!coords) {
-        return res.send('location is missing', 400);
-    }
-
-    await Street.find(
-        {
-            location: {
-                $near: {
-                    $geometry: {
-                        type: 'Point',
-                        coordinates: coords,
-                    },
-                    $maxDistance: maxDistance,
-                    $minDistance: minDistance,
-                },
-            },
-        })
-        .lean()
-
-        .populate({ path: 'members', model: 'user' })
-
-        .limit(limit)
-
-        .then(streetsNearby =>
-            res.send({
-                streetsNearby,
+            const streets = await getStreetsNearPoint(radiusInMeters, limit, coords);
+            return res.send({
+                myLocation,
+                list: streets,
                 status: 'ok',
-            })
-        );
+            });
+        }
 
-}
-
-async function getSelectedStreet(req, res) {
-    const { selectedStreet } = req.session;
-
-    if (!selectedStreet || !selectedStreet.placeId) {
-        return res.status(200).send({ msg: 'no placeId' });
+    } catch (err) {
+        console.error(err);
+        return res.status(404).send({ msg: err });
     }
 
-    await getStreetByPlaceId(selectedStreet.placeId)
-        .then(street => {
-            req.session.selectedStreet = street;
-            req.session.save();
-            return res.status(200).send({ selectedStreet: street });
-        });
 }
 
 async function getStreets(req, res) {
@@ -97,17 +44,18 @@ async function getStreets(req, res) {
     const userID = req.session.user._id;// TO CHANGE
 
     if (!userID) {
-        return res.send('UserID', 400);
+        return res.status(404).send('UserID', 404);
     }
 
-    await User.findOne({_id: userID}).populate('local.streets').exec()
-        .then(user => {
-                if (user) {
-                    console.log('getStreets execute successfully');
-                    return res.send({content: user.local.streets, status: "ok"});
-                }
-            }
-        );
+    try {
+        const user = await User.findOne({ _id: userID }).populate('local.streets').exec();
+        console.log('getStreets execute successfully');
+        return res.send({ content: user.local.streets, status: "ok" });
+    } catch (err) {
+        console.error(err);
+        res.status(400).send({ msg: err });
+    }
+
 }
 
 async function getMembers(req, res) {
@@ -119,31 +67,15 @@ async function getMembers(req, res) {
         return res.send('placeId', 400);
     }
 
-    await Street.findOne({ placeId }).populate('members')
-        .then(selectedStreet => {
-            console.log('getMembers executed successfully');
-            return res.status(200).send({ selectedStreet });
-        });
-}
-
-async function getStreetAdmins(req, res) {
-
-    const streetID = req.session.streetID;
-
-    if (streetID == null) {
-        res.send('streetID', 400);
+    try {
+        const selectedStreet = await Street.findOne({ placeId }).populate('members').exec();
+        console.log('getMembers executed successfully');
+        return res.status(200).send({ selectedStreet });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send( { msg: err });
     }
 
-    await Street.findOne({ _id: streetID }, { admins: 1, _id: 0 })
-        .populate('admins')
-        .exec((err, street) => {
-                if (err) throw err;
-
-                if (street) {
-                    res.send(street.admins);
-                }
-            }
-        );
 }
 
 async function addStreet(req, res) {
@@ -162,116 +94,187 @@ async function addStreet(req, res) {
         return res.status(500).send(`There have been validation errors: ${errors}`, 400);
     }
 
-    await createStreet(placeId, user_id, location, streetName, address)
-        .then(street => {
-            req.session.selectedStreet = street;
-            req.session.save();
-            addStreetToUser(user_id, street, req, res);
-        });
+    try {
+        const street = await createStreet(placeId, user_id, location, streetName, address);
+        req.session.selectedStreet = street;
+        req.session.save();
+        addStreetToUser(user_id, street, req, res);
+    } catch (err) {
+        console.error(err);
+        return res.status(404).send({ msg: 'street not found' });
+    }
+
 }
 
 async function leaveStreet(req, res) {
 
     const { streetId } = req.query;
-    const userId = req.session.user._id;
+    const { _id: userId } = req.session.user;
 
     if (!userId || !streetId) {
         return res.status(404).send('There have been validation errors', 400);
     }
 
-    await Street.findByIdAndUpdate(streetId, { $pull: { members: userId, admins: userId } }, { new: true })
-        .then(street =>
-            new Promise((resolve, reject) => {
-                if (!street) {
-                    reject(street);
-                }
-                if (street.members.length === 0) {
-                    street.remove();
-                    console.log('Removed street');
-                }
-                resolve(street);
-            }))
-        .then(street => {
-                User.findByIdAndUpdate({ _id: userId }, { $pull: { 'local.streets': streetId } },
-                    { new: true })
-                    .populate(['local.streets', 'local.primaryStreet'])
-                    .then(activeUser => {
-                        if (activeUser) {
-                            if (!activeUser.local.primaryStreet) {
-                                activeUser.local.primaryStreet = activeUser.local.streets[0];
-                            }
-                            activeUser.save();
-                            req.session.user = activeUser;
-                            req.session.save();
-                            console.log('Removed street from users list');
-                            return res.status(200).send({ activeUser, msg: 'Primary street has been changed' });
-                        }
-                    });
-            }
-        );
+    try {
+
+        const street = await Street.findByIdAndUpdate(streetId, { $pull: { members: userId, admins: userId } },
+            { new: true })
+            .exec();
+
+        if (street && street.members.length === 0) {
+            street.remove();
+            console.log('Removed street');
+        }
+
+        const activeUser = await User.findByIdAndUpdate({ _id: userId }, { $pull: { 'local.streets': streetId } },
+            { new: true })
+            .populate(['local.streets', 'local.primaryStreet']).exec();
+        if (!activeUser.local.primaryStreet) {
+            activeUser.local.primaryStreet = activeUser.local.streets[0];
+        }
+        activeUser.save();
+        req.session.user = activeUser;
+        req.session.save();
+        console.log('Removed street from users list');
+        return res.status(200).send({ activeUser, msg: 'Primary street has been changed' });
+
+    } catch(err) {
+        console.error(err);
+        return res.status(404).send({ msg: err });
+    }
+
+}
+
+async function getStreetByPlaceId(req, res) {
+
+    const { placeId } = req.query;
+
+    if (!placeId) {
+        console.error('getStreetByPlaceId: no placeId');
+        return res.status(404).send({ msg: 'getStreetByPlaceId: no placeId' });
+    }
+
+    try {
+        const selectedStreet = await Street.findOne({ placeId })
+            .populate([{
+                path: 'postsfeed',
+                model: 'post',
+                options: {
+                    sort: { createDate: -1 },
+                },
+                populate: ['author', 'comments.author'],
+            }, 'members'])
+            .exec();
+
+        return res.status(200).send({ selectedStreet });
+
+    } catch (err) {
+        console.error(err);
+        res.status(404).send({ msg: 'street not found' });
+    }
+
 }
 
 async function changePrimaryStreet(req, res) {
 
     const { streetId } = req.query;
-    const { user: { _id } } = req.session;
+    const { user: { _id: userId } } = req.session;
 
-    if (!_id || !streetId) {
+    if (!userId || !streetId) {
         return res.status(400).send({ msg: 'There have been validation errors' });
     }
 
-    await User.findOneAndUpdate({ _id },
-        { 'local.primaryStreet': streetId },
-        { upsert: true, new: true })
-        .populate([{
-            path: 'facebook.friends',
-            populate: ['local.primaryStreet'],
-        }, 'local.streets', 'local.primaryStreet'])
-        .then(activeUser => {
-                if (activeUser) {
-                    req.session.user = activeUser;
-                    req.session.save();
-                    console.log('Primary street has been changed');
-                    return res.status(200).send({ activeUser, msg: 'Primary street has been changed' });
-                }
-                return res.status(200).send({ msg: 'Error while changing street' });
-            }
-        );
+    try {
+        const activeUser = await User.findOneAndUpdate({ _id: userId },
+                { 'local.primaryStreet': streetId },
+                { upsert: true, new: true })
+                .populate([{
+                    path: 'facebook.friends',
+                    populate: ['local.primaryStreet'],
+                }, 'local.streets', 'local.primaryStreet']).exec();
+
+        req.session.user = activeUser;
+        req.session.save();
+        console.log('Primary street has been changed');
+        return res.status(200).send({ activeUser, msg: 'Primary street has been changed' });
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send({ msg: 'Error while changing street' });
+    }
 }
 
-async function getStreetsNearPoint(radius, limit, coords, callback) {
+function getStreetsNearPoint(radius, limit, coords) {
+    return new Promise((resolve, reject) => {
 
-    if (!radius || !coords || coords.length !== 2) {
-        return;
+        if (!radius || !coords || coords.length !== 2) {
+            reject();
+        }
+
+        Street.find(
+            {
+                location: {
+                    $near: {
+                        $geometry: { type: 'Point', coordinates: coords },
+                        $maxDistance: radius,
+                        $minDistance: 10,
+                    },
+                },
+            })
+            .lean()
+
+            .populate({ path: 'members', model: 'user', select: 'name' })
+
+            .limit(limit)
+
+            .then(result => resolve(result))
+
+            .catch(err => reject(err));
+
+    })
+
+}
+
+function getStreetAdmins(req, res) {
+
+    const { streetID } = req.session;
+
+    if (!streetID) {
+        return res.status(404).send('streetID', 400);
     }
 
-    await Street.find(
-        {
-            location: {
-                $near: {
-                    $geometry: { type: 'Point', coordinates: coords },
-                    $maxDistance: radius,
-                    $minDistance: 10,
-                },
-            },
-        }).lean()
+    Street.findOne({ _id: streetID }, { admins: 1, _id: 0 })
+        .populate('admins')
+        .exec((err, street) => {
+            if (err) throw err;
 
-        .populate({ path: 'members', model: 'user', select: 'name' })
-
-        .limit(limit)
-
-        .then(result => {
-            callback(result);
+            if (street) {
+                res.send(street.admins);
+            }
         });
-
 }
 
-async function addStreetToUser(user_id, street, req, res) {
+function getSelectedStreet(req, res) {
+    const { selectedStreet } = req.session;
+
+    if (!selectedStreet || !selectedStreet.placeId) {
+        return res.status(200).send({ msg: 'no placeId' });
+    }
+
+    getStreetByPlaceId(selectedStreet.placeId)
+        .then(street => {
+            req.session.selectedStreet = street;
+            req.session.save();
+            return res.status(200).send({ selectedStreet: street });
+        });
+}
+
+function addStreetToUser(user_id, street, req, res) {
 
     return new Promise((resolve, reject) => {
 
         if (!user_id || !street) {
-            reject(null);
+            reject(new Error('userId or street is missing'));
         }
 
         User.findOneAndUpdate({ _id: user_id },
@@ -282,6 +285,7 @@ async function addStreetToUser(user_id, street, req, res) {
                 populate: ['local.primaryStreet'],
             }])
             .then((user, err) => {
+                if (err) throw err;
                 if (user) {
                     if (user.local.streets.length === 1) {
                         user.local.primaryStreet = street;
@@ -299,18 +303,22 @@ async function addStreetToUser(user_id, street, req, res) {
                     },
                     populate: ['author', 'comments.author'],
                 }, { path: 'members', model: 'user' }])
-                    .then(populatedStreet => res.send({
-                        content: {
-                            selectedStreet: populatedStreet,
-                            activeUser: user,
-                        },
-                        msg: 'AddStreet execute successfully',
-                    }));
+                    .then(populatedStreet => {
+                        res.send({
+                            content: {
+                                selectedStreet: populatedStreet,
+                                activeUser: user,
+                            },
+                            msg: 'AddStreet execute successfully',
+                        });
+                        resolve();
+                    })
+                    .catch(err => reject(err));
             });
     });
 }
 
-async function createStreet(placeId, user_id, location, streetName, address) {
+function createStreet(placeId, user_id, location, streetName, address) {
 
     return new Promise((resolve, reject) => {
 
@@ -342,27 +350,44 @@ async function createStreet(placeId, user_id, location, streetName, address) {
     });
 }
 
-async function getStreetByPlaceId(req, res) {
+function getNearbyStreets(req, res) {
+    const maxDistance = 1000;
+    const minDistance = 5;
+    const limit = 8;
+    const coords = JSON.parse(req.query.location);
 
-    const { placeId } = req.query;
+    if (!coords) {
+        return res.send('location is missing', 400);
+    }
 
-        if (!placeId) {
-            console.log('getStreetByPlaceId: no placeId');
-            return;
-        }
-
-        await Street.findOne({ placeId })//
-            .populate([{
-                path: 'postsfeed',
-                model: 'post',
-                options: {
-                    sort: { createDate: -1 },
+    Street.find(
+        {
+            location: {
+                $near: {
+                    $geometry: {
+                        type: 'Point',
+                        coordinates: coords,
+                    },
+                    $maxDistance: maxDistance,
+                    $minDistance: minDistance,
                 },
-                populate: ['author', 'comments.author'],
-            }, 'members'])
-            .then((selectedStreet, err) => {
-                return res.status(200).send({ selectedStreet });
-            });
+            },
+        })
+        .lean()
+
+        .populate({ path: 'members', model: 'user' })
+
+        .limit(limit)
+
+        .then(streetsNearby =>
+            res.send({
+                streetsNearby,
+                status: 'ok',
+            })
+        )
+        .catch(err =>
+            res.status(400).send({ msg: err })
+        )
 
 }
 

@@ -22,6 +22,8 @@ const DIST_DIR = path.join(__dirname, '../dist');
 const HTML_FILE = path.join(DIST_DIR, 'index.html');
 const isDevelopment = config.env !== 'production';
 
+mongoose.Promise = global.Promise;
+
 app.use(session({
     secret: 'keyboard cat',
     store: new MongoStore({ mongooseConnection: mongoose.connection }),
