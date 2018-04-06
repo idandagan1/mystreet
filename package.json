@@ -76,7 +76,7 @@
     "underscore": "^1.8.3",
     "universal-cookie": "^2.1.0",
     "url-loader": "^0.6.0",
-    "webpack": "^1.13.1",
+    "webpack": "^2.2.0",
     "webpack-dev-server": "^1.14.1"
   },
   "devDependencies": {
