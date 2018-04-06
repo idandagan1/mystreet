@@ -1,6 +1,6 @@
 {
-  "name": "MyStreet",
-  "version": "1.0.1",
+  "name": "mystreet",
+  "version": "1.3.4",
   "scripts": {
     "build": "better-npm-run build",
     "build:es6": "babel ./server/server-es6.js -o ./server/server.js",
@@ -34,7 +34,7 @@
   "author": "Idan Dagan and Stephen Lenrow",
   "license": "ISC",
   "engines": {
-    "node": "6.9.4"
+    "node": "8.9.4"
   },
   "dependencies": {
     "better-npm-run": "^0.1.0",
