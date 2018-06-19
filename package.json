@@ -9,7 +9,9 @@
     "postinstall": "npm run build",
     "start": "BABEL_DISABLE_CACHE=1 NODE_ENV=development nodemon index.js --exec babel-node --presets es2015,stage-2",
     "start:prod": "NODE_ENV=production babel-node index.js",
-    "clean": "rimraf dist/* && rimraf ./server/server.js"
+    "clean": "rimraf dist/* && rimraf ./server/server.js",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "betterScripts": {
     "build": {
@@ -77,7 +79,8 @@
     "universal-cookie": "^2.1.0",
     "url-loader": "^0.6.0",
     "webpack": "^1.13.1",
-    "webpack-dev-server": "^1.14.1"
+    "webpack-dev-server": "^1.14.1",
+    "snyk": "^1.83.0"
   },
   "devDependencies": {
     "babel-cli": "^6.11.4",
@@ -98,5 +101,6 @@
     "nodemon": "^1.11.0",
     "css-loader": "^0.23.1",
     "react-input-range": "^1.2.1"
-  }
+  },
+  "snyk": true
 }
