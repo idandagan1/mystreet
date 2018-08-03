@@ -61,7 +61,7 @@
     "path": "^0.12.7",
     "react": "^15.3.0",
     "react-datepicker": "^0.53.0",
-    "react-dom": "^15.3.0",
+    "react-dom": "^16.0.1",
     "react-facebook-login": "^3.6.2",
     "react-facebook-login-component": "^0.9.0",
     "react-redux": "^4.4.5",
